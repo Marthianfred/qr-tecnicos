@@ -9,6 +9,17 @@ export interface IAMUser {
   email?: string;
 }
 
+interface KeycloakPayload {
+  sub: string;
+  preferred_username?: string;
+  username?: string;
+  role?: string;
+  realm_access?: {
+    roles: string[];
+  };
+  email?: string;
+}
+
 @Injectable()
 export class KeycloakIAMService implements OnModuleInit {
   private jwksClient!: JwksClient;
@@ -35,8 +46,8 @@ export class KeycloakIAMService implements OnModuleInit {
     }
 
     try {
-      const decodedToken = jwt.decode(token, { complete: true }) as any;
-      if (!decodedToken || !decodedToken.header || !decodedToken.header.kid) {
+      const decodedToken = jwt.decode(token, { complete: true });
+      if (!decodedToken || typeof decodedToken === 'string' || !decodedToken.header || !decodedToken.header.kid) {
         throw new UnauthorizedException('Invalid token format: missing kid');
       }
 
@@ -47,19 +58,20 @@ export class KeycloakIAMService implements OnModuleInit {
         issuer: this.issuer,
         audience: this.audience,
         algorithms: ['RS256'],
-      }) as any;
+      }) as unknown as KeycloakPayload;
 
       return this.mapPayloadToUser(decoded);
-    } catch (err: any) {
-      console.error('OIDC Token Validation Failed:', err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      console.error('OIDC Token Validation Failed:', message);
       throw new UnauthorizedException('Invalid or expired OIDC token');
     }
   }
 
-  private mapPayloadToUser(decoded: any): IAMUser {
+  private mapPayloadToUser(decoded: KeycloakPayload): IAMUser {
     return {
       id: decoded.sub,
-      username: decoded.preferred_username || decoded.username,
+      username: decoded.preferred_username || decoded.username || 'unknown',
       role: decoded.role || (decoded.realm_access?.roles?.includes('admin') ? 'admin' : 'user'),
       email: decoded.email,
     };

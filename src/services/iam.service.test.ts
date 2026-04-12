@@ -95,5 +95,26 @@ describe('KeycloakIAMService', () => {
 
       await expect(service.validateToken('bad-token')).rejects.toThrow(UnauthorizedException);
     });
+
+    it('should use fallback username and default role if missing in payload', async () => {
+      const mockToken = 'token';
+      const mockPayload = {
+        sub: 'user-456',
+      };
+
+      (jwt.decode as jest.Mock).mockReturnValue({
+        header: { kid: 'test-kid' },
+      });
+      (jwt.verify as jest.Mock).mockReturnValue(mockPayload);
+
+      const result = await service.validateToken(mockToken);
+
+      expect(result).toEqual({
+        id: 'user-456',
+        username: 'unknown',
+        role: 'user',
+        email: undefined,
+      });
+    });
   });
 });

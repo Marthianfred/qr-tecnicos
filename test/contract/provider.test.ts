@@ -60,7 +60,9 @@ describe('Pact Provider Verification', () => {
     app = moduleFixture.createNestApplication();
     app.setGlobalPrefix('api');
     await app.init();
-    await app.listen(8080); // Open server for Pact to hit
+    const server = await app.listen(0); // Use dynamic port to avoid EADDRINUSE
+    const address = server.address();
+    const port = typeof address === 'string' ? 8080 : address.port;
 
     tecnicoRepository = moduleFixture.get<Repository<Tecnico>>(getRepositoryToken(Tecnico));
     certificacionRepository = moduleFixture.get<Repository<Certificacion>>(getRepositoryToken(Certificacion));
@@ -95,10 +97,11 @@ describe('Pact Provider Verification', () => {
     const jwtService = app.get(JwtService);
     const adminToken = jwtService.sign({ username: 'pact-test', sub: 'pact', role: 'admin' });
 
+    const port = (app.getHttpServer().address() as any).port;
     const opts = {
       provider: 'Backend',
-      providerBaseUrl: 'http://localhost:8080',
-      pactUrls: [path.resolve(process.cwd(), 'pacts', 'Frontend-Backend.json')],
+      providerBaseUrl: `http://localhost:${port}`,
+      pactUrls: [path.resolve(__dirname, '../../pacts/Frontend-Backend.json')],
       stateHandlers: {
         'a technician exists with ID 1': async () => {
           // Ensure technician exists

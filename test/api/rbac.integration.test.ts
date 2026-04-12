@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import request from 'supertest';
+import request = require('supertest');
 import { UserRole } from '../../src/entities/user.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../../src/entities/user.entity';

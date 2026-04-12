@@ -40,124 +40,131 @@ const getHeaders = () => {
   };
 };
 
+let isRefreshing = false;
+
+async function request(url: string, options: any = {}): Promise<any> {
+  const headers = { ...getHeaders(), ...options.headers };
+  const response = await fetch(url, { ...options, headers });
+
+  if (response.status === 401 && !url.includes('/auth/login') && !url.includes('/auth/refresh') && !isRefreshing) {
+    isRefreshing = true;
+    const refreshToken = localStorage.getItem('refreshToken');
+    
+    if (refreshToken) {
+      try {
+        const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: refreshToken }),
+        });
+
+        if (refreshResponse.ok) {
+          const data = await refreshResponse.json();
+          localStorage.setItem('token', data.access_token);
+          isRefreshing = false;
+          // Retry original request
+          return request(url, options);
+        }
+      } catch (e) {
+        console.error('Failed to refresh token');
+      }
+    }
+    
+    // If refresh failed or no token, logout
+    isRefreshing = false;
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    window.location.reload(); // Force app to go back to login
+    throw new Error('Session expired');
+  }
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Request failed' }));
+    throw new Error(error.message || 'Request failed');
+  }
+
+  return response.json();
+}
+
 export const apiService = {
   async getTechnician(id: string): Promise<Technician> {
-    const response = await fetch(`${API_BASE_URL}/tecnicos/${id}`, {
-      headers: getHeaders(),
-    });
-    if (!response.ok) throw new Error('Failed to fetch technician');
-    return response.json();
+    return request(`${API_BASE_URL}/tecnicos/${id}`);
   },
 
   async generateQR(id: string): Promise<QRResponse> {
-    const response = await fetch(`${API_BASE_URL}/tecnicos/${id}/qr`, {
+    return request(`${API_BASE_URL}/tecnicos/${id}/qr`, {
       method: 'POST',
-      headers: getHeaders(),
     });
-    if (!response.ok) throw new Error('Failed to generate QR');
-    return response.json();
   },
 
   async validateQR(token: string): Promise<any> {
-    const response = await fetch(`${API_BASE_URL}/tecnicos/validate/${token}`);
-    if (!response.ok) throw new Error('Invalid or expired token');
-    return response.json();
+    return request(`${API_BASE_URL}/tecnicos/validate/${token}`);
   },
 
   async reportInconsistency(id: string, report: InconsistencyReport): Promise<any> {
-    const response = await fetch(`${API_BASE_URL}/tecnicos/${id}/report`, {
+    return request(`${API_BASE_URL}/tecnicos/${id}/report`, {
       method: 'POST',
-      headers: getHeaders(),
       body: JSON.stringify({
         descripcion: report.reason,
         detalles: report.details,
       }),
     });
-    if (!response.ok) throw new Error('Failed to submit report');
-    return response.json();
   },
 
   async getTechnicians(): Promise<Technician[]> {
-    const response = await fetch(`${API_BASE_URL}/tecnicos`, {
-      headers: getHeaders(),
-    });
-    if (!response.ok) throw new Error('Failed to fetch technicians');
-    return response.json();
+    return request(`${API_BASE_URL}/tecnicos`);
   },
 
   async getReports(): Promise<any[]> {
-    const response = await fetch(`${API_BASE_URL}/tecnicos/reports`, {
-      headers: getHeaders(),
-    });
-    if (!response.ok) throw new Error('Failed to fetch reports');
-    return response.json();
+    return request(`${API_BASE_URL}/tecnicos/reports`);
   },
 
   // Cuadrilla Methods
   async getCuadrillas(): Promise<Cuadrilla[]> {
-    const response = await fetch(`${API_BASE_URL}/cuadrillas`, {
-      headers: getHeaders(),
-    });
-    if (!response.ok) throw new Error('Failed to fetch cuadrillas');
-    return response.json();
+    return request(`${API_BASE_URL}/cuadrillas`);
   },
 
   async getCuadrilla(id: string): Promise<Cuadrilla> {
-    const response = await fetch(`${API_BASE_URL}/cuadrillas/${id}`, {
-      headers: getHeaders(),
-    });
-    if (!response.ok) throw new Error('Failed to fetch cuadrilla');
-    return response.json();
+    return request(`${API_BASE_URL}/cuadrillas/${id}`);
   },
 
   async createCuadrilla(data: Partial<Cuadrilla>): Promise<Cuadrilla> {
-    const response = await fetch(`${API_BASE_URL}/cuadrillas`, {
+    return request(`${API_BASE_URL}/cuadrillas`, {
       method: 'POST',
-      headers: getHeaders(),
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error('Failed to create cuadrilla');
-    return response.json();
   },
 
   async assignTecnicosToCuadrilla(id: string, tecnicoIds: string[]): Promise<Cuadrilla> {
-    const response = await fetch(`${API_BASE_URL}/cuadrillas/${id}/tecnicos`, {
+    return request(`${API_BASE_URL}/cuadrillas/${id}/tecnicos`, {
       method: 'POST',
-      headers: getHeaders(),
       body: JSON.stringify({ tecnicoIds }),
     });
-    if (!response.ok) throw new Error('Failed to assign technicians');
-    return response.json();
   },
 
   async removeTecnicoFromCuadrilla(id: string, tecnicoId: string): Promise<Cuadrilla> {
-    const response = await fetch(`${API_BASE_URL}/cuadrillas/${id}/tecnicos/${tecnicoId}`, {
+    return request(`${API_BASE_URL}/cuadrillas/${id}/tecnicos/${tecnicoId}`, {
       method: 'DELETE',
-      headers: getHeaders(),
     });
-    if (!response.ok) throw new Error('Failed to remove technician');
-    return response.json();
   },
 
   async login(username: string, password: string): Promise<any> {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    const data = await request(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
     });
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Login failed');
-    }
-    return response.json();
+    
+    // Persist tokens
+    localStorage.setItem('token', data.access_token);
+    localStorage.setItem('refreshToken', data.refresh_token);
+    
+    return data;
   },
 
   // Ecommerce Methods
   async getProducts(): Promise<any[]> {
-    const response = await fetch(`${API_BASE_URL}/productos`);
-    if (!response.ok) throw new Error('Failed to fetch products');
-    const data = await response.json();
-    // Map backend Spanish fields to frontend English fields used in components
+    const data = await request(`${API_BASE_URL}/productos`);
     return data.map((p: any) => ({
       id: p.id,
       name: p.nombre,
@@ -171,17 +178,17 @@ export const apiService = {
   },
 
   async createOrder(order: any): Promise<any> {
-    const response = await fetch(`${API_BASE_URL}/productos/reservar`, { // Using reservar as a placeholder if no orders endpoint
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(order),
-    });
-    // Fallback if /orders is not yet implemented
-    if (!response.ok && response.status === 404) {
+    try {
+      return await request(`${API_BASE_URL}/productos/reservar`, { 
+        method: 'POST',
+        body: JSON.stringify(order),
+      });
+    } catch (e: any) {
+      if (e.message?.includes('404')) {
         console.warn('Orders endpoint not found, using simulation');
         return { id: 'SIM-ORDER-' + Math.random().toString(36).substr(2, 9) };
+      }
+      throw e;
     }
-    if (!response.ok) throw new Error('Failed to create order');
-    return response.json();
   }
 };

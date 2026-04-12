@@ -25,10 +25,10 @@ export class AuthService {
   async login(username: string, pass: string) {
     const user = await this.userRepository.findOne({ where: { username } });
     if (user && user.password === pass) {
-      // En una app real, usar bcrypt para comparar passwords
       const payload = { username: user.username, sub: user.id, role: user.role };
       return {
-        access_token: this.jwtService.sign(payload),
+        access_token: this.jwtService.sign(payload, { expiresIn: '15m' }),
+        refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
         user: {
           id: user.id,
           username: user.username,
@@ -37,6 +37,18 @@ export class AuthService {
       };
     }
     throw new UnauthorizedException('Credenciales inválidas');
+  }
+
+  async refreshToken(token: string) {
+    try {
+      const payload = this.jwtService.verify(token);
+      const newPayload = { username: payload.username, sub: payload.sub, role: payload.role };
+      return {
+        access_token: this.jwtService.sign(newPayload, { expiresIn: '15m' }),
+      };
+    } catch (e) {
+      throw new UnauthorizedException('Sesión expirada. Por favor, inicie sesión de nuevo.');
+    }
   }
 
   async generateQR(tecnicoId: string) {

@@ -36,7 +36,23 @@ export const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('login');
   const [cartItems, setCartItems] = useState<{ product: Product, quantity: number }[]>([]);
 
-  // Redirect based on role after login
+  // Hydrate session from localStorage on mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    
+    if (storedUser && token) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (e) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+      }
+    }
+  }, []);
+
+  // Redirect based on role after login or hydration
   useEffect(() => {
     if (user) {
       if (user.role === 'admin') setCurrentView('admin-panel');
@@ -49,12 +65,15 @@ export const App: React.FC = () => {
   }, [user]);
 
   const handleLogin = (user: User) => {
+    localStorage.setItem('user', JSON.stringify(user));
     setUser(user);
   };
 
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('refreshToken');
   };
 
   const addToCart = (product: Product) => {

@@ -1,0 +1,13 @@
+node_modules
+dist
+npm-debug.log
+.git
+.gitignore
+coverage
+test
+pacts
+memory
+plans
+.eslintrc.js
+jest.config.js
+# tsconfig.json and package-lock.json are needed for building

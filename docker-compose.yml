@@ -1,0 +1,57 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3200:3200"
+    environment:
+      - PORT=3200
+      - DB_HOST=db
+      - DB_PORT=5445
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=fibex_qr
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - fibex-net
+
+  db:
+    image: postgres:15-alpine
+    command: postgres -p 5445
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=fibex_qr
+    ports:
+      - "5445:5445"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fibex_qr -p 5445"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fibex-net
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    networks:
+      - fibex-net
+
+networks:
+  fibex-net:
+    driver: bridge
+
+volumes:
+  pgdata:

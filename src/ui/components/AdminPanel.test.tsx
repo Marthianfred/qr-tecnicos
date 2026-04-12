@@ -19,19 +19,20 @@ describe('AdminPanel Component', () => {
   test('renders inventory tab by default', () => {
     render(<AdminPanel />);
     
-    expect(screen.getByText('Panel de Administración')).toBeInTheDocument();
-    expect(screen.getByText('Inventario')).toBeInTheDocument();
+    expect(screen.getByText('Global Control Panel')).toBeInTheDocument();
+    expect(screen.getByText('Registry')).toBeInTheDocument();
     expect(screen.getByText('Router Fiber Extreme')).toBeInTheDocument();
     expect(screen.getByText('FIB-REX-001')).toBeInTheDocument();
+    expect(screen.getByText('15')).toBeInTheDocument();
   });
 
   test('switches to orders tab', () => {
     render(<AdminPanel />);
     
-    const ordersTab = screen.getByText('Aprobación de Pedidos');
+    const ordersTab = screen.getByText('Transactions');
     fireEvent.click(ordersTab);
     
-    expect(screen.getByText('Cliente')).toBeInTheDocument();
+    expect(screen.getByText('Requester')).toBeInTheDocument();
     expect(screen.getByText('Carlos Pérez')).toBeInTheDocument();
     expect(screen.getByText('ORD-001')).toBeInTheDocument();
   });
@@ -39,73 +40,73 @@ describe('AdminPanel Component', () => {
   test('updates stock in inventory with minus and cancel', async () => {
     render(<AdminPanel />);
     
-    const editButton = screen.getByTitle('Editar Stock');
+    const editButton = screen.getByTitle('Modify Manifest');
     fireEvent.click(editButton);
     
     const minusButton = screen.getByText('-');
     fireEvent.click(minusButton);
     
-    const cancelButton = screen.getByText('Cancelar');
+    const cancelButton = screen.getByText('Abstain');
     fireEvent.click(cancelButton);
     
-    expect(screen.queryByText('Actualizar Stock')).not.toBeInTheDocument();
+    expect(screen.queryByText('Modify Asset Manifest')).not.toBeInTheDocument();
   });
 
   test('updates stock in inventory with plus and save', async () => {
     render(<AdminPanel />);
     
-    const editButton = screen.getByTitle('Editar Stock');
+    const editButton = screen.getByTitle('Modify Manifest');
     fireEvent.click(editButton);
     
     const plusButton = screen.getByText('+');
     fireEvent.click(plusButton);
     
-    const saveButton = screen.getByText('Guardar Cambios');
+    const saveButton = screen.getByText('Commit Changes');
     fireEvent.click(saveButton);
     
-    expect(screen.getByText('Stock de Router Fiber Extreme actualizado')).toBeInTheDocument();
+    expect(screen.getByText('Stock of Router Fiber Extreme updated')).toBeInTheDocument();
     expect(screen.getByText('16')).toBeInTheDocument();
   });
 
   test('approves an order', async () => {
     render(<AdminPanel />);
     
-    const ordersTab = screen.getByText('Aprobación de Pedidos');
+    const ordersTab = screen.getByText('Transactions');
     fireEvent.click(ordersTab);
     
-    const approveButton = screen.getByText('Aprobar');
+    const approveButton = screen.getByText('Grant');
     fireEvent.click(approveButton);
     
-    expect(await screen.findByText('Pedido ORD-001 aprobado con éxito')).toBeInTheDocument();
+    expect(await screen.findByText('Transaction ORD-001 authorized successfully')).toBeInTheDocument();
     
     await waitFor(() => {
-      expect(screen.getByText('Pagado')).toBeInTheDocument();
+      expect(screen.getByText('Paid')).toBeInTheDocument();
     });
   });
 
   test('rejects an order', async () => {
     render(<AdminPanel />);
     
-    const ordersTab = screen.getByText('Aprobación de Pedidos');
+    const ordersTab = screen.getByText('Transactions');
     fireEvent.click(ordersTab);
     
-    const rejectButton = screen.getByText('Rechazar');
+    const rejectButton = screen.getByText('Deny');
     fireEvent.click(rejectButton);
     
-    expect(await screen.findByText('Pedido ORD-001 ha sido rechazado')).toBeInTheDocument();
+    expect(await screen.findByText('Transaction ORD-001 has been denied')).toBeInTheDocument();
     
     await waitFor(() => {
-      expect(screen.getByText('Rechazado')).toBeInTheDocument();
+      expect(screen.getByText('Denied')).toBeInTheDocument();
     });
   });
 
   test('searches in inventory', () => {
     render(<AdminPanel />);
     
-    const searchInput = screen.getByPlaceholderText('Buscar en inventario...');
+    const searchInput = screen.getByPlaceholderText('Filter inventory...');
     fireEvent.change(searchInput, { target: { value: 'Nonexistent' } });
     
-    expect(screen.getByText(/No se encontraron productos/i)).toBeInTheDocument();
+    expect(screen.getByText(/No records matching query/i)).toBeInTheDocument();
     
     fireEvent.change(searchInput, { target: { value: 'Router' } });
     expect(screen.getByText('Router Fiber Extreme')).toBeInTheDocument();
@@ -114,22 +115,22 @@ describe('AdminPanel Component', () => {
   test('switches to roles tab and edits a user role', async () => {
     render(<AdminPanel />);
     
-    const rolesTab = screen.getByText('Gestión de Roles');
+    const rolesTab = screen.getByText('Privileges');
     fireEvent.click(rolesTab);
     
     expect(screen.getByText('Marta Administradora')).toBeInTheDocument();
     expect(screen.getByText('Jorge Coordinador')).toBeInTheDocument();
     
-    const changeRoleButtons = screen.getAllByText('Cambiar Rol');
+    const changeRoleButtons = screen.getAllByText('Shift Privilege');
     fireEvent.click(changeRoleButtons[1]); // Click for Jorge
     
-    expect(screen.getByText('Modificar Rol de Usuario')).toBeInTheDocument();
+    expect(screen.getByText('Escalate Privileges')).toBeInTheDocument();
     
     // Find the technician button in the modal
     const technicianRoleButtons = screen.getAllByText(/technician/i);
     // The last one should be the one in the modal
     fireEvent.click(technicianRoleButtons[technicianRoleButtons.length - 1]);
     
-    expect(await screen.findByText(/Rol de Jorge Coordinador actualizado a technician/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Role of Jorge Coordinador updated to technician/i)).toBeInTheDocument();
   });
 });

@@ -28,7 +28,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
     const token = urlParams.get('token');
 
     if (!token) {
-      setError('No se proporcionó un token de verificación válido.');
+      setError('No valid verification token was provided.');
       setLoading(false);
       return;
     }
@@ -40,7 +40,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
       })
       .catch((err) => {
         console.error('Error validating token:', err);
-        setError('El código QR ha expirado o no es válido.');
+        setError('The QR code has expired or is invalid.');
         setLoading(false);
       });
   }, []);
@@ -72,7 +72,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
             onClick={() => window.location.href = 'tel:911'}
             className="bg-error text-white px-8 py-4 rounded-lg font-display font-extrabold shadow-ambient hover:opacity-90 transition-all active:scale-95 flex items-center justify-center space-x-2 tracking-tight"
           >
-            <span>LLAMAR A EMERGENCIAS (911)</span>
+            <span>CALL EMERGENCY (911)</span>
           </button>
           <button
             onClick={() => window.location.href = 'https://www.fibextelecom.com/soporte'}

@@ -92,7 +92,7 @@ const AdminPanel: React.FC = () => {
         item.id === editingItem.id ? { ...item, stock: newStock } : item
       ));
       setIsModalOpen(false);
-      setNotification({ message: `Stock de ${editingItem.name} actualizado`, type: 'success' });
+      setNotification({ message: `Stock of ${editingItem.name} updated`, type: 'success' });
     }
   };
 
@@ -107,7 +107,7 @@ const AdminPanel: React.FC = () => {
         u.id === editingUser.id ? { ...u, role: newRole } : u
       ));
       setIsRoleModalOpen(false);
-      setNotification({ message: `Rol de ${editingUser.name} actualizado a ${newRole}`, type: 'success' });
+      setNotification({ message: `Role of ${editingUser.name} updated to ${newRole}`, type: 'success' });
     }
   };
 
@@ -115,20 +115,20 @@ const AdminPanel: React.FC = () => {
     setProcessingId(id);
     await new Promise(resolve => setTimeout(resolve, 800));
     setOrders(prev => prev.map(order => 
-      order.id === id ? { ...order, status: 'Success', statusLabel: 'Pagado' } : order
+      order.id === id ? { ...order, status: 'Success', statusLabel: 'Paid' } : order
     ));
     setProcessingId(null);
-    setNotification({ message: `Pedido ${id} aprobado con éxito`, type: 'success' });
+    setNotification({ message: `Transaction ${id} authorized successfully`, type: 'success' });
   };
 
   const handleRejectOrder = async (id: string) => {
     setProcessingId(id);
     await new Promise(resolve => setTimeout(resolve, 800));
     setOrders(prev => prev.map(order => 
-      order.id === id ? { ...order, status: 'Error', statusLabel: 'Rechazado' } : order
+      order.id === id ? { ...order, status: 'Error', statusLabel: 'Denied' } : order
     ));
     setProcessingId(null);
-    setNotification({ message: `Pedido ${id} ha sido rechazado`, type: 'error' });
+    setNotification({ message: `Transaction ${id} has been denied`, type: 'error' });
   };
 
   return (

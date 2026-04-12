@@ -31,7 +31,7 @@ describe('ClientVerification Component', () => {
   test('renders loading state initially', () => {
     (apiService.validateQR as jest.Mock).mockReturnValue(new Promise(() => {}));
     render(<ClientVerification onReport={mockOnReport} />);
-    expect(screen.getByText(/Verificando identidad/i)).toBeInTheDocument();
+    expect(screen.getByText(/Authenticating Personnel.../i)).toBeInTheDocument();
   });
 
   test('renders success state with technician data', async () => {
@@ -47,15 +47,15 @@ describe('ClientVerification Component', () => {
 
     render(<ClientVerification onReport={mockOnReport} />);
 
-    expect(await screen.findByText(/Personal Verificado/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Personnel Verified/i)).toBeInTheDocument();
     expect(screen.getByText('Juan Perez')).toBeInTheDocument();
-    expect(screen.getByText(/Técnico Nivel Senior/i)).toBeInTheDocument();
+    expect(screen.getByText(/Field Specialist/i)).toBeInTheDocument();
     expect(screen.getByText('V-12345678')).toBeInTheDocument();
     expect(screen.getByText('TECH-123')).toBeInTheDocument();
     
     // Check for the new trust elements
-    expect(screen.getByText(/Validado el/i)).toBeInTheDocument();
-    expect(screen.getByText(/Reportar Inconsistencia/i)).toBeInTheDocument();
+    expect(screen.getByText(/Validation Date/i)).toBeInTheDocument();
+    expect(screen.getByText(/Report Anomaly/i)).toBeInTheDocument();
   });
 
   test('renders error state when token is missing', async () => {
@@ -66,8 +66,8 @@ describe('ClientVerification Component', () => {
 
     render(<ClientVerification onReport={mockOnReport} />);
 
-    expect(await screen.findByText(/¡ALERTA DE SEGURIDAD!/i)).toBeInTheDocument();
-    expect(screen.getByText(/No se proporcionó un token de verificación válido/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Security Alert/i)).toBeInTheDocument();
+    expect(screen.getByText(/No valid verification token was provided./i)).toBeInTheDocument();
   });
 
   test('renders error state when token is invalid', async () => {
@@ -75,9 +75,9 @@ describe('ClientVerification Component', () => {
 
     render(<ClientVerification onReport={mockOnReport} />);
 
-    expect(await screen.findByText(/¡ALERTA DE SEGURIDAD!/i)).toBeInTheDocument();
-    expect(screen.getByText(/IDENTIDAD NO CONFIRMADA/i)).toBeInTheDocument();
-    expect(screen.getByText(/🚨 LLAMAR A EMERGENCIAS/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Security Alert/i)).toBeInTheDocument();
+    expect(screen.getByText(/The QR code has expired or is invalid./i)).toBeInTheDocument();
+    expect(screen.getByText(/CALL EMERGENCY/i)).toBeInTheDocument();
   });
 
   test('calls onReport when the report button is clicked', async () => {
@@ -92,7 +92,7 @@ describe('ClientVerification Component', () => {
 
     render(<ClientVerification onReport={mockOnReport} />);
 
-    const reportButton = await screen.findByRole('button', { name: /Reportar Inconsistencia/i });
+    const reportButton = await screen.findByRole('button', { name: /Report Anomaly/i });
     fireEvent.click(reportButton);
 
     expect(mockOnReport).toHaveBeenCalledTimes(1);

@@ -41,7 +41,7 @@ describe('ShoppingCart', () => {
         onOrderComplete={mockOnOrderComplete}
       />
     );
-    expect(screen.getByText(/Tu carrito está vacío/i)).toBeInTheDocument();
+    expect(screen.getByText(/Vault is currently empty/i)).toBeInTheDocument();
   });
 
   it('renders items in the cart', () => {
@@ -55,7 +55,7 @@ describe('ShoppingCart', () => {
       />
     );
     expect(screen.getByText('Plan Fibra 200 Mbps')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument(); // matches {item.quantity}
+    expect(screen.getByText('02')).toBeInTheDocument(); // matches {item.quantity.toString().padStart(2, '0')}
   });
 
   it('calculates total correctly', () => {
@@ -97,10 +97,10 @@ describe('ShoppingCart', () => {
         onOrderComplete={mockOnOrderComplete}
       />
     );
-    const checkoutButton = screen.getByText(/Confirmar y Pagar/i);
+    const checkoutButton = screen.getByText(/Authorize & Clear/i);
     fireEvent.click(checkoutButton);
     
-    const processingText = await screen.findByText(/Procesando.../i);
+    const processingText = await screen.findByText(/Transmitting.../i);
     expect(processingText).toBeInTheDocument();
     
     await waitFor(() => {
@@ -122,10 +122,10 @@ describe('ShoppingCart', () => {
       />
     );
     
-    const checkoutButton = screen.getByText(/Confirmar y Pagar/i);
+    const checkoutButton = screen.getByText(/Authorize & Clear/i);
     fireEvent.click(checkoutButton);
     
-    const errorMessage = await screen.findByText(/Hubo un problema al procesar tu pedido/i);
+    const errorMessage = await screen.findByText(/A transmission error occurred. Please re-authenticate your request./i);
     expect(errorMessage).toBeInTheDocument();
   });
 });

@@ -15,7 +15,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Todas');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   const loadProducts = () => {
     setLoading(true);
@@ -37,12 +37,12 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
     loadProducts();
   }, []);
 
-  const categories = ['Todas', ...new Set(products.map(p => p.category))];
+  const categories = ['All', ...new Set(products.map(p => p.category))];
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'Todas' || product.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -136,7 +136,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
             </div>
             <h3 className="text-[10px] font-display font-extrabold opacity-30 uppercase tracking-[0.4em]">No records in current scope</h3>
             <button 
-              onClick={() => { setSearchTerm(''); setSelectedCategory('Todas'); }}
+              onClick={() => { setSearchTerm(''); setSelectedCategory('All'); }}
               className="text-[10px] font-display font-extrabold text-primary uppercase tracking-widest underline decoration-2 underline-offset-4"
             >
               Reset Protocols

@@ -39,7 +39,7 @@ describe('ProductCatalog', () => {
 
   it('renders product catalog title', async () => {
     render(<ProductCatalog onAddToCart={mockOnAddToCart} onViewCart={mockOnViewCart} />);
-    const title = await screen.findByText(/Catálogo de Servicios GDA/i);
+    const title = await screen.findByRole('heading', { level: 1, name: /Service Manifest/i });
     expect(title).toBeInTheDocument();
   });
 
@@ -51,17 +51,17 @@ describe('ProductCatalog', () => {
 
   it('calls onAddToCart when clicking add button', async () => {
     render(<ProductCatalog onAddToCart={mockOnAddToCart} onViewCart={mockOnViewCart} />);
-    const addButtons = await screen.findAllByText(/Añadir al Carrito/i);
+    const addButtons = await screen.findAllByText(/Acquire Asset/i);
     fireEvent.click(addButtons[0]);
     expect(mockOnAddToCart).toHaveBeenCalledWith(expect.objectContaining({ name: 'Plan Fibra 200 Mbps' }));
   });
 
   it('filters products by search term', async () => {
     render(<ProductCatalog onAddToCart={mockOnAddToCart} onViewCart={mockOnViewCart} />);
-    const searchInput = await screen.findByPlaceholderText(/Buscar productos o servicios.../i);
+    const searchInput = await screen.findByPlaceholderText(/Search assets and utility protocols.../i);
     
     fireEvent.change(searchInput, { target: { value: 'Non-existent' } });
-    expect(screen.getByText(/No encontramos lo que buscas/i)).toBeInTheDocument();
+    expect(screen.getByText(/No records in current scope/i)).toBeInTheDocument();
     
     fireEvent.change(searchInput, { target: { value: 'Fibra' } });
     expect(await screen.findByText('Plan Fibra 200 Mbps')).toBeInTheDocument();
@@ -73,10 +73,10 @@ describe('ProductCatalog', () => {
 
     render(<ProductCatalog onAddToCart={mockOnAddToCart} onViewCart={mockOnViewCart} />);
     
-    const errorMessage = await screen.findByText(/No pudimos conectar con el servidor/i);
+    const errorMessage = await screen.findByText(/Connection issues detected. Defaulting to local manifest./i);
     expect(errorMessage).toBeInTheDocument();
     
-    const retryButton = screen.getByText(/Reintentar/i);
+    const retryButton = screen.getByText(/Re-Establish Connection/i);
     expect(retryButton).toBeInTheDocument();
   });
 });

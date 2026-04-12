@@ -116,35 +116,54 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
     <div className="flex flex-col min-h-screen bg-surface font-sans text-on_surface">
       {/* Sidebar + Main Content Layout */}
       <div className="flex flex-grow">
-        {/* Simple Sidebar */}
-        <aside className="w-64 bg-surface_container_lowest shadow-ambient z-10 hidden md:block no-border">
-          <div className="p-8 flex items-center space-x-3">
-            <img src="/favicon.svg" alt="Logo" className="w-8 h-8" />
-            <h1 className="text-lg font-display font-extrabold tracking-tight uppercase">Trust<span className="text-primary">Admin</span></h1>
+        {/* Sidebar */}
+        <aside className="w-72 bg-surface_container_lowest shadow-2xl z-20 hidden md:block border-r border-white/5">
+          <div className="p-10 flex flex-col items-center">
+            <div className="relative group mb-6">
+              <div className="absolute -inset-4 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
+              <img src="/logo.webp" alt="Fibex Logo" className="relative h-20 w-auto object-contain transition-transform hover:scale-110" />
+            </div>
+            <div className="text-center space-y-1">
+              <h1 className="text-xl font-display font-black tracking-tighter uppercase leading-none">
+                Fibex <span className="text-primary">Qr Técnicos</span>
+              </h1>
+              <p className="text-[8px] font-display font-extrabold text-on_surface opacity-20 uppercase tracking-[0.4em]">Soluciones de Control</p>
+            </div>
           </div>
-          <nav className="mt-8 space-y-1 px-4">
+
+          <nav className="mt-6 space-y-2 px-6">
+            <div className="pb-2 px-4">
+              <span className="text-[9px] font-display font-black text-on_surface opacity-20 uppercase tracking-[0.3em]">Operaciones</span>
+            </div>
             <button 
               onClick={() => setActiveTab('tecnicos')}
-              className={`w-full text-left flex items-center px-4 py-3 rounded-lg transition-all ${activeTab === 'tecnicos' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface opacity-50 hover:opacity-100 hover:bg-surface_container_low'}`}
+              className={`w-full text-left flex items-center px-4 py-4 rounded-xl transition-all duration-300 ${activeTab === 'tecnicos' ? 'trust-gradient text-white shadow-xl scale-105' : 'text-on_surface opacity-40 hover:opacity-100 hover:bg-white/5'}`}
             >
-              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Monitor de Ops</span>
+              <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Monitor de Ops</span>
             </button>
             <button 
               onClick={() => setActiveTab('cuadrillas')}
-              className={`w-full text-left flex items-center px-4 py-3 rounded-lg transition-all ${activeTab === 'cuadrillas' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface opacity-50 hover:opacity-100 hover:bg-surface_container_low'}`}
+              className={`w-full text-left flex items-center px-4 py-4 rounded-xl transition-all duration-300 ${activeTab === 'cuadrillas' ? 'trust-gradient text-white shadow-xl scale-105' : 'text-on_surface opacity-40 hover:opacity-100 hover:bg-white/5'}`}
             >
-              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Control de Cuadrillas</span>
+              <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Control de Cuadrillas</span>
             </button>
-            <div className="pt-8 pb-2 px-4">
-              <span className="text-[10px] font-bold opacity-30 uppercase tracking-[0.3em]">Guardian Suite</span>
+
+            <div className="pt-10 pb-2 px-4">
+              <span className="text-[9px] font-display font-black text-on_surface opacity-20 uppercase tracking-[0.3em]">Guardian Suite</span>
             </div>
-            <a href="#" className="flex items-center px-4 py-3 rounded-lg text-on_surface opacity-50 hover:opacity-100 hover:bg-surface_container_low transition-all">
-              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Logs de Seguridad</span>
-            </a>
-            <a href="#" className="flex items-center px-4 py-3 rounded-lg text-on_surface opacity-50 hover:opacity-100 hover:bg-surface_container_low transition-all">
-              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Certificaciones</span>
-            </a>
+            <button className="w-full text-left flex items-center px-4 py-4 rounded-xl text-on_surface opacity-40 hover:opacity-100 hover:bg-white/5 transition-all">
+              <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Logs de Seguridad</span>
+            </button>
+            <button className="w-full text-left flex items-center px-4 py-4 rounded-xl text-on_surface opacity-40 hover:opacity-100 hover:bg-white/5 transition-all">
+              <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Certificaciones</span>
+            </button>
           </nav>
+
+          <div className="absolute bottom-10 left-0 right-0 px-10">
+             <div className="p-4 bg-surface_container_high/30 rounded-2xl border border-white/5">
+                <p className="text-[8px] font-display font-black opacity-20 uppercase tracking-widest text-center">Protocolo Central v2.5</p>
+             </div>
+          </div>
         </aside>
 
         {/* Content Area */}

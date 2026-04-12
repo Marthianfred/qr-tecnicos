@@ -21,7 +21,7 @@ export class SeedService implements OnModuleInit {
 
   async onModuleInit() {
     // Si queremos que se ejecute al levantar, descomentar:
-    // await this.runSeed();
+    await this.runSeed();
   }
 
   async runSeed() {

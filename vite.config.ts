@@ -5,6 +5,14 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   root: 'src/ui',
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    },
+  },
   build: {
     outDir: '../../dist/client',
     emptyOutDir: true,

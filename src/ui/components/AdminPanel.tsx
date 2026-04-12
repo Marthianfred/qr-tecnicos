@@ -45,14 +45,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           </div>
         </div>
 
-        <nav className="flex-grow p-6 space-y-2 overflow-y-auto custom-scrollbar">
+        <nav className="flex-grow p-4 space-y-2 overflow-y-auto custom-scrollbar">
           {menuItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveModule(item.id)}
-              className={`w-full flex items-center p-4 rounded-xl transition-all duration-300 group ${
+              className={`w-full flex items-center p-4 rounded-xl transition-all duration-300 group relative ${
                 activeModule === item.id 
-                  ? 'bg-blue-600 shadow-lg scale-105' 
+                  ? 'bg-blue-600 shadow-lg border border-white/20' 
                   : 'hover:bg-white/5 opacity-60 hover:opacity-100'
               }`}
             >
@@ -61,6 +61,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                 <p className="text-[11px] font-black uppercase tracking-wider leading-none">{item.label}</p>
                 <p className="text-[9px] opacity-40 uppercase tracking-tighter mt-1">{item.description}</p>
               </div>
+              {activeModule === item.id && (
+                <div className="absolute right-3 w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+              )}
             </button>
           ))}
         </nav>

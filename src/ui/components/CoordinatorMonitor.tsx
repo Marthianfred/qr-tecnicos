@@ -132,21 +132,27 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
             </div>
           </div>
 
-          <nav className="mt-6 space-y-2 px-6 flex-grow overflow-y-auto custom-scrollbar">
+          <nav className="mt-6 space-y-2 px-4 flex-grow overflow-y-auto custom-scrollbar">
             <div className="pb-2 px-4">
               <span className="text-[9px] font-display font-black text-on_surface opacity-20 uppercase tracking-[0.3em]">Operaciones</span>
             </div>
             <button 
               onClick={() => setActiveTab('tecnicos')}
-              className={`w-full text-left flex items-center px-4 py-4 rounded-xl transition-all duration-300 ${activeTab === 'tecnicos' ? 'trust-gradient text-white shadow-xl scale-105' : 'text-on_surface opacity-40 hover:opacity-100 hover:bg-white/5'}`}
+              className={`w-full text-left flex items-center px-4 py-4 rounded-xl transition-all duration-300 group relative ${activeTab === 'tecnicos' ? 'trust-gradient text-white shadow-xl border border-white/20' : 'text-on_surface opacity-40 hover:opacity-100 hover:bg-white/5'}`}
             >
               <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Monitor de Ops</span>
+              {activeTab === 'tecnicos' && (
+                <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+              )}
             </button>
             <button 
               onClick={() => setActiveTab('cuadrillas')}
-              className={`w-full text-left flex items-center px-4 py-4 rounded-xl transition-all duration-300 ${activeTab === 'cuadrillas' ? 'trust-gradient text-white shadow-xl scale-105' : 'text-on_surface opacity-40 hover:opacity-100 hover:bg-white/5'}`}
+              className={`w-full text-left flex items-center px-4 py-4 rounded-xl transition-all duration-300 group relative ${activeTab === 'cuadrillas' ? 'trust-gradient text-white shadow-xl border border-white/20' : 'text-on_surface opacity-40 hover:opacity-100 hover:bg-white/5'}`}
             >
               <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Control de Cuadrillas</span>
+              {activeTab === 'cuadrillas' && (
+                <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+              )}
             </button>
 
             <div className="pt-10 pb-2 px-4">

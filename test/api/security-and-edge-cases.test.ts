@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import request = require('supertest');
+import request from 'supertest';
 import { AuthModule } from '../../src/modules/auth/auth.module';
 import { TecnicosModule } from '../../src/modules/tecnicos/tecnicos.module';
 import { RedisModule } from '../../src/common/redis/redis.module';

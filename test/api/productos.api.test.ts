@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe, Global, Module } from '@nestjs/common';
-import request = require('supertest');
+import request from 'supertest';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Producto } from '../../src/entities/producto.entity';
 import { ProductosModule } from '../../src/modules/productos/productos.module';

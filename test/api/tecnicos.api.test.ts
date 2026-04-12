@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import request = require('supertest');
+import request from 'supertest';
 import { TecnicosModule } from '../../src/modules/tecnicos/tecnicos.module';
 import { AuthModule } from '../../src/modules/auth/auth.module';
 import { RedisModule } from '../../src/common/redis/redis.module';

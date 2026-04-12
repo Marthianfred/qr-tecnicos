@@ -8,7 +8,7 @@ import { apiService, setApiBaseUrl } from '../../src/ui/services/api';
 const provider = new PactV3({
   consumer: 'Frontend',
   provider: 'Backend',
-  dir: path.resolve(process.cwd(), 'pacts'),
+  dir: './pacts',
 });
 
 describe('Pact Consumer Test', () => {

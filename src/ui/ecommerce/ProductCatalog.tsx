@@ -58,12 +58,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
     <div className="bg-surface min-h-screen font-sans text-on_surface">
       {/* Header del Catálogo */}
       <header className="bg-surface_container_lowest p-8 shadow-ambient sticky top-0 z-10 flex justify-between items-center no-border">
-        <div className="space-y-1">
-          <div className="flex items-center space-x-2">
-             <img src="/favicon.png" alt="Logo" className="w-6 h-6" />
-             <h1 className="text-2xl font-display font-extrabold tracking-tight uppercase">Service <span className="text-primary">Manifest</span></h1>
+        <div className="flex items-center space-x-4">
+          <img src="/logo.png" alt="Fibex Logo" className="h-12 w-auto" />
+          <div className="hidden sm:block h-8 w-px bg-on_surface/10"></div>
+          <div className="hidden sm:block">
+            <h1 className="text-xl font-display font-extrabold tracking-tight uppercase">Catálogo de <span className="text-primary">Servicios</span></h1>
+            <p className="text-[9px] font-bold opacity-30 uppercase tracking-[0.3em]">Portal de Provisiones Autorizado</p>
           </div>
-          <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.3em]">Authorized Provisions Portal</p>
         </div>
         <button 
           onClick={onViewCart}

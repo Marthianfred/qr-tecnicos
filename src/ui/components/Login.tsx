@@ -33,8 +33,11 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     <div className="min-h-screen flex items-center justify-center bg-surface py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-surface_container_lowest p-10 rounded-lg shadow-ambient border-none">
         <div>
-          <div className="flex justify-center">
-            <img src="/favicon.png" alt="Logo" className="h-16 w-16" />
+          <div className="flex justify-center flex-col items-center">
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/30 transition-all"></div>
+              <img src="/logo.png" alt="Fibex Logo" className="relative h-40 w-auto object-contain transition-all hover:scale-105" />
+            </div>
           </div>
           <h2 className="mt-6 text-center text-3xl font-display font-extrabold text-on_surface">
             Control de Acceso

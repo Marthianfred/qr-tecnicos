@@ -75,12 +75,13 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
   return (
     <div className="max-w-6xl mx-auto p-6 md:p-12 font-sans text-on_surface bg-surface min-h-screen">
       <header className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-        <div className="space-y-1">
-           <div className="flex items-center space-x-2">
-              <img src="/favicon.png" alt="Logo" className="w-6 h-6" />
-              <h1 className="text-4xl font-display font-extrabold text-on_surface uppercase tracking-tighter leading-none">Autorización de Seguridad</h1>
+        <div className="flex items-center space-x-4">
+           <img src="/logo.png" alt="Fibex Logo" className="h-14 w-auto" />
+           <div className="h-10 w-px bg-on_surface/10"></div>
+           <div>
+              <h1 className="text-3xl font-display font-extrabold text-on_surface uppercase tracking-tighter leading-none">Autorización de Seguridad</h1>
+              <p className="text-[9px] font-bold opacity-30 uppercase tracking-[0.3em]">Etapa Final de Autorización de Provisión</p>
            </div>
-           <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.3em]">Etapa Final de Autorización de Provisión</p>
         </div>
         {onBack && (
           <button onClick={onBack} className="text-primary font-display font-extrabold text-[10px] uppercase tracking-widest hover:opacity-70 transition-all no-border">

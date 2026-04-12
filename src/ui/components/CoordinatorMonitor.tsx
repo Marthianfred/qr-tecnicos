@@ -114,12 +114,12 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-surface font-sans text-on_surface">
+    <div className="flex h-screen overflow-hidden bg-surface font-sans text-on_surface uppercase tracking-tight">
       {/* Sidebar + Main Content Layout */}
-      <div className="flex flex-grow">
+      <div className="flex flex-grow h-full overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-72 bg-surface_container_lowest shadow-2xl z-20 hidden md:block border-r border-white/5">
-          <div className="p-10 flex flex-col items-center">
+        <aside className="w-72 bg-surface_container_lowest shadow-2xl z-20 hidden md:block border-r border-white/5 h-full flex flex-col">
+          <div className="p-10 flex flex-col items-center flex-shrink-0">
             <div className="relative group mb-6">
               <div className="absolute -inset-4 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
               <img src="/logo.webp" alt="Fibex Logo" className="relative h-20 w-auto object-contain transition-transform hover:scale-110" />
@@ -132,7 +132,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
             </div>
           </div>
 
-          <nav className="mt-6 space-y-2 px-6">
+          <nav className="mt-6 space-y-2 px-6 flex-grow overflow-y-auto custom-scrollbar">
             <div className="pb-2 px-4">
               <span className="text-[9px] font-display font-black text-on_surface opacity-20 uppercase tracking-[0.3em]">Operaciones</span>
             </div>
@@ -160,7 +160,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
             </button>
           </nav>
 
-          <div className="absolute bottom-10 left-0 right-0 px-10">
+          <div className="p-10 flex-shrink-0">
              <div className="p-4 bg-surface_container_high/30 rounded-2xl border border-white/5">
                 <p className="text-[8px] font-display font-black opacity-20 uppercase tracking-widest text-center">Protocolo Central v2.5</p>
              </div>
@@ -168,9 +168,9 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
         </aside>
 
         {/* Content Area */}
-        <main className="flex-grow flex flex-col bg-surface_container_low">
-          {/* Top Bar */}
-          <header className="bg-surface_container_lowest h-20 shadow-ambient flex items-center justify-between px-10 no-border relative z-20">
+        <main className="flex-grow flex flex-col h-full overflow-hidden bg-surface_container_low">
+          {/* Top Bar (Fixed) */}
+          <header className="bg-surface_container_lowest h-20 shadow-ambient flex items-center justify-between px-10 no-border relative z-20 flex-shrink-0">
             <h2 className="text-2xl font-display font-extrabold text-on_surface tracking-tighter uppercase">
               {activeTab === 'tecnicos' ? 'Supervisión Operativa' : 'Gestión Estratégica de Cuadrillas'}
             </h2>
@@ -200,7 +200,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
             </div>
           </header>
 
-          <div className="p-10 space-y-12 overflow-y-auto">
+          <div className="flex-grow overflow-y-auto p-10 space-y-12 custom-scrollbar">
             {/* Alerts Section */}
             {reports.length > 0 && (
               <div className="space-y-6">

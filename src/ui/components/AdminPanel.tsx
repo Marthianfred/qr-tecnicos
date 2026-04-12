@@ -34,10 +34,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   ] as const;
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900">
+    <div className="flex h-screen overflow-hidden bg-slate-50 font-sans text-slate-900">
       {/* SIDEBAR: Corporate Deep Blue */}
-      <aside className="w-80 bg-[#001F3D] text-white flex flex-col shadow-2xl z-30">
-        <div className="p-8 border-b border-white/10 flex flex-col items-center">
+      <aside className="w-80 bg-[#001F3D] text-white flex flex-col shadow-2xl z-30 h-full">
+        <div className="p-8 border-b border-white/10 flex flex-col items-center flex-shrink-0">
           <img src="/logo.webp" alt="Fibex" className="h-16 w-auto mb-4" />
           <div className="text-center">
              <h1 className="text-lg font-black tracking-tighter uppercase leading-none">Fibex <span className="text-blue-400">Qr Técnicos</span></h1>
@@ -45,7 +45,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           </div>
         </div>
 
-        <nav className="flex-grow p-6 space-y-2 overflow-y-auto">
+        <nav className="flex-grow p-6 space-y-2 overflow-y-auto custom-scrollbar">
           {menuItems.map((item) => (
             <button
               key={item.id}
@@ -65,7 +65,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           ))}
         </nav>
 
-        <div className="p-8 border-t border-white/10">
+        <div className="p-8 border-t border-white/10 flex-shrink-0">
            <div className="bg-white/5 rounded-2xl p-4 flex items-center space-x-4 border border-white/5">
               <div className="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center font-black">AD</div>
               <div>
@@ -77,9 +77,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
       </aside>
 
       {/* MAIN CONTENT: Light Theme */}
-      <main className="flex-grow flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-10 shadow-sm z-20">
+      <main className="flex-grow flex flex-col h-full overflow-hidden">
+        {/* Header (Fixed height, no scroll) */}
+        <header className="h-20 flex-shrink-0 bg-white border-b border-slate-200 flex items-center justify-between px-10 shadow-sm z-20">
           <div className="flex items-center space-x-4">
              <div className="bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-3">Módulo:</span>
@@ -119,10 +119,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           </div>
         </header>
 
-        {/* Content Area */}
-        <div className="flex-grow p-10 overflow-y-auto">
+        {/* Content Area (Scrollable) */}
+        <div className="flex-grow overflow-y-auto p-10 custom-scrollbar bg-slate-50/50">
           {activeModule === 'dashboard' && (
-            <div className="space-y-10">
+            <div className="space-y-10 max-w-7xl mx-auto">
                {/* Metrics Row */}
                <div className="grid grid-cols-4 gap-8">
                   {[
@@ -144,7 +144,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                </div>
 
                {/* Real-time Monitoring Simulation */}
-               <div className="grid grid-cols-3 gap-8">
+               <div className="grid grid-cols-3 gap-8 pb-10">
                   <div className="col-span-2 bg-white rounded-3xl shadow-sm p-10 border border-slate-100">
                      <div className="flex justify-between items-center mb-10">
                         <div className="space-y-1">
@@ -154,13 +154,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         <button className="text-[10px] font-black text-blue-600 hover:underline uppercase tracking-widest">Ver Todo</button>
                      </div>
                      <div className="space-y-4">
-                        {[1, 2, 3, 4, 5].map(i => (
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                           <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-slate-100 transition-colors">
                              <div className="flex items-center space-x-4">
                                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
                                 <div>
                                    <p className="text-[11px] font-black text-slate-800 uppercase">Técnico V-3450 (Venezuela)</p>
-                                   <p className="text-[9px] text-slate-400 uppercase tracking-widest">Validado en Sector Chacao • 10:45 AM</p>
+                                   <p className="text-[9px] text-slate-400 uppercase tracking-widest">Validado en Sector {i % 2 === 0 ? 'Chacao' : 'Altamira'} • 10:45 AM</p>
                                 </div>
                              </div>
                              <span className="text-[9px] font-black bg-white px-3 py-1 rounded-full text-blue-600 shadow-sm border border-slate-200">JWT OK</span>
@@ -169,53 +169,66 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                      </div>
                   </div>
 
-                  <div className="bg-slate-900 rounded-3xl shadow-2xl p-10 text-white relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform">🎓</div>
-                     <h3 className="text-xl font-black uppercase tracking-tighter mb-4">TrustLayer Academic</h3>
-                     <p className="text-xs opacity-50 mb-8 leading-relaxed">Resumen de cumplimiento normativo y certificaciones técnicas globales.</p>
-                     
-                     <div className="space-y-6">
-                        {[
-                          { label: 'Certificados', val: 78, color: 'bg-green-500' },
-                          { label: 'Por Certificar', val: 15, color: 'bg-amber-500' },
-                          { label: 'No Cursados', val: 7, color: 'bg-red-500' }
-                        ].map(item => (
-                          <div key={item.label} className="space-y-2">
-                             <div className="flex justify-between text-[9px] font-black uppercase tracking-widest">
-                                <span>{item.label}</span>
-                                <span>{item.val}%</span>
-                             </div>
-                             <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                                <div className={`h-full ${item.color}`} style={{ width: `${item.val}%` }}></div>
-                             </div>
-                          </div>
-                        ))}
-                     </div>
-                     
-                     <button className="w-full mt-10 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all">
-                        Gestionar Académico
-                     </button>
+                  <div className="space-y-8">
+                    <div className="bg-slate-900 rounded-3xl shadow-2xl p-10 text-white relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform">🎓</div>
+                      <h3 className="text-xl font-black uppercase tracking-tighter mb-4">TrustLayer Academic</h3>
+                      <p className="text-xs opacity-50 mb-8 leading-relaxed">Resumen de cumplimiento normativo y certificaciones técnicas globales.</p>
+                      
+                      <div className="space-y-6">
+                          {[
+                            { label: 'Certificados', val: 78, color: 'bg-green-500' },
+                            { label: 'Por Certificar', val: 15, color: 'bg-amber-500' },
+                            { label: 'No Cursados', val: 7, color: 'bg-red-500' }
+                          ].map(item => (
+                            <div key={item.label} className="space-y-2">
+                              <div className="flex justify-between text-[9px] font-black uppercase tracking-widest">
+                                  <span>{item.label}</span>
+                                  <span>{item.val}%</span>
+                              </div>
+                              <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                  <div className={`h-full ${item.color}`} style={{ width: `${item.val}%` }}></div>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                      
+                      <button className="w-full mt-10 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all">
+                          Gestionar Académico
+                      </button>
+                    </div>
+
+                    <div className="bg-blue-600 rounded-3xl p-8 text-white shadow-xl">
+                       <h4 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4">Estado de Red SSE</h4>
+                       <div className="flex items-center space-x-3">
+                          <div className="w-3 h-3 bg-white rounded-full animate-ping"></div>
+                          <p className="text-xs font-bold uppercase tracking-widest">Operativo • Real-Time</p>
+                       </div>
+                    </div>
                   </div>
                </div>
             </div>
           )}
 
           {activeModule !== 'dashboard' && (
-            <div className="bg-white rounded-3xl shadow-sm p-24 text-center border border-slate-100 animate-in fade-in zoom-in">
-               <span className="text-6xl mb-6 block">🚧</span>
-               <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter mb-4">Módulo en Construcción</h3>
-               <p className="text-slate-400 max-w-md mx-auto mb-10">La sección <b>{menuItems.find(m => m.id === activeModule)?.label}</b> está siendo optimizada por el equipo de IT para el despliegue del MVP Fibex.</p>
-               <button 
-                onClick={() => setActiveModule('dashboard')}
-                className="px-10 py-4 bg-slate-100 hover:bg-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
-               >
-                 Volver al Dashboard
-               </button>
+            <div className="h-full flex items-center justify-center">
+              <div className="bg-white rounded-3xl shadow-sm p-24 text-center border border-slate-100 animate-in fade-in zoom-in max-w-2xl">
+                <span className="text-6xl mb-6 block">🚧</span>
+                <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter mb-4">Módulo en Construcción</h3>
+                <p className="text-slate-400 mb-10">La sección <b>{menuItems.find(m => m.id === activeModule)?.label}</b> está siendo optimizada por el equipo de IT para el despliegue del MVP Fibex.</p>
+                <button 
+                  onClick={() => setActiveModule('dashboard')}
+                  className="px-10 py-4 bg-slate-100 hover:bg-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
+                >
+                  Volver al Dashboard
+                </button>
+              </div>
             </div>
           )}
         </div>
         
-        <footer className="px-10 py-4 bg-white border-t border-slate-100 flex justify-between items-center text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">
+        {/* Footer (Fixed) */}
+        <footer className="h-12 flex-shrink-0 px-10 bg-white border-t border-slate-100 flex justify-between items-center text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] z-20">
            <span>Fibex Telecom • Governance Console v2.8</span>
            <span>Huso Horario Global: {selectedCountry === 'PE' ? 'PET (UTC-5)' : 'AST (UTC-4)'}</span>
         </footer>

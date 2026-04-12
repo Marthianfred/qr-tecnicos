@@ -86,37 +86,8 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-surface pb-20 font-sans text-on_surface">
-      {/* Navigation for demo purposes */}
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center space-x-2 glassmorphism px-6 py-3 rounded-full shadow-ambient no-border">
-        <div className="pr-4 mr-2 border-r border-outline_variant flex flex-col items-start">
-          <span className="text-[10px] font-display font-extrabold text-primary tracking-widest uppercase leading-tight">{user.role}</span>
-          <button onClick={handleLogout} className="text-[10px] text-on_surface opacity-50 hover:opacity-100 transition-opacity font-bold uppercase tracking-tighter leading-tight">Revocar Acceso</button>
-        </div>
-
-        {/* Role-based navigation buttons */}
-        {(user.role === 'admin' || user.role === 'technician') && (
-          <button onClick={() => setCurrentView('tech-dash')} className={`p-3 rounded-full transition-all ${currentView === 'tech-dash' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface hover:bg-surface_container_high'}`} title="Técnico Dashboard">🛠️</button>
-        )}
-        
-        {(user.role === 'admin' || user.role === 'client') && (
-          <button onClick={() => setCurrentView('client-verify')} className={`p-3 rounded-full transition-all ${currentView === 'client-verify' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface hover:bg-surface_container_high'}`} title="Cliente Verificación">👤</button>
-        )}
-
-        {(user.role === 'admin' || user.role === 'coordinator') && (
-          <button onClick={() => setCurrentView('coord-monitor')} className={`p-3 rounded-full transition-all ${currentView === 'coord-monitor' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface hover:bg-surface_container_high'}`} title="Coordinador Monitor">🖥️</button>
-        )}
-
-        {user.role === 'admin' && (
-          <button onClick={() => setCurrentView('admin-panel')} className={`p-3 rounded-full transition-all ${currentView === 'admin-panel' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface hover:bg-surface_container_high'}`} title="Admin Panel">💼</button>
-        )}
-
-        {(user.role === 'admin' || user.role === 'client') && (
-          <button onClick={() => setCurrentView('ecommerce-catalog')} className={`p-3 rounded-full transition-all ${currentView === 'ecommerce-catalog' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface hover:bg-surface_container_high'}`} title="E-commerce Catálogo">🛒</button>
-        )}
-      </div>
-
-      <div className="container mx-auto px-4 pt-8">
+    <div className="min-h-screen bg-surface font-sans text-on_surface overflow-hidden">
+      <div className="h-full">
         {currentView === 'tech-dash' && (
           <TechnicianDashboard onGenerateQR={() => setCurrentView('tech-qr')} />
         )}
@@ -141,11 +112,11 @@ export const App: React.FC = () => {
         )}
 
         {currentView === 'coord-monitor' && (
-          <CoordinatorMonitor />
+          <CoordinatorMonitor onLogout={handleLogout} />
         )}
 
         {currentView === 'admin-panel' && (
-          <AdminPanel />
+          <AdminPanel onLogout={handleLogout} />
         )}
 
         {currentView === 'ecommerce-catalog' && (

@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { apiService, Technician, Cuadrilla } from '../services/api';
 
 interface CoordinatorMonitorProps {
+  onLogout?: () => void;
   readonly children?: React.ReactNode;
 }
 
 /**
  * Pantalla 4.1: Monitor de Cuadrillas (Interfaz del Coordinador)
  */
-export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
+export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout }) => {
   const [filterCountry, setFilterCountry] = useState('All');
   const [activeTab, setActiveTab] = useState<'tecnicos' | 'cuadrillas'>('tecnicos');
   const [technicians, setTechnicians] = useState<Technician[]>([]);
@@ -184,14 +185,17 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="text-right hidden sm:block">
-                  <p className="text-xs font-display font-extrabold text-on_surface tracking-tight uppercase">Comandante Principal</p>
-                  <p className="text-[10px] text-primary font-bold uppercase tracking-widest">Nivel 10</p>
+              <div className="flex items-center space-x-6">
+                <div className="flex flex-col items-end">
+                   <p className="text-[10px] font-display font-black text-on_surface uppercase tracking-tighter leading-none">Comandante Principal</p>
+                   <p className="text-[9px] text-primary font-bold uppercase tracking-widest mt-1">Nivel 10</p>
                 </div>
-                <div className="w-10 h-10 rounded-full trust-gradient flex items-center justify-center text-white font-display font-extrabold shadow-lg">
-                  RC
-                </div>
+                <button 
+                  onClick={onLogout}
+                  className="bg-on_surface text-surface px-6 py-2 rounded-lg text-[9px] font-display font-black uppercase tracking-widest hover:bg-error hover:text-white transition-all shadow-md active:scale-95"
+                >
+                  Cerrar Sesión
+                </button>
               </div>
             </div>
           </header>

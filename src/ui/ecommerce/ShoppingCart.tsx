@@ -45,7 +45,7 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
       onOrderComplete();
     } catch (err) {
       console.error('Checkout failed:', err);
-      setError('A transmission error occurred. Please re-authenticate your request.');
+      setError('Ocurrió un error de transmisión. Por favor, vuelva a autenticar su solicitud.');
       setProcessing(false);
     }
   };
@@ -60,12 +60,12 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
           </svg>
-          Return to Provisioning
+          Volver al Aprovisionamiento
         </button>
 
         <div className="space-y-1">
-           <h1 className="text-4xl font-display font-extrabold text-on_surface uppercase tracking-tighter">Transaction Vault</h1>
-           <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.3em]">Authorized items pending final clearance</p>
+           <h1 className="text-4xl font-display font-extrabold text-on_surface uppercase tracking-tighter">Bóveda de Transacciones</h1>
+           <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.3em]">Artículos autorizados pendientes de aprobación final</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -78,12 +78,12 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                 </div>
-                <p className="text-[10px] font-display font-extrabold opacity-30 uppercase tracking-[0.3em]">Vault is currently empty</p>
+                <p className="text-[10px] font-display font-extrabold opacity-30 uppercase tracking-[0.3em]">La bóveda está vacía actualmente</p>
                 <button 
                   onClick={onBack}
                   className="text-primary font-display font-extrabold text-[10px] uppercase tracking-widest underline decoration-2 underline-offset-4"
                 >
-                  Locate Assets
+                  Localizar Activos
                 </button>
               </div>
             ) : (
@@ -135,21 +135,21 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
           {/* Resumen de Pedido */}
           <div className="bg-surface_container_low p-8 rounded-lg shadow-ambient no-border h-fit space-y-10">
             <div className="space-y-1">
-               <h2 className="text-xs font-display font-extrabold text-on_surface uppercase tracking-[0.2em]">Sovereign Statement</h2>
+               <h2 className="text-xs font-display font-extrabold text-on_surface uppercase tracking-[0.2em]">Estado de Cuenta Soberano</h2>
                <div className="h-px bg-on_surface/5"></div>
             </div>
             
             <div className="space-y-6">
               <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest opacity-40">
-                <span>Sub-Clearence</span>
+                <span>Sub-Autorización</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest opacity-40">
-                <span>Protocol Fee (16%)</span>
+                <span>Tarifa de Protocolo (16%)</span>
                 <span>${tax.toFixed(2)}</span>
               </div>
               <div className="pt-6 border-t border-on_surface/5 flex justify-between items-end">
-                <span className="text-[10px] font-display font-extrabold uppercase tracking-[0.3em]">Gross Magnitude</span>
+                <span className="text-[10px] font-display font-extrabold uppercase tracking-[0.3em]">Magnitud Bruta</span>
                 <span className="text-3xl font-display font-extrabold text-primary tracking-tighter">${total.toFixed(2)}</span>
               </div>
             </div>
@@ -172,17 +172,17 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
               {processing ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Transmitting...</span>
+                  <span>Transmitiendo...</span>
                 </>
               ) : (
-                <span>Authorize & Clear</span>
+                <span>Autorizar y Aprobar</span>
               )}
             </button>
             
             <div className="flex flex-col items-center space-y-4 pt-4">
                <img src="/favicon.png" alt="Trust" className="h-6 w-6 opacity-20 grayscale" />
                <p className="text-[8px] text-center text-on_surface opacity-20 font-bold uppercase tracking-[0.4em]">
-                  Encrypted Channel v9.0 • GDA Secure Gateway
+                  Canal Encriptado v9.0 • Pasarela Segura GDA
                </p>
             </div>
           </div>

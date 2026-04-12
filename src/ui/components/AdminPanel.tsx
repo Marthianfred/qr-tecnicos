@@ -92,7 +92,7 @@ const AdminPanel: React.FC = () => {
         item.id === editingItem.id ? { ...item, stock: newStock } : item
       ));
       setIsModalOpen(false);
-      setNotification({ message: `Stock of ${editingItem.name} updated`, type: 'success' });
+      setNotification({ message: `Stock de ${editingItem.name} actualizado`, type: 'success' });
     }
   };
 
@@ -107,7 +107,7 @@ const AdminPanel: React.FC = () => {
         u.id === editingUser.id ? { ...u, role: newRole } : u
       ));
       setIsRoleModalOpen(false);
-      setNotification({ message: `Role of ${editingUser.name} updated to ${newRole}`, type: 'success' });
+      setNotification({ message: `Rol de ${editingUser.name} actualizado a ${newRole}`, type: 'success' });
     }
   };
 
@@ -118,7 +118,7 @@ const AdminPanel: React.FC = () => {
       order.id === id ? { ...order, status: 'Success', statusLabel: 'Paid' } : order
     ));
     setProcessingId(null);
-    setNotification({ message: `Transaction ${id} authorized successfully`, type: 'success' });
+    setNotification({ message: `Transacción ${id} autorizada con éxito`, type: 'success' });
   };
 
   const handleRejectOrder = async (id: string) => {
@@ -128,7 +128,7 @@ const AdminPanel: React.FC = () => {
       order.id === id ? { ...order, status: 'Error', statusLabel: 'Denied' } : order
     ));
     setProcessingId(null);
-    setNotification({ message: `Transaction ${id} has been denied`, type: 'error' });
+    setNotification({ message: `Transacción ${id} ha sido denegada`, type: 'error' });
   };
 
   return (
@@ -151,14 +151,14 @@ const AdminPanel: React.FC = () => {
             <img src="/favicon.png" alt="Logo" className="w-8 h-8" />
             <span className="text-[10px] font-display font-extrabold text-primary uppercase tracking-[0.4em]">TrustLayer Infrastructure</span>
           </div>
-          <h1 className="text-4xl font-display font-extrabold text-on_surface tracking-tighter uppercase leading-none">Global Control Panel</h1>
-          <p className="text-sm font-medium text-on_surface opacity-40 uppercase tracking-widest">Authority: Chief Administrator Marta</p>
+          <h1 className="text-4xl font-display font-extrabold text-on_surface tracking-tighter uppercase leading-none">Panel de Control Global</h1>
+          <p className="text-sm font-medium text-on_surface opacity-40 uppercase tracking-widest">Autoridad: Marta Administradora Senior</p>
         </div>
         
         <div className="relative group">
           <input
             type="text"
-            placeholder={`Filter ${activeTab}...`}
+            placeholder={`Filtrar ${activeTab}...`}
             className="pl-12 pr-6 py-4 bg-surface_container_highest text-on_surface sm:text-xs font-display font-extrabold uppercase tracking-widest input-ghost-border w-full lg:w-80 no-border"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -178,7 +178,7 @@ const AdminPanel: React.FC = () => {
                 : 'text-on_surface opacity-40 hover:opacity-100'
             }`}
           >
-            {tab === 'inventory' ? 'Registry' : tab === 'orders' ? 'Transactions' : 'Privileges'}
+            {tab === 'inventory' ? 'Inventario' : tab === 'orders' ? 'Transacciones' : 'Privilegios'}
           </button>
         ))}
       </div>
@@ -188,11 +188,11 @@ const AdminPanel: React.FC = () => {
           <table className="w-full text-left">
             <thead className="bg-surface_container_highest/50">
               <tr>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Asset Name</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Serial ID (SKU)</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Classification</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-right">Available</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Protocol</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Nombre del Activo</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">ID de Serie (SKU)</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Clasificación</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-right">Disponible</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Protocolo</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface_container_high/30">
@@ -225,7 +225,7 @@ const AdminPanel: React.FC = () => {
               ) : (
                 <tr>
                   <td colSpan={5} className="px-8 py-20 text-center">
-                    <p className="text-[10px] font-display font-extrabold opacity-20 uppercase tracking-[0.3em]">No records matching query</p>
+                    <p className="text-[10px] font-display font-extrabold opacity-20 uppercase tracking-[0.3em]">No hay registros que coincidan</p>
                   </td>
                 </tr>
               )}
@@ -237,12 +237,12 @@ const AdminPanel: React.FC = () => {
           <table className="w-full text-left">
             <thead className="bg-surface_container_highest/50">
               <tr>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Ticket ID</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Requester</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Timestamp</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-right">Magnitude</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Security Status</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Authorization</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">ID Ticket</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Solicitante</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Fecha/Hora</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-right">Monto</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Estado Seguridad</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Autorización</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface_container_high/30">
@@ -272,11 +272,11 @@ const AdminPanel: React.FC = () => {
                               disabled={processingId === order.id}
                               className="bg-surface_container_highest text-error px-4 py-2 rounded-sm text-[10px] font-display font-extrabold uppercase tracking-widest hover:bg-surface_container_high transition-all"
                             >
-                              Deny
+                              Denegar
                             </button>
                           </>
                         ) : (
-                          <span className="text-[10px] font-display font-extrabold opacity-20 uppercase tracking-widest">Finalized</span>
+                          <span className="text-[10px] font-display font-extrabold opacity-20 uppercase tracking-widest">Finalizado</span>
                         )}
                       </div>
                     </td>
@@ -285,7 +285,7 @@ const AdminPanel: React.FC = () => {
               ) : (
                 <tr>
                   <td colSpan={6} className="px-8 py-20 text-center text-gray-500">
-                    <p className="text-[10px] font-display font-extrabold opacity-20 uppercase tracking-[0.3em]">No transaction logs found</p>
+                    <p className="text-[10px] font-display font-extrabold opacity-20 uppercase tracking-[0.3em]">No se encontraron logs de transacciones</p>
                   </td>
                 </tr>
               )}
@@ -297,11 +297,11 @@ const AdminPanel: React.FC = () => {
           <table className="w-full text-left">
             <thead className="bg-surface_container_highest/50">
               <tr>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Personnel Name</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Contact Vector</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Active Clearence</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Network State</th>
-                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Override</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Nombre del Personal</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Canal de Contacto</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Permiso Activo</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Estado de Red</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Anulación</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-surface_container_high/30">
@@ -325,7 +325,7 @@ const AdminPanel: React.FC = () => {
                       onClick={() => handleEditRole(user)}
                       className="text-[10px] font-display font-extrabold text-primary hover:opacity-70 transition-all uppercase tracking-[0.2em]"
                     >
-                      Shift Privilege
+                      Cambiar Privilegio
                     </button>
                   </td>
                 </tr>
@@ -340,8 +340,8 @@ const AdminPanel: React.FC = () => {
         <div className="fixed inset-0 glassmorphism flex items-center justify-center z-50 p-6 no-border">
           <div className="bg-surface_container_lowest rounded-lg shadow-ambient max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-300 no-border">
             <div className="trust-gradient p-8 text-white">
-              <h3 className="text-xl font-display font-extrabold uppercase tracking-tight">Modify Asset Manifest</h3>
-              <p className="text-[10px] font-bold opacity-60 uppercase tracking-[0.2em] mt-1">Registry Correction Protocol</p>
+              <h3 className="text-xl font-display font-extrabold uppercase tracking-tight">Modificar Manifiesto de Activo</h3>
+              <p className="text-[10px] font-bold opacity-60 uppercase tracking-[0.2em] mt-1">Protocolo de Corrección de Registro</p>
             </div>
             <div className="p-10 space-y-10">
               <div className="space-y-1">
@@ -381,13 +381,13 @@ const AdminPanel: React.FC = () => {
                   onClick={() => setIsModalOpen(false)}
                   className="flex-1 px-6 py-4 bg-surface_container_high text-on_surface opacity-40 font-display font-extrabold text-[10px] uppercase tracking-widest hover:opacity-100 transition-all rounded-sm"
                 >
-                  Abstain
+                  Cancelar
                 </button>
                 <button 
                   onClick={saveStock}
                   className="flex-1 px-6 py-4 trust-gradient text-white font-display font-extrabold text-[10px] uppercase tracking-widest shadow-lg hover:opacity-90 transition-all rounded-sm"
                 >
-                  Commit Changes
+                  Aplicar Cambios
                 </button>
               </div>
             </div>
@@ -400,8 +400,8 @@ const AdminPanel: React.FC = () => {
         <div className="fixed inset-0 glassmorphism flex items-center justify-center z-50 p-6 no-border">
           <div className="bg-surface_container_lowest rounded-lg shadow-ambient max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-300 no-border">
             <div className="trust-gradient p-8 text-white">
-              <h3 className="text-xl font-display font-extrabold uppercase tracking-tight">Escalate Privileges</h3>
-              <p className="text-[10px] font-bold opacity-60 uppercase tracking-[0.2em] mt-1">Hierarchical Shift Authority</p>
+              <h3 className="text-xl font-display font-extrabold uppercase tracking-tight">Escalar Privilegios</h3>
+              <p className="text-[10px] font-bold opacity-60 uppercase tracking-[0.2em] mt-1">Autoridad de Cambio Jerárquico</p>
             </div>
             <div className="p-10 space-y-8">
               <div className="space-y-1">
@@ -432,7 +432,7 @@ const AdminPanel: React.FC = () => {
                 onClick={() => setIsRoleModalOpen(false)}
                 className="w-full px-6 py-4 bg-surface_container_high text-on_surface opacity-40 font-display font-extrabold text-[10px] uppercase tracking-widest hover:opacity-100 transition-all rounded-sm mt-4"
               >
-                Abstain from change
+                No realizar cambios
               </button>
             </div>
           </div>

@@ -29,7 +29,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
         console.warn('API fetch failed, using mock data:', err);
         setProducts(MOCK_PRODUCTS);
         setLoading(false);
-        setError('Connection issues detected. Defaulting to local manifest.');
+        setError('Problemas de conexión detectados. Usando manifiesto local.');
       });
   };
 
@@ -72,7 +72,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
-          <span>Vault</span>
+          <span>Bóveda</span>
         </button>
       </header>
 
@@ -90,7 +90,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
               onClick={loadProducts}
               className="text-[10px] font-display font-extrabold uppercase tracking-widest underline"
             >
-              Re-Establish Connection
+              Re-Establecer Conexión
             </button>
           </div>
         )}
@@ -98,7 +98,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
           <div className="relative flex-grow">
             <input 
               type="text" 
-              placeholder="Search assets and utility protocols..." 
+              placeholder="Buscar activos y protocolos de utilidad..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-6 py-4 bg-surface_container_highest text-on_surface rounded-lg focus:ring-1 ring-primary/20 outline-none no-border font-display font-extrabold uppercase tracking-widest text-[10px]"
@@ -134,12 +134,12 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                </svg>
             </div>
-            <h3 className="text-[10px] font-display font-extrabold opacity-30 uppercase tracking-[0.4em]">No records in current scope</h3>
+            <h3 className="text-[10px] font-display font-extrabold opacity-30 uppercase tracking-[0.4em]">No hay registros en el alcance actual</h3>
             <button 
               onClick={() => { setSearchTerm(''); setSelectedCategory('All'); }}
               className="text-[10px] font-display font-extrabold text-primary uppercase tracking-widest underline decoration-2 underline-offset-4"
             >
-              Reset Protocols
+              Restablecer Protocolos
             </button>
           </div>
         ) : (
@@ -178,7 +178,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
-                    <span>Acquire Asset</span>
+                    <span>Adquirir Activo</span>
                   </button>
                 </div>
               </div>

@@ -91,7 +91,7 @@ export const App: React.FC = () => {
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center space-x-2 glassmorphism px-6 py-3 rounded-full shadow-ambient no-border">
         <div className="pr-4 mr-2 border-r border-outline_variant flex flex-col items-start">
           <span className="text-[10px] font-display font-extrabold text-primary tracking-widest uppercase leading-tight">{user.role}</span>
-          <button onClick={handleLogout} className="text-[10px] text-on_surface opacity-50 hover:opacity-100 transition-opacity font-bold uppercase tracking-tighter leading-tight">Revoke Access</button>
+          <button onClick={handleLogout} className="text-[10px] text-on_surface opacity-50 hover:opacity-100 transition-opacity font-bold uppercase tracking-tighter leading-tight">Revocar Acceso</button>
         </div>
 
         {/* Role-based navigation buttons */}

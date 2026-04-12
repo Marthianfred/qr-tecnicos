@@ -45,7 +45,7 @@ export const QRDisplay: React.FC<QRDisplayProps> = ({ onBack }) => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-surface">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-        <p className="text-on_surface opacity-50 font-display font-bold uppercase tracking-widest text-xs">Generating Secure Token...</p>
+        <p className="text-on_surface opacity-50 font-display font-bold uppercase tracking-widest text-xs">Generando Token Seguro...</p>
       </div>
     );
   }
@@ -59,15 +59,15 @@ export const QRDisplay: React.FC<QRDisplayProps> = ({ onBack }) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <h1 className="text-lg font-display font-extrabold tracking-tight uppercase">Visit Protocol</h1>
+        <h1 className="text-lg font-display font-extrabold tracking-tight uppercase">Protocolo de Visita</h1>
         <div className="w-10" />
       </header>
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center justify-center p-8 space-y-12 bg-surface_container_low">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-display font-extrabold tracking-tight">CITIZEN VERIFICATION</h2>
-          <p className="text-[10px] text-on_surface opacity-50 uppercase font-bold tracking-[0.2em]">Show this portal to the client for trust validation</p>
+          <h2 className="text-2xl font-display font-extrabold tracking-tight">VERIFICACIÓN CIUDADANA</h2>
+          <p className="text-[10px] text-on_surface opacity-50 uppercase font-bold tracking-[0.2em]">Muestre este portal al cliente para validar la confianza</p>
         </div>
 
         {error ? (
@@ -100,7 +100,7 @@ export const QRDisplay: React.FC<QRDisplayProps> = ({ onBack }) => {
 
             {/* Countdown */}
             <div className="text-center space-y-2">
-              <p className="text-[10px] font-bold text-on_surface opacity-40 uppercase tracking-widest italic">Token Lifespan</p>
+              <p className="text-[10px] font-bold text-on_surface opacity-40 uppercase tracking-widest italic">Vida Útil del Token</p>
               <div className={`text-4xl font-display font-extrabold tracking-tighter ${timeLeft < 60 ? 'text-error glow-pulse' : 'text-primary'}`}>
                 {formatTime(timeLeft)}
               </div>
@@ -120,13 +120,13 @@ export const QRDisplay: React.FC<QRDisplayProps> = ({ onBack }) => {
             }}
             className="w-full py-4 bg-surface_container_highest text-primary font-display font-extrabold rounded-lg shadow-ambient hover:bg-surface_container_high transition-all text-xs tracking-[0.15em] uppercase no-border"
           >
-            Simulate Client Scan
+            Simular Escaneo del Cliente
           </button>
           <button
             onClick={onBack}
             className="w-full py-4 trust-gradient text-white font-display font-extrabold rounded-lg shadow-ambient hover:opacity-90 transition-all tracking-tight uppercase"
           >
-            {error ? 'Return to Dashboard' : 'Terminate Visit Protocol'}
+            {error ? 'Volver al Dashboard' : 'Finalizar Protocolo de Visita'}
           </button>
         </div>
       </main>
@@ -134,7 +134,7 @@ export const QRDisplay: React.FC<QRDisplayProps> = ({ onBack }) => {
       <footer className="p-6 bg-surface_container_low text-center">
          <div className="inline-flex items-center space-x-2 glassmorphism px-4 py-1.5 rounded-full no-border">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 glow-pulse"></span>
-            <span className="text-[9px] font-bold uppercase tracking-widest text-on_surface opacity-60">Rotative Security Active</span>
+            <span className="text-[9px] font-bold uppercase tracking-widest text-on_surface opacity-60">Seguridad Rotativa Activa</span>
          </div>
       </footer>
     </div>

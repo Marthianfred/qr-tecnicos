@@ -37,10 +37,10 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             <img src="/favicon.png" alt="Logo" className="h-16 w-16" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-display font-extrabold text-on_surface">
-            The TrustLayer
+            Control de Acceso
           </h2>
           <p className="mt-2 text-center text-sm text-on_surface opacity-70">
-            Digital Infrastructure Guardian
+            Guardián de Infraestructura Digital
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
@@ -53,7 +53,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 type="text"
                 required
                 className="bg-surface_container_highest block w-full px-3 py-3 text-on_surface sm:text-sm input-ghost-border"
-                placeholder="admin, coordinator o tech_user"
+                placeholder="admin, coordinador o tecnico"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -91,7 +91,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </div>
           
           <div className="text-[10px] text-on_surface opacity-40 text-center uppercase tracking-widest font-bold">
-            <p>Secure Access Protocol v2.4</p>
+            <p>Protocolo de Acceso Seguro v2.4</p>
           </div>
         </form>
       </div>

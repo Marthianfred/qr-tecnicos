@@ -60,13 +60,13 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path>
           </svg>
         </div>
-        <h2 className="text-3xl font-display font-extrabold text-on_surface uppercase tracking-tight mb-4">Clearence Approved</h2>
-        <p className="text-sm font-medium text-on_surface opacity-50 text-center mb-10 tracking-tight leading-relaxed">Your provision request has been logged and authorized. Details transmitted to {formData.email}.</p>
+        <h2 className="text-3xl font-display font-extrabold text-on_surface uppercase tracking-tight mb-4">Autorización Aprobada</h2>
+        <p className="text-sm font-medium text-on_surface opacity-50 text-center mb-10 tracking-tight leading-relaxed">Su solicitud de provisión ha sido registrada y autorizada. Detalles transmitidos a {formData.email}.</p>
         <button 
           onClick={() => window.location.reload()} 
           className="trust-gradient text-white px-10 py-4 rounded-lg font-display font-extrabold text-[10px] uppercase tracking-widest hover:opacity-90 transition-all shadow-lg"
         >
-          Return to Hub
+          Volver al Inicio
         </button>
       </div>
     );
@@ -78,13 +78,13 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
         <div className="space-y-1">
            <div className="flex items-center space-x-2">
               <img src="/favicon.png" alt="Logo" className="w-6 h-6" />
-              <h1 className="text-4xl font-display font-extrabold text-on_surface uppercase tracking-tighter leading-none">Security Clearence</h1>
+              <h1 className="text-4xl font-display font-extrabold text-on_surface uppercase tracking-tighter leading-none">Autorización de Seguridad</h1>
            </div>
-           <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.3em]">Final Provision Authorization Stage</p>
+           <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.3em]">Etapa Final de Autorización de Provisión</p>
         </div>
         {onBack && (
           <button onClick={onBack} className="text-primary font-display font-extrabold text-[10px] uppercase tracking-widest hover:opacity-70 transition-all no-border">
-            Return to Vault
+            Volver a la Bóveda
           </button>
         )}
       </header>
@@ -93,10 +93,10 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
         {/* Main Form */}
         <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-12">
           <section className="space-y-6">
-            <h2 className="text-xs font-display font-extrabold text-primary uppercase tracking-[0.2em] border-b border-primary/5 pb-2">01 Identification Manifest</h2>
+            <h2 className="text-xs font-display font-extrabold text-primary uppercase tracking-[0.2em] border-b border-primary/5 pb-2">01 Manifiesto de Identificación</h2>
             <div className="grid grid-cols-1 gap-8">
               <div className="space-y-2">
-                <label htmlFor="email" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Contact Vector (Email)</label>
+                <label htmlFor="email" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Vector de Contacto (Email)</label>
                 <input
                   id="email"
                   type="email"
@@ -111,10 +111,10 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
           </section>
 
           <section className="space-y-6">
-            <h2 className="text-xs font-display font-extrabold text-primary uppercase tracking-[0.2em] border-b border-primary/5 pb-2">02 Deployment Coordinates</h2>
+            <h2 className="text-xs font-display font-extrabold text-primary uppercase tracking-[0.2em] border-b border-primary/5 pb-2">02 Coordenadas de Despliegue</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2 md:col-span-2">
-                <label htmlFor="fullName" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Full Legal Designation</label>
+                <label htmlFor="fullName" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Designación Legal Completa</label>
                 <input
                   id="fullName"
                   type="text"
@@ -126,7 +126,7 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
                 />
               </div>
               <div className="space-y-2 md:col-span-2">
-                <label htmlFor="address" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Destination Protocol (Address)</label>
+                <label htmlFor="address" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Protocolo de Destino (Dirección)</label>
                 <input
                   id="address"
                   type="text"
@@ -141,10 +141,10 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
           </section>
 
           <section className="space-y-6">
-            <h2 className="text-xs font-display font-extrabold text-primary uppercase tracking-[0.2em] border-b border-primary/5 pb-2">03 Resource Transfer</h2>
+            <h2 className="text-xs font-display font-extrabold text-primary uppercase tracking-[0.2em] border-b border-primary/5 pb-2">03 Transferencia de Recursos</h2>
             <div className="bg-surface_container_low p-8 rounded-lg space-y-8 no-border">
               <div className="space-y-2">
-                <label htmlFor="cardNumber" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Credit Instrument Number</label>
+                <label htmlFor="cardNumber" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Número de Instrumento de Crédito</label>
                 <input
                   id="cardNumber"
                   type="text"
@@ -157,7 +157,7 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
               </div>
               <div className="grid grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <label htmlFor="expiry" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Valid Until (MM/AA)</label>
+                  <label htmlFor="expiry" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Válido Hasta (MM/AA)</label>
                   <input
                     id="expiry"
                     type="text"
@@ -169,7 +169,7 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="cvc" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Security Key (CVC)</label>
+                  <label htmlFor="cvc" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block ml-1">Clave de Seguridad (CVC)</label>
                   <input
                     id="cvc"
                     type="text"
@@ -202,9 +202,9 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Transmitting Protocol...
+                Transmitiendo Protocolo...
               </>
-            ) : 'Initiate Sovereign Transfer'}
+            ) : 'Iniciar Transferencia Soberana'}
           </button>
         </form>
 
@@ -212,7 +212,7 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
         <div className="lg:col-span-1">
           <div className="bg-surface_container_lowest p-8 rounded-lg shadow-ambient no-border sticky top-12 space-y-10">
             <div className="space-y-1">
-               <h2 className="text-xs font-display font-extrabold text-on_surface uppercase tracking-[0.2em]">Asset Manifest</h2>
+               <h2 className="text-xs font-display font-extrabold text-on_surface uppercase tracking-[0.2em]">Manifiesto de Activos</h2>
                <div className="h-px bg-on_surface/5"></div>
             </div>
             
@@ -221,26 +221,26 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
                 <div key={item.product.id} className="flex justify-between items-start">
                   <div className="space-y-0.5">
                      <span className="block text-[10px] font-display font-extrabold uppercase tracking-tight text-on_surface">{item.product.name}</span>
-                     <span className="block text-[9px] font-bold opacity-30 uppercase tracking-widest">Quantity: {item.quantity.toString().padStart(2, '0')}</span>
+                     <span className="block text-[9px] font-bold opacity-30 uppercase tracking-widest">Cantidad: {item.quantity.toString().padStart(2, '0')}</span>
                   </div>
                   <span className="text-xs font-display font-extrabold text-primary tracking-tighter">${(item.product.price * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
               <div className="flex justify-between items-center pt-2">
-                <span className="text-[10px] font-bold opacity-30 uppercase tracking-widest">Logistic Protocol</span>
-                <span className="text-[10px] font-display font-extrabold text-primary uppercase tracking-widest">Included</span>
+                <span className="text-[10px] font-bold opacity-30 uppercase tracking-widest">Protocolo Logístico</span>
+                <span className="text-[10px] font-display font-extrabold text-primary uppercase tracking-widest">Incluido</span>
               </div>
             </div>
             
             <div className="pt-8 border-t border-on_surface/5 flex justify-between items-end">
-              <span className="text-[10px] font-display font-extrabold uppercase tracking-[0.3em]">Total Magnitude</span>
+              <span className="text-[10px] font-display font-extrabold uppercase tracking-[0.3em]">Magnitud Total</span>
               <span className="text-3xl font-display font-extrabold text-primary tracking-tighter">${total.toFixed(2)}</span>
             </div>
             
             <div className="flex flex-col items-center space-y-4 pt-6">
                <img src="/favicon.png" alt="Trust" className="h-6 w-6 opacity-20 grayscale" />
                <p className="text-[8px] text-center text-on_surface opacity-20 font-bold uppercase tracking-[0.5em]">
-                  End-to-End Encryption Active
+                  Encriptación de Extremo a Extremo Activa
                </p>
             </div>
           </div>

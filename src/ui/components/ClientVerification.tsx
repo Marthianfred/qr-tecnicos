@@ -28,7 +28,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
     const token = urlParams.get('token');
 
     if (!token) {
-      setError('No valid verification token was provided.');
+      setError('No se proporcionó un token de verificación válido.');
       setLoading(false);
       return;
     }
@@ -40,7 +40,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
       })
       .catch((err) => {
         console.error('Error validating token:', err);
-        setError('The QR code has expired or is invalid.');
+        setError('El código QR ha caducado o no es válido.');
         setLoading(false);
       });
   }, []);
@@ -49,7 +49,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-surface p-6 text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-        <p className="text-on_surface opacity-50 font-display font-bold uppercase tracking-widest text-xs">Authenticating Personnel...</p>
+        <p className="text-on_surface opacity-50 font-display font-bold uppercase tracking-widest text-xs">Autenticando Personal...</p>
       </div>
     );
   }
@@ -62,23 +62,23 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
         </div>
-        <h2 className="text-4xl font-display font-extrabold text-on_surface tracking-tighter mb-2 uppercase">Security Alert</h2>
-        <p className="text-error font-display font-bold text-xl mb-6 tracking-tight uppercase">Identity Not Verified</p>
+        <h2 className="text-4xl font-display font-extrabold text-on_surface tracking-tighter mb-2 uppercase">Alerta de Seguridad</h2>
+        <p className="text-error font-display font-bold text-xl mb-6 tracking-tight uppercase">Identidad No Verificada</p>
         <div className="text-on_surface opacity-70 font-medium mb-10 max-w-md bg-surface_container_low p-6 rounded-lg shadow-ambient no-border">
-          {error || 'Personnel not found in the official registry. DO NOT allow entry and contact security protocols immediately.'}
+          {error || 'Personal no encontrado en el registro oficial. NO permita la entrada y contacte con los protocolos de seguridad inmediatamente.'}
         </div>
         <div className="flex flex-col w-full max-w-xs space-y-4">
           <button
             onClick={() => window.location.href = 'tel:911'}
             className="bg-error text-white px-8 py-4 rounded-lg font-display font-extrabold shadow-ambient hover:opacity-90 transition-all active:scale-95 flex items-center justify-center space-x-2 tracking-tight"
           >
-            <span>CALL EMERGENCY (911)</span>
+            <span>LLAMAR A EMERGENCIAS (911)</span>
           </button>
           <button
             onClick={() => window.location.href = 'https://www.fibextelecom.com/soporte'}
             className="bg-surface_container_highest text-on_surface px-8 py-3 rounded-lg font-display font-extrabold hover:bg-surface_container_high transition-all uppercase text-xs tracking-widest"
           >
-            Contact Support
+            Contactar Soporte
           </button>
         </div>
       </div>
@@ -97,7 +97,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <span className="text-sm font-display font-extrabold tracking-[0.2em] uppercase italic">Personnel Verified</span>
+        <span className="text-sm font-display font-extrabold tracking-[0.2em] uppercase italic">Personal Verificado</span>
       </div>
 
       {/* Main Profile Card */}
@@ -129,7 +129,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
             <div className="text-center space-y-2">
               <h2 className="text-4xl font-display font-extrabold text-on_surface tracking-tighter leading-none">{techData.nombre}</h2>
               <div className="flex items-center justify-center space-x-2">
-                <span className="text-[10px] font-bold text-on_surface opacity-40 uppercase tracking-widest">Field Specialist</span>
+                <span className="text-[10px] font-bold text-on_surface opacity-40 uppercase tracking-widest">Especialista de Campo</span>
                 <div className="w-1 h-1 bg-primary rounded-full"></div>
                 <div className="bg-surface_container_highest px-2 py-0.5 rounded-sm flex items-center space-x-1">
                   <span className="text-[10px] font-display font-extrabold text-primary uppercase tracking-tight">{techData.pais}</span>
@@ -140,22 +140,22 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
             {/* Verification Info */}
             <div className="w-full bg-surface_container_low rounded-lg p-6 space-y-4 no-border">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">Validation Date</span>
+                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">Fecha de Validación</span>
                 <span className="font-display font-extrabold text-[10px] text-primary tracking-tight">{timestamp}</span>
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">Official ID</span>
+                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">ID Oficial</span>
                 <span className="font-display font-extrabold text-xs text-on_surface tracking-tight">{techData.documento}</span>
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">Registry ID</span>
+                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">ID de Registro</span>
                 <span className="font-display font-extrabold text-xs text-on_surface tracking-tight">{techData.sub}</span>
               </div>
 
               <div className="pt-2 flex justify-between items-center">
-                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">Authority</span>
+                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">Autoridad</span>
                 <span className="font-display font-extrabold text-xs text-primary flex items-center">
                   FIBEX TELECOM
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1.5" viewBox="0 0 20 20" fill="currentColor">
@@ -169,7 +169,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
 
         {/* Security Action */}
         <div className="mt-12 w-full max-w-sm px-4 text-center">
-          <p className="text-[10px] text-on_surface opacity-30 uppercase font-bold tracking-[0.25em] mb-6 whitespace-nowrap">Emergency Security Protocol</p>
+          <p className="text-[10px] text-on_surface opacity-30 uppercase font-bold tracking-[0.25em] mb-6 whitespace-nowrap">Protocolo de Seguridad de Emergencia</p>
           
           <button
             onClick={onReport}
@@ -178,7 +178,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 group-hover:animate-pulse" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
-            <span className="uppercase tracking-tight text-lg">Report Anomaly</span>
+            <span className="uppercase tracking-tight text-lg">Reportar Anomalía</span>
           </button>
           
           <p className="mt-6 text-[10px] text-on_surface opacity-40 font-bold uppercase tracking-widest">
@@ -188,7 +188,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
       </main>
 
       <footer className="p-8 text-center text-on_surface opacity-20 text-[9px] font-bold tracking-[0.3em] uppercase">
-        <p>© 2026 TrustLayer Infrastructure • Architecture of Confidence</p>
+        <p>© 2026 TrustLayer Infrastructure • Arquitectura de Confianza</p>
       </footer>
     </div>
   );

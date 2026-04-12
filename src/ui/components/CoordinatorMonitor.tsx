@@ -127,22 +127,22 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
               onClick={() => setActiveTab('tecnicos')}
               className={`w-full text-left flex items-center px-4 py-3 rounded-lg transition-all ${activeTab === 'tecnicos' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface opacity-50 hover:opacity-100 hover:bg-surface_container_low'}`}
             >
-              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Ops Monitor</span>
+              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Monitor de Ops</span>
             </button>
             <button 
               onClick={() => setActiveTab('cuadrillas')}
               className={`w-full text-left flex items-center px-4 py-3 rounded-lg transition-all ${activeTab === 'cuadrillas' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface opacity-50 hover:opacity-100 hover:bg-surface_container_low'}`}
             >
-              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Squad Control</span>
+              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Control de Cuadrillas</span>
             </button>
             <div className="pt-8 pb-2 px-4">
               <span className="text-[10px] font-bold opacity-30 uppercase tracking-[0.3em]">Guardian Suite</span>
             </div>
             <a href="#" className="flex items-center px-4 py-3 rounded-lg text-on_surface opacity-50 hover:opacity-100 hover:bg-surface_container_low transition-all">
-              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Security Logs</span>
+              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Logs de Seguridad</span>
             </a>
             <a href="#" className="flex items-center px-4 py-3 rounded-lg text-on_surface opacity-50 hover:opacity-100 hover:bg-surface_container_low transition-all">
-              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Certifications</span>
+              <span className="text-xs font-display font-extrabold uppercase tracking-widest">Certificaciones</span>
             </a>
           </nav>
         </aside>
@@ -152,7 +152,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
           {/* Top Bar */}
           <header className="bg-surface_container_lowest h-20 shadow-ambient flex items-center justify-between px-10 no-border relative z-20">
             <h2 className="text-2xl font-display font-extrabold text-on_surface tracking-tighter uppercase">
-              {activeTab === 'tecnicos' ? 'Operational Oversight' : 'Strategic Squad Management'}
+              {activeTab === 'tecnicos' ? 'Supervisión Operativa' : 'Gestión Estratégica de Cuadrillas'}
             </h2>
             <div className="flex items-center space-x-6">
               <div className="relative glassmorphism p-2 rounded-full cursor-pointer hover:scale-110 transition-transform">
@@ -167,8 +167,8 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <div className="text-right hidden sm:block">
-                  <p className="text-xs font-display font-extrabold text-on_surface tracking-tight uppercase">Root Commander</p>
-                  <p className="text-[10px] text-primary font-bold uppercase tracking-widest">Level 10</p>
+                  <p className="text-xs font-display font-extrabold text-on_surface tracking-tight uppercase">Comandante Principal</p>
+                  <p className="text-[10px] text-primary font-bold uppercase tracking-widest">Nivel 10</p>
                 </div>
                 <div className="w-10 h-10 rounded-full trust-gradient flex items-center justify-center text-white font-display font-extrabold shadow-lg">
                   RC
@@ -182,7 +182,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
             {reports.length > 0 && (
               <div className="space-y-6">
                 <div className="flex items-center space-x-4">
-                  <h3 className="text-xs font-display font-extrabold text-error uppercase tracking-[0.3em]">Critical Protocol Breaches</h3>
+                  <h3 className="text-xs font-display font-extrabold text-error uppercase tracking-[0.3em]">Violaciones Críticas de Protocolo</h3>
                   <div className="h-px bg-error/10 flex-grow"></div>
                 </div>
                 
@@ -195,8 +195,8 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
                         </svg>
                       </div>
                       <div>
-                        <p className="text-lg font-display font-extrabold text-on_surface tracking-tight uppercase">Identity Anomaly Detected</p>
-                        <p className="text-xs font-bold text-on_surface opacity-50 tracking-widest uppercase">Target: {report.tecnico?.nombre || 'Anonymous'} • Reason: {report.reason}</p>
+                        <p className="text-lg font-display font-extrabold text-on_surface tracking-tight uppercase">Anomalía de Identidad Detectada</p>
+                        <p className="text-xs font-bold text-on_surface opacity-50 tracking-widest uppercase">Objetivo: {report.tecnico?.nombre || 'Anónimo'} • Razón: {report.reason}</p>
                       </div>
                     </div>
                     <div className="flex space-x-3 w-full md:w-auto">
@@ -204,13 +204,13 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
                         onClick={() => suspendTech(report.tecnicoId)}
                         className="flex-grow md:flex-none px-8 py-3 bg-error text-white rounded-lg font-display font-extrabold text-[10px] hover:opacity-90 shadow-lg transition-all active:scale-95 uppercase tracking-widest"
                       >
-                        REVOKE ALL ACCESS
+                        REVOCAR TODOS LOS ACCESOS
                       </button>
                       <button 
                         onClick={() => dismissAlert(report.id)}
                         className="flex-grow md:flex-none px-8 py-3 bg-surface_container_high text-on_surface opacity-40 rounded-lg font-display font-extrabold text-[10px] hover:opacity-100 transition-all uppercase tracking-widest"
                       >
-                        DISMISS
+                        DESCARTAR
                       </button>
                     </div>
                   </div>
@@ -223,8 +223,8 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
               <div className="space-y-6">
                 <div className="flex justify-between items-end px-2">
                   <div className="space-y-1">
-                    <h3 className="text-[10px] font-display font-extrabold text-primary uppercase tracking-[0.3em]">Registry Manifest</h3>
-                    <p className="text-sm font-medium text-on_surface opacity-40">Personnel distribution and status monitoring</p>
+                    <h3 className="text-[10px] font-display font-extrabold text-primary uppercase tracking-[0.3em]">Manifiesto de Registro</h3>
+                    <p className="text-sm font-medium text-on_surface opacity-40">Distribución de personal y monitoreo de estado</p>
                   </div>
                   <div className="flex bg-surface_container_highest p-1 rounded-sm no-border">
                     {['All', 'Venezuela', 'Perú', 'RD'].map(country => (
@@ -237,7 +237,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
                             : 'text-on_surface opacity-40 hover:opacity-100'
                         }`}
                       >
-                        {country === 'All' ? 'Full Scope' : country}
+                        {country === 'All' ? 'Alcance Total' : country}
                       </button>
                     ))}
                   </div>
@@ -247,11 +247,11 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
                   <table className="w-full text-left">
                     <thead>
                       <tr className="bg-surface_container_highest/30">
-                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Personnel</th>
-                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Region</th>
-                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Squad ID</th>
-                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Status</th>
-                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-right">Protocol</th>
+                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Personal</th>
+                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Región</th>
+                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">ID Cuadrilla</th>
+                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Estado</th>
+                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-right">Protocolo</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-surface_container_high/30">
@@ -273,7 +273,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
                           <td className="px-8 py-6">
                             {tech.cuadrillaId ? (
                               <span className="text-xs font-bold text-on_surface opacity-60 tracking-tighter">
-                                {cuadrillas.find(c => c.id === tech.cuadrillaId)?.nombre || 'ASSIGNED'}
+                                {cuadrillas.find(c => c.id === tech.cuadrillaId)?.nombre || 'ASIGNADO'}
                               </span>
                             ) : (
                               <select 
@@ -281,7 +281,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
                                 onChange={(e) => assignToCuadrilla(tech.id, e.target.value)}
                                 defaultValue=""
                               >
-                                <option value="" disabled>UNASSIGNED</option>
+                                <option value="" disabled>SIN ASIGNAR</option>
                                 {cuadrillas.map(c => (
                                   <option key={c.id} value={c.id}>{c.nombre}</option>
                                 ))}
@@ -298,7 +298,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
                           </td>
                           <td className="px-8 py-6 text-right">
                             <button className="text-[10px] font-display font-extrabold text-primary hover:opacity-70 transition-opacity uppercase tracking-[0.2em]">
-                              Audit Detail
+                              Detalle de Auditoría
                             </button>
                           </td>
                         </tr>
@@ -310,7 +310,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
             ) : (
               <div className="space-y-10">
                  <div className="flex items-center space-x-4 px-2">
-                    <h3 className="text-[10px] font-display font-extrabold text-primary uppercase tracking-[0.3em]">Tactical Formations</h3>
+                    <h3 className="text-[10px] font-display font-extrabold text-primary uppercase tracking-[0.3em]">Formaciones Tácticas</h3>
                     <div className="h-px bg-primary/10 flex-grow"></div>
                  </div>
 
@@ -330,7 +330,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
                       </div>
                       
                       <div className="space-y-4 pt-4 border-t border-surface_container_high/30">
-                        <p className="text-[9px] font-display font-extrabold text-on_surface opacity-20 uppercase tracking-[0.3em]">Deployment Manifest</p>
+                        <p className="text-[9px] font-display font-extrabold text-on_surface opacity-20 uppercase tracking-[0.3em]">Manifiesto de Despliegue</p>
                         <div className="space-y-3">
                           {cuadrilla.tecnicos?.map(tech => (
                             <div key={tech.id} className="flex justify-between items-center group/item">
@@ -344,7 +344,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
                             </div>
                           ))}
                           {(!cuadrilla.tecnicos || cuadrilla.tecnicos.length === 0) && (
-                            <p className="text-xs text-on_surface opacity-20 italic">No assets assigned</p>
+                            <p className="text-xs text-on_surface opacity-20 italic">Sin activos asignados</p>
                           )}
                         </div>
                       </div>
@@ -362,7 +362,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
                     <div className="w-12 h-12 rounded-full border-2 border-dashed border-primary/20 flex items-center justify-center group-hover:border-primary/40 mb-4">
                       <span className="text-2xl font-light">+</span>
                     </div>
-                    <span className="text-[10px] font-display font-extrabold uppercase tracking-[0.3em]">Initialize Squad</span>
+                    <span className="text-[10px] font-display font-extrabold uppercase tracking-[0.3em]">Inicializar Cuadrilla</span>
                   </button>
                 </div>
               </div>

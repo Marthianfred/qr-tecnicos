@@ -66,8 +66,8 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center justify-center p-6 space-y-12 bg-surface_container_low">
         <div className="text-center space-y-2">
-          <h2 className="text-3xl font-display font-extrabold text-on_surface tracking-tighter">AUTHENTICATION PORTAL</h2>
-          <p className="text-sm text-on_surface opacity-50 uppercase tracking-widest font-bold italic">Secure Token Generator</p>
+          <h2 className="text-3xl font-display font-extrabold text-on_surface tracking-tighter">PORTAL DE AUTENTICACIÓN</h2>
+          <p className="text-sm text-on_surface opacity-50 uppercase tracking-widest font-bold italic">Generador de Token Seguro</p>
         </div>
 
         <button
@@ -82,14 +82,14 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
             </svg>
           </div>
-          <span className="text-xl font-display font-extrabold text-center px-8 tracking-tight">ISSUING DYNAMIC QR</span>
+          <span className="text-xl font-display font-extrabold text-center px-8 tracking-tight">EMITIR QR DINÁMICO</span>
         </button>
       </main>
 
       {/* Footer */}
       <footer className="bg-surface_container_lowest p-8 no-border">
         <div className="max-w-md mx-auto">
-          <h3 className="text-[10px] font-bold text-on_surface opacity-40 uppercase tracking-[0.2em] mb-4">Official Certifications</h3>
+          <h3 className="text-[10px] font-bold text-on_surface opacity-40 uppercase tracking-[0.2em] mb-4">Certificaciones Oficiales</h3>
           <div className="flex flex-wrap gap-3">
             {technician.certificaciones && technician.certificaciones.map((cert: any, idx: number) => (
               <span key={idx} className="px-4 py-2 bg-surface_container_highest text-primary text-[10px] font-display font-extrabold rounded-sm uppercase tracking-wider">

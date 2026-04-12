@@ -50,7 +50,7 @@ export const InconsistencyReport: React.FC<InconsistencyReportProps> = ({ onCanc
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <h1 className="ml-4 text-xl font-display font-extrabold text-on_surface uppercase tracking-tight">Security Incident Report</h1>
+        <h1 className="ml-4 text-xl font-display font-extrabold text-on_surface uppercase tracking-tight">Reporte de Incidente de Seguridad</h1>
       </header>
 
       {/* Form */}
@@ -59,7 +59,7 @@ export const InconsistencyReport: React.FC<InconsistencyReportProps> = ({ onCanc
           <div className="space-y-6">
             <div className="space-y-1">
                <h2 className="text-[10px] font-bold text-primary uppercase tracking-[0.3em]">Guardian Protocol 7</h2>
-               <p className="text-sm font-medium text-on_surface opacity-50 uppercase tracking-tight">Select the nature of the inconsistency for immediate investigation.</p>
+               <p className="text-sm font-medium text-on_surface opacity-50 uppercase tracking-tight">Seleccione la naturaleza de la inconsistencia para investigación inmediata.</p>
             </div>
             
             {error && (
@@ -100,14 +100,14 @@ export const InconsistencyReport: React.FC<InconsistencyReportProps> = ({ onCanc
 
           <div className="space-y-3">
             <label htmlFor="details" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block">
-              Auditorial Details (Optional)
+              Detalles de Auditoría (Opcional)
             </label>
             <textarea
               id="details"
               rows={4}
               disabled={submitting}
               className="w-full p-5 bg-surface_container_lowest text-on_surface rounded-lg shadow-ambient no-border focus:ring-1 ring-primary/20 transition-all resize-none disabled:opacity-30 sm:text-xs"
-              placeholder="Provide context for the security audit..."
+              placeholder="Proporcione contexto para la auditoría de seguridad..."
               value={details}
               onChange={(e) => setDetails(e.target.value)}
             />
@@ -127,14 +127,14 @@ export const InconsistencyReport: React.FC<InconsistencyReportProps> = ({ onCanc
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Processing...
+                  Procesando...
                 </>
               ) : (
-                'Transmit Emergency Alert'
+                'Transmitir Alerta de Emergencia'
               )}
             </button>
             <p className="mt-6 text-center text-[9px] text-on_surface opacity-30 font-bold uppercase tracking-[0.25em]">
-              This transmission is encrypted and logged by Fibex Central Command.
+              Esta transmisión está encriptada y registrada por el Comando Central de Fibex.
             </p>
           </div>
         </form>

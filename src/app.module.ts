@@ -40,6 +40,11 @@ import { Empresa } from './entities/empresa.entity';
       database: process.env.DB_NAME || 'fibex_qr',
       entities: [Tecnico, Cuadrilla, Certificacion, ReporteInconsistencia, Producto, User, Empresa],
       synchronize: true, // Solo para desarrollo
+      extra: {
+        max: 20,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 2000,
+      },
     }),
     RedisModule,
     SeedModule,

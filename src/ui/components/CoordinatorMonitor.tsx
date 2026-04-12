@@ -156,13 +156,13 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
             </button>
 
             <div className="pt-10 pb-2 px-4">
-              <span className="text-[9px] font-display font-black text-on_surface opacity-20 uppercase tracking-[0.3em]">Guardian Suite</span>
+              <span className="text-[9px] font-display font-black text-on_surface opacity-20 uppercase tracking-[0.3em]">Seguridad Operativa</span>
             </div>
             <button className="w-full text-left flex items-center px-4 py-4 rounded-xl text-on_surface opacity-40 hover:opacity-100 hover:bg-white/5 transition-all">
-              <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Logs de Seguridad</span>
+              <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Registros de Actividad</span>
             </button>
             <button className="w-full text-left flex items-center px-4 py-4 rounded-xl text-on_surface opacity-40 hover:opacity-100 hover:bg-white/5 transition-all">
-              <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Certificaciones</span>
+              <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Capacitaciones</span>
             </button>
           </nav>
 

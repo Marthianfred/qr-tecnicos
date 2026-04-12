@@ -23,14 +23,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
 
   // Sidebar Menu Definition
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard Global', icon: '📊', description: 'Monitor Triple Play' },
+    { id: 'dashboard', label: 'Panel Operativo', icon: '📊', description: 'Resumen Tres Países' },
     { id: 'companies', label: 'Gestión Corporativa', icon: '🏢', description: 'Empresas y Aliados' },
-    { id: 'personnel', label: 'Gestión de Personal', icon: '👥', description: 'Motor de RRHH' },
-    { id: 'certifications', label: 'Historial Académico', icon: '🎓', description: 'Reglas de Bloqueo' },
-    { id: 'operations', label: 'Cuadrillas y Campo', icon: '🚙', description: 'Logística de Despliegue' },
-    { id: 'qr-security', label: 'Centro de Seguridad', icon: '🛡️', description: 'Auditoría TrustLayer' },
-    { id: 'alerts', label: 'Alertas y Reportes', icon: '🚨', description: 'Bandeja de Incidentes' },
-    { id: 'config', label: 'Configuración', icon: '⚙️', description: 'Accesos y Seguridad' },
+    { id: 'personnel', label: 'Gestión de Personal', icon: '👥', description: 'Recursos Humanos' },
+    { id: 'certifications', label: 'Historial Académico', icon: '🎓', description: 'Niveles Técnicos' },
+    { id: 'operations', label: 'Cuadrillas y Campo', icon: '🚙', description: 'Despliegue Logístico' },
+    { id: 'qr-security', label: 'Centro de Seguridad', icon: '🛡️', description: 'Control de Protocolos' },
+    { id: 'alerts', label: 'Alertas y Reportes', icon: '🚨', description: 'Historial de Incidentes' },
+    { id: 'config', label: 'Configuración', icon: '⚙️', description: 'Accesos y Permisos' },
   ] as const;
 
   return (
@@ -41,7 +41,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           <img src="/logo.webp" alt="Fibex" className="h-16 w-auto mb-4" />
           <div className="text-center">
              <h1 className="text-lg font-black tracking-tighter uppercase leading-none">Fibex <span className="text-blue-400">Qr Técnicos</span></h1>
-             <p className="text-[9px] font-bold opacity-40 uppercase tracking-[0.3em] mt-1">Consola de Gobernanza</p>
+             <p className="text-[9px] font-bold opacity-40 uppercase tracking-[0.3em] mt-1">Consola de Control Central</p>
           </div>
         </div>
 
@@ -73,7 +73,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
               <div className="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center font-black">AD</div>
               <div>
                  <p className="text-[10px] font-black uppercase tracking-tight">Administrador IT</p>
-                 <p className="text-[9px] text-blue-400 font-bold uppercase italic">Nivel de Acceso 10</p>
+                 <p className="text-[9px] text-blue-400 font-bold uppercase italic">Nivel de Seguridad 10</p>
               </div>
            </div>
         </div>
@@ -85,7 +85,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
         <header className="h-20 flex-shrink-0 bg-white border-b border-slate-200 flex items-center justify-between px-10 shadow-sm z-20">
           <div className="flex items-center space-x-4">
              <div className="bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-3">Módulo:</span>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-3">MÓDULO:</span>
                 <span className="text-[11px] font-black text-blue-700 uppercase tracking-widest">{menuItems.find(m => m.id === activeModule)?.label}</span>
              </div>
              
@@ -129,12 +129,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                {/* Metrics Row */}
                <div className="grid grid-cols-4 gap-8">
                   {[
-                    { label: 'Técnicos Totales', value: '1,250', delta: '+12%', color: 'border-blue-500' },
-                    { label: 'Cuadrillas Vivas', value: '84', delta: 'PE/VE/RD', color: 'border-green-500' },
-                    { label: 'QRs Generados (Hoy)', value: '3,412', delta: '+450 i/m', color: 'border-amber-500' },
-                    { label: 'Alertas Críticas', value: '12', delta: 'Bandeja Roja', color: 'border-red-500' },
+                    { label: 'Técnicos Totales', value: selectedCountry === 'ALL' ? '1,250' : selectedCountry === 'VE' ? '850' : '200', delta: '+12%', color: 'border-blue-500' },
+                    { label: 'Cuadrillas Vivas', value: selectedCountry === 'ALL' ? '84' : selectedCountry === 'VE' ? '52' : '16', delta: 'OPERATIVO', color: 'border-green-500' },
+                    { label: 'QRs Generados (Hoy)', value: selectedCountry === 'ALL' ? '3,412' : '1,120', delta: 'ALTA DEMANDA', color: 'border-amber-500' },
+                    { label: 'Alertas Críticas', value: selectedCountry === 'ALL' ? '12' : '4', delta: 'ATENCIÓN', color: 'border-red-500' },
                   ].map((stat, i) => (
-                    <div key={i} className={`bg-white p-6 rounded-2xl shadow-sm border-l-4 ${stat.color} hover:translate-y-[-4px] transition-transform cursor-pointer`}>
+                    <div key={i} className={`bg-white p-6 rounded-2xl shadow-sm border-l-4 ${stat.color} hover:translate-y-[-4px] transition-all cursor-pointer`}>
                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">{stat.label}</p>
                        <div className="flex items-end justify-between">
                           <h3 className="text-3xl font-black text-slate-800 tracking-tighter">{stat.value}</h3>
@@ -152,36 +152,44 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                      <div className="flex justify-between items-center mb-10">
                         <div className="space-y-1">
                            <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter">Auditoría de Validación en Vivo</h3>
-                           <p className="text-xs text-slate-400">Historial global de escaneos autenticados por TrustLayer</p>
+                           <p className="text-xs text-slate-400">Historial global de escaneos autorizados por el Protocolo Fibex</p>
                         </div>
-                        <button className="text-[10px] font-black text-blue-600 hover:underline uppercase tracking-widest">Ver Todo</button>
+                        <button className="text-[10px] font-black text-blue-600 hover:underline uppercase tracking-widest">Descargar Reporte</button>
                      </div>
                      <div className="space-y-4">
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                          <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-slate-100 transition-colors">
-                             <div className="flex items-center space-x-4">
-                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                                <div>
-                                   <p className="text-[11px] font-black text-slate-800 uppercase">Técnico V-3450 (Venezuela)</p>
-                                   <p className="text-[9px] text-slate-400 uppercase tracking-widest">Validado en Sector {i % 2 === 0 ? 'Chacao' : 'Altamira'} • 10:45 AM</p>
-                                </div>
-                             </div>
-                             <span className="text-[9px] font-black bg-white px-3 py-1 rounded-full text-blue-600 shadow-sm border border-slate-200">JWT OK</span>
-                          </div>
-                        ))}
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map(i => {
+                          const countries = ['VE', 'PE', 'RD'];
+                          const currentTechCountry = countries[i % 3];
+                          
+                          // Filter logic simulation
+                          if (selectedCountry !== 'ALL' && selectedCountry !== currentTechCountry) return null;
+
+                          return (
+                            <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-slate-100 transition-colors">
+                               <div className="flex items-center space-x-4">
+                                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                  <div>
+                                     <p className="text-[11px] font-black text-slate-800 uppercase">Técnico V-{3450 + i} ({currentTechCountry})</p>
+                                     <p className="text-[9px] text-slate-400 uppercase tracking-widest">Validación en Sector Residencial • {10 + i}:45 AM</p>
+                                  </div>
+                               </div>
+                               <span className="text-[9px] font-black bg-white px-3 py-1 rounded-full text-blue-600 shadow-sm border border-slate-200 uppercase">Acceso Válido</span>
+                            </div>
+                          );
+                        })}
                      </div>
                   </div>
 
                   <div className="space-y-8">
                     <div className="bg-slate-900 rounded-3xl shadow-2xl p-10 text-white relative overflow-hidden group">
                       <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform">🎓</div>
-                      <h3 className="text-xl font-black uppercase tracking-tighter mb-4">TrustLayer Academic</h3>
+                      <h3 className="text-xl font-black uppercase tracking-tighter mb-4">Certificaciones de Personal</h3>
                       <p className="text-xs opacity-50 mb-8 leading-relaxed">Resumen de cumplimiento normativo y certificaciones técnicas globales.</p>
                       
                       <div className="space-y-6">
                           {[
-                            { label: 'Certificados', val: 78, color: 'bg-green-500' },
-                            { label: 'Por Certificar', val: 15, color: 'bg-amber-500' },
+                            { label: 'Estatus: Certificado', val: 78, color: 'bg-green-500' },
+                            { label: 'En Proceso', val: 15, color: 'bg-amber-500' },
                             { label: 'No Cursados', val: 7, color: 'bg-red-500' }
                           ].map(item => (
                             <div key={item.label} className="space-y-2">
@@ -197,15 +205,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                       </div>
                       
                       <button className="w-full mt-10 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all">
-                          Gestionar Académico
+                          Gestionar Certificaciones
                       </button>
                     </div>
 
                     <div className="bg-blue-600 rounded-3xl p-8 text-white shadow-xl">
-                       <h4 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4">Estado de Red SSE</h4>
+                       <h4 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4">Sincronización en Vivo</h4>
                        <div className="flex items-center space-x-3">
                           <div className="w-3 h-3 bg-white rounded-full animate-ping"></div>
-                          <p className="text-xs font-bold uppercase tracking-widest">Operativo • Real-Time</p>
+                          <p className="text-xs font-bold uppercase tracking-widest">Sistema en Línea • Operativo</p>
                        </div>
                     </div>
                   </div>
@@ -223,16 +231,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                   onClick={() => setActiveModule('dashboard')}
                   className="px-10 py-4 bg-slate-100 hover:bg-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
                 >
-                  Volver al Dashboard
+                  Volver al Panel de Control
                 </button>
               </div>
             </div>
           )}
         </div>
         
-        {/* Footer (Fixed) */}
         <footer className="h-12 flex-shrink-0 px-10 bg-white border-t border-slate-100 flex justify-between items-center text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] z-20">
-           <span>Fibex Telecom • Governance Console v2.8</span>
+           <span>Fibex Telecom • Consola de Control Central v2.8</span>
            <span>Huso Horario Global: {selectedCountry === 'PE' ? 'PET (UTC-5)' : 'AST (UTC-4)'}</span>
         </footer>
       </main>

@@ -86,37 +86,37 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-20">
+    <div className="min-h-screen bg-surface pb-20 font-sans text-on_surface">
       {/* Navigation for demo purposes */}
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-2xl border border-gray-200">
-        <div className="pr-2 mr-2 border-r border-gray-200 flex flex-col items-center">
-          <span className="text-[10px] font-bold text-[#1A237E] leading-tight capitalize">{user.role}</span>
-          <button onClick={handleLogout} className="text-[10px] text-red-600 hover:underline leading-tight">Salir</button>
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center space-x-2 glassmorphism px-6 py-3 rounded-full shadow-ambient no-border">
+        <div className="pr-4 mr-2 border-r border-outline_variant flex flex-col items-start">
+          <span className="text-[10px] font-display font-extrabold text-primary tracking-widest uppercase leading-tight">{user.role}</span>
+          <button onClick={handleLogout} className="text-[10px] text-on_surface opacity-50 hover:opacity-100 transition-opacity font-bold uppercase tracking-tighter leading-tight">Revoke Access</button>
         </div>
 
         {/* Role-based navigation buttons */}
         {(user.role === 'admin' || user.role === 'technician') && (
-          <button onClick={() => setCurrentView('tech-dash')} className={`p-2 rounded-full transition-colors ${currentView === 'tech-dash' ? 'bg-[#2962FF] text-white' : 'hover:bg-gray-100'}`} title="Técnico Dashboard">🛠️</button>
+          <button onClick={() => setCurrentView('tech-dash')} className={`p-3 rounded-full transition-all ${currentView === 'tech-dash' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface hover:bg-surface_container_high'}`} title="Técnico Dashboard">🛠️</button>
         )}
         
         {(user.role === 'admin' || user.role === 'client') && (
-          <button onClick={() => setCurrentView('client-verify')} className={`p-2 rounded-full transition-colors ${currentView === 'client-verify' ? 'bg-[#2962FF] text-white' : 'hover:bg-gray-100'}`} title="Cliente Verificación">👤</button>
+          <button onClick={() => setCurrentView('client-verify')} className={`p-3 rounded-full transition-all ${currentView === 'client-verify' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface hover:bg-surface_container_high'}`} title="Cliente Verificación">👤</button>
         )}
 
         {(user.role === 'admin' || user.role === 'coordinator') && (
-          <button onClick={() => setCurrentView('coord-monitor')} className={`p-2 rounded-full transition-colors ${currentView === 'coord-monitor' ? 'bg-[#2962FF] text-white' : 'hover:bg-gray-100'}`} title="Coordinador Monitor">🖥️</button>
+          <button onClick={() => setCurrentView('coord-monitor')} className={`p-3 rounded-full transition-all ${currentView === 'coord-monitor' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface hover:bg-surface_container_high'}`} title="Coordinador Monitor">🖥️</button>
         )}
 
         {user.role === 'admin' && (
-          <button onClick={() => setCurrentView('admin-panel')} className={`p-2 rounded-full transition-colors ${currentView === 'admin-panel' ? 'bg-[#2962FF] text-white' : 'hover:bg-gray-100'}`} title="Admin Panel">💼</button>
+          <button onClick={() => setCurrentView('admin-panel')} className={`p-3 rounded-full transition-all ${currentView === 'admin-panel' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface hover:bg-surface_container_high'}`} title="Admin Panel">💼</button>
         )}
 
         {(user.role === 'admin' || user.role === 'client') && (
-          <button onClick={() => setCurrentView('ecommerce-catalog')} className={`p-2 rounded-full transition-colors ${currentView === 'ecommerce-catalog' ? 'bg-[#2962FF] text-white' : 'hover:bg-gray-100'}`} title="E-commerce Catálogo">🛒</button>
+          <button onClick={() => setCurrentView('ecommerce-catalog')} className={`p-3 rounded-full transition-all ${currentView === 'ecommerce-catalog' ? 'trust-gradient text-white shadow-lg' : 'text-on_surface hover:bg-surface_container_high'}`} title="E-commerce Catálogo">🛒</button>
         )}
       </div>
 
-      <div className="container mx-auto">
+      <div className="container mx-auto px-4 pt-8">
         {currentView === 'tech-dash' && (
           <TechnicianDashboard onGenerateQR={() => setCurrentView('tech-qr')} />
         )}

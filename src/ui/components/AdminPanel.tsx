@@ -48,16 +48,13 @@ const AdminPanel: React.FC = () => {
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-  // Role editing state
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserAccount | null>(null);
 
-  // Clear search when switching tabs
   useEffect(() => {
     setSearchTerm('');
   }, [activeTab]);
 
-  // Auto-hide notifications
   useEffect(() => {
     if (notification) {
       const timer = setTimeout(() => setNotification(null), 3000);
@@ -116,7 +113,6 @@ const AdminPanel: React.FC = () => {
 
   const handleApproveOrder = async (id: string) => {
     setProcessingId(id);
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 800));
     setOrders(prev => prev.map(order => 
       order.id === id ? { ...order, status: 'Success', statusLabel: 'Pagado' } : order
@@ -127,7 +123,6 @@ const AdminPanel: React.FC = () => {
 
   const handleRejectOrder = async (id: string) => {
     setProcessingId(id);
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 800));
     setOrders(prev => prev.map(order => 
       order.id === id ? { ...order, status: 'Error', statusLabel: 'Rechazado' } : order
@@ -137,163 +132,151 @@ const AdminPanel: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto min-h-[600px] relative">
+    <div className="p-10 max-w-7xl mx-auto min-h-screen bg-surface font-sans text-on_surface relative">
       {/* Notifications */}
       {notification && (
-        <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-xl border-l-4 transform transition-all animate-bounce ${
-          notification.type === 'success' ? 'bg-green-50 border-green-500 text-green-800' : 'bg-red-50 border-red-500 text-red-800'
+        <div className={`fixed top-8 right-8 z-50 p-6 rounded-lg shadow-ambient glassmorphism no-border transform transition-all animate-bounce ${
+          notification.type === 'success' ? 'text-primary' : 'text-error'
         }`}>
-          <div className="flex items-center">
-            <span className="mr-2">{notification.type === 'success' ? '✅' : '❌'}</span>
-            <p className="font-bold">{notification.message}</p>
+          <div className="flex items-center space-x-3">
+            <span className="text-xl">{notification.type === 'success' ? '✓' : '✕'}</span>
+            <p className="font-display font-extrabold uppercase tracking-widest text-[10px]">{notification.message}</p>
           </div>
         </div>
       )}
 
-      <header className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-[#1A237E]">Panel de Administración</h1>
-          <p className="text-gray-600">Gestión de inventario, pedidos y roles - Administradora Marta</p>
+      <header className="mb-12 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+        <div className="space-y-2">
+          <div className="flex items-center space-x-3 mb-2">
+            <img src="/favicon.png" alt="Logo" className="w-8 h-8" />
+            <span className="text-[10px] font-display font-extrabold text-primary uppercase tracking-[0.4em]">TrustLayer Infrastructure</span>
+          </div>
+          <h1 className="text-4xl font-display font-extrabold text-on_surface tracking-tighter uppercase leading-none">Global Control Panel</h1>
+          <p className="text-sm font-medium text-on_surface opacity-40 uppercase tracking-widest">Authority: Chief Administrator Marta</p>
         </div>
         
-        <div className="relative">
+        <div className="relative group">
           <input
             type="text"
-            placeholder={`Buscar en ${activeTab === 'inventory' ? 'inventario' : activeTab === 'orders' ? 'pedidos' : 'usuarios'}...`}
-            className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2962FF] focus:border-transparent outline-none w-full md:w-64"
+            placeholder={`Filter ${activeTab}...`}
+            className="pl-12 pr-6 py-4 bg-surface_container_highest text-on_surface sm:text-xs font-display font-extrabold uppercase tracking-widest input-ghost-border w-full lg:w-80 no-border"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <span className="absolute left-3 top-2.5 text-gray-400">🔍</span>
+          <span className="absolute left-4 top-4 opacity-30 group-focus-within:opacity-100 transition-opacity">🔍</span>
         </div>
       </header>
 
-      <div className="flex space-x-4 mb-6 border-b border-gray-200">
-        <button
-          onClick={() => setActiveTab('inventory')}
-          className={`pb-2 px-4 font-medium transition-colors ${
-            activeTab === 'inventory'
-              ? 'border-b-2 border-[#2962FF] text-[#2962FF]'
-              : 'text-gray-500 hover:text-[#2962FF]'
-          }`}
-        >
-          Inventario
-        </button>
-        <button
-          onClick={() => setActiveTab('orders')}
-          className={`pb-2 px-4 font-medium transition-colors ${
-            activeTab === 'orders'
-              ? 'border-b-2 border-[#2962FF] text-[#2962FF]'
-              : 'text-gray-500 hover:text-[#2962FF]'
-          }`}
-        >
-          Aprobación de Pedidos
-        </button>
-        <button
-          onClick={() => setActiveTab('roles')}
-          className={`pb-2 px-4 font-medium transition-colors ${
-            activeTab === 'roles'
-              ? 'border-b-2 border-[#2962FF] text-[#2962FF]'
-              : 'text-gray-500 hover:text-[#2962FF]'
-          }`}
-        >
-          Gestión de Roles
-        </button>
+      <div className="flex space-x-8 mb-10 border-none bg-surface_container_highest/30 p-1 rounded-sm w-fit">
+        {(['inventory', 'orders', 'roles'] as const).map(tab => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-8 py-3 rounded-sm font-display font-extrabold text-[10px] uppercase tracking-[0.2em] transition-all ${
+              activeTab === tab
+                ? 'trust-gradient text-white shadow-lg'
+                : 'text-on_surface opacity-40 hover:opacity-100'
+            }`}
+          >
+            {tab === 'inventory' ? 'Registry' : tab === 'orders' ? 'Transactions' : 'Privileges'}
+          </button>
+        ))}
       </div>
 
-      {activeTab === 'inventory' && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-surface_container_lowest rounded-lg shadow-ambient overflow-hidden no-border">
+        {activeTab === 'inventory' && (
           <table className="w-full text-left">
-            <thead className="bg-[#1A237E] text-white">
+            <thead className="bg-surface_container_highest/50">
               <tr>
-                <th className="px-6 py-4 font-bold">Producto</th>
-                <th className="px-6 py-4 font-bold">SKU</th>
-                <th className="px-6 py-4 font-bold">Categoría</th>
-                <th className="px-6 py-4 font-bold text-right">Stock</th>
-                <th className="px-6 py-4 font-bold text-center">Acciones</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Asset Name</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Serial ID (SKU)</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Classification</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-right">Available</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Protocol</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-surface_container_high/30">
               {filteredInventory.length > 0 ? (
                 filteredInventory.map((item) => (
-                  <tr key={item.id} className="h-12 hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-2">{item.name}</td>
-                    <td className="px-6 py-2 font-mono text-sm">{item.sku}</td>
-                    <td className="px-6 py-2">{item.category}</td>
-                    <td className="px-6 py-2 text-right">
-                      <span className={`font-bold ${item.stock < 10 ? 'text-[#C62828]' : 'text-gray-900'}`}>
-                        {item.stock}
+                  <tr key={item.id} className="hover:bg-surface_container_low transition-colors group">
+                    <td className="px-8 py-5 font-display font-extrabold text-xs uppercase tracking-tight">{item.name}</td>
+                    <td className="px-8 py-5 font-display font-bold text-[10px] text-primary opacity-60">{item.sku}</td>
+                    <td className="px-8 py-5">
+                       <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">{item.category}</span>
+                    </td>
+                    <td className="px-8 py-5 text-right">
+                      <span className={`font-display font-extrabold ${item.stock < 10 ? 'text-error' : 'text-on_surface'}`}>
+                        {item.stock.toString().padStart(2, '0')}
                       </span>
                     </td>
-                    <td className="px-6 py-2 text-center">
-                      <button 
-                        onClick={() => handleEditStock(item)}
-                        className="text-[#2962FF] hover:bg-blue-50 p-2 rounded-full transition-colors" 
-                        title="Editar Stock"
-                      >
-                        ✏️
-                      </button>
-                      <button className="text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-colors" title="Ver Detalle">🔍</button>
+                    <td className="px-8 py-5 text-center">
+                      <div className="flex justify-center space-x-3">
+                        <button 
+                          onClick={() => handleEditStock(item)}
+                          className="w-8 h-8 glassmorphism rounded-full flex items-center justify-center text-primary hover:scale-110 transition-transform" 
+                          title="Modify Manifest"
+                        >
+                          ✏️
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-10 text-center text-gray-500">
-                    No se encontraron productos que coincidan con "{searchTerm}"
+                  <td colSpan={5} className="px-8 py-20 text-center">
+                    <p className="text-[10px] font-display font-extrabold opacity-20 uppercase tracking-[0.3em]">No records matching query</p>
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'orders' && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        {activeTab === 'orders' && (
           <table className="w-full text-left">
-            <thead className="bg-[#1A237E] text-white">
+            <thead className="bg-surface_container_highest/50">
               <tr>
-                <th className="px-6 py-4 font-bold">Pedido ID</th>
-                <th className="px-6 py-4 font-bold">Cliente</th>
-                <th className="px-6 py-4 font-bold">Fecha</th>
-                <th className="px-6 py-4 font-bold text-right">Total</th>
-                <th className="px-6 py-4 font-bold text-center">Estado</th>
-                <th className="px-6 py-4 font-bold text-center">Acciones</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Ticket ID</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Requester</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Timestamp</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-right">Magnitude</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Security Status</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Authorization</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-surface_container_high/30">
               {filteredOrders.length > 0 ? (
                 filteredOrders.map((order) => (
-                  <tr key={order.id} className="h-12 hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-2 font-mono text-sm">{order.id}</td>
-                    <td className="px-6 py-2">{order.customer}</td>
-                    <td className="px-6 py-2">{order.date}</td>
-                    <td className="px-6 py-2 text-right font-semibold">${order.total.toFixed(2)}</td>
-                    <td className="px-6 py-2 text-center">
+                  <tr key={order.id} className="hover:bg-surface_container_low transition-colors">
+                    <td className="px-8 py-5 font-display font-bold text-[10px] text-primary">{order.id}</td>
+                    <td className="px-8 py-5 font-display font-extrabold text-xs uppercase tracking-tight">{order.customer}</td>
+                    <td className="px-8 py-5 text-[10px] font-bold opacity-40 uppercase">{order.date}</td>
+                    <td className="px-8 py-5 text-right font-display font-extrabold tracking-tighter">${order.total.toFixed(2)}</td>
+                    <td className="px-8 py-5 text-center">
                       <StatusBadge status={order.status} label={order.statusLabel} />
                     </td>
-                    <td className="px-6 py-2 text-center">
-                      <div className="flex justify-center space-x-2">
+                    <td className="px-8 py-5 text-center">
+                      <div className="flex justify-center space-x-3">
                         {order.status === 'Warning' ? (
                           <>
                             <button 
                               onClick={() => handleApproveOrder(order.id)}
                               disabled={processingId === order.id}
-                              className={`bg-[#2962FF] text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-blue-700 transition-colors flex items-center ${processingId === order.id ? 'opacity-70 cursor-not-allowed' : ''}`}
+                              className={`trust-gradient text-white px-4 py-2 rounded-sm text-[10px] font-display font-extrabold uppercase tracking-widest hover:opacity-90 transition-all ${processingId === order.id ? 'opacity-70' : ''}`}
                             >
-                              {processingId === order.id ? <Spinner /> : 'Aprobar'}
+                              {processingId === order.id ? <Spinner /> : 'Grant'}
                             </button>
                             <button 
                               onClick={() => handleRejectOrder(order.id)}
                               disabled={processingId === order.id}
-                              className="border border-[#C62828] text-[#C62828] px-3 py-1.5 rounded text-xs font-bold hover:bg-red-50 transition-colors"
+                              className="bg-surface_container_highest text-error px-4 py-2 rounded-sm text-[10px] font-display font-extrabold uppercase tracking-widest hover:bg-surface_container_high transition-all"
                             >
-                              Rechazar
+                              Deny
                             </button>
                           </>
                         ) : (
-                          <span className="text-gray-400 text-xs italic">Procesado</span>
+                          <span className="text-[10px] font-display font-extrabold opacity-20 uppercase tracking-widest">Finalized</span>
                         )}
                       </div>
                     </td>
@@ -301,87 +284,80 @@ const AdminPanel: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-10 text-center text-gray-500">
-                    No se encontraron pedidos que coincidan con "{searchTerm}"
+                  <td colSpan={6} className="px-8 py-20 text-center text-gray-500">
+                    <p className="text-[10px] font-display font-extrabold opacity-20 uppercase tracking-[0.3em]">No transaction logs found</p>
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'roles' && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        {activeTab === 'roles' && (
           <table className="w-full text-left">
-            <thead className="bg-[#1A237E] text-white">
+            <thead className="bg-surface_container_highest/50">
               <tr>
-                <th className="px-6 py-4 font-bold">Usuario</th>
-                <th className="px-6 py-4 font-bold">Email</th>
-                <th className="px-6 py-4 font-bold">Rol Actual</th>
-                <th className="px-6 py-4 font-bold text-center">Estado</th>
-                <th className="px-6 py-4 font-bold text-center">Acciones</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Personnel Name</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Contact Vector</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Active Clearence</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Network State</th>
+                <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-center">Override</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-surface_container_high/30">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="h-12 hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-2 font-medium">{user.name}</td>
-                  <td className="px-6 py-2 text-gray-600">{user.email}</td>
-                  <td className="px-6 py-2">
-                    <span className={`px-2 py-1 rounded text-xs font-bold capitalize ${
-                      user.role === 'admin' ? 'bg-purple-100 text-purple-800' :
-                      user.role === 'coordinator' ? 'bg-blue-100 text-blue-800' :
-                      user.role === 'technician' ? 'bg-green-100 text-green-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
+                <tr key={user.id} className="hover:bg-surface_container_low transition-colors">
+                  <td className="px-8 py-5 font-display font-extrabold text-xs uppercase tracking-tight">{user.name}</td>
+                  <td className="px-8 py-5 text-[10px] font-bold opacity-40">{user.email}</td>
+                  <td className="px-8 py-5">
+                    <span className="bg-surface_container_highest px-3 py-1 rounded-sm text-[10px] font-display font-extrabold text-primary uppercase tracking-widest">
                       {user.role}
                     </span>
                   </td>
-                  <td className="px-6 py-2 text-center">
-                    <span className="flex items-center justify-center">
-                      <span className="h-2 w-2 rounded-full bg-[#2E7D32] mr-2"></span>
-                      <span className="text-xs text-gray-600">Activo</span>
-                    </span>
+                  <td className="px-8 py-5 text-center">
+                    <div className="inline-flex items-center space-x-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-green-500 glow-pulse"></span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">Verified</span>
+                    </div>
                   </td>
-                  <td className="px-6 py-2 text-center">
+                  <td className="px-8 py-5 text-center">
                     <button 
                       onClick={() => handleEditRole(user)}
-                      className="bg-white border border-gray-300 text-gray-700 px-3 py-1 rounded text-xs font-bold hover:bg-gray-50 transition-colors"
+                      className="text-[10px] font-display font-extrabold text-primary hover:opacity-70 transition-all uppercase tracking-[0.2em]"
                     >
-                      Cambiar Rol
+                      Shift Privilege
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Edit Stock Modal */}
       {isModalOpen && editingItem && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="bg-[#1A237E] p-4 text-white flex justify-between items-center">
-              <h3 className="font-bold text-lg">Actualizar Stock</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-white hover:text-gray-200">✕</button>
+        <div className="fixed inset-0 glassmorphism flex items-center justify-center z-50 p-6 no-border">
+          <div className="bg-surface_container_lowest rounded-lg shadow-ambient max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-300 no-border">
+            <div className="trust-gradient p-8 text-white">
+              <h3 className="text-xl font-display font-extrabold uppercase tracking-tight">Modify Asset Manifest</h3>
+              <p className="text-[10px] font-bold opacity-60 uppercase tracking-[0.2em] mt-1">Registry Correction Protocol</p>
             </div>
-            <div className="p-6">
-              <div className="mb-4">
-                <p className="text-sm text-gray-500 mb-1">Producto</p>
-                <p className="font-bold text-gray-900">{editingItem.name}</p>
-                <p className="text-xs text-gray-400 font-mono">{editingItem.sku}</p>
+            <div className="p-10 space-y-10">
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.2em]">Target Item</p>
+                <p className="text-lg font-display font-extrabold uppercase tracking-tight">{editingItem.name}</p>
+                <p className="text-[10px] font-display font-bold text-primary tracking-widest">{editingItem.sku}</p>
               </div>
               
-              <div className="mb-6">
-                <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Cantidad en Inventario
+              <div className="space-y-6">
+                <label className="text-[10px] font-bold opacity-30 uppercase tracking-[0.2em] block">
+                  New Quantity (Physical Count)
                 </label>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-6">
                   <button 
                     onClick={() => setNewStock(prev => Math.max(0, prev - 1))}
-                    className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 font-bold"
+                    className="w-12 h-12 rounded-full glassmorphism flex items-center justify-center hover:bg-surface_container_high font-light text-2xl transition-all"
                   >
                     -
                   </button>
@@ -389,29 +365,29 @@ const AdminPanel: React.FC = () => {
                     type="number" 
                     value={newStock}
                     onChange={(e) => setNewStock(parseInt(e.target.value) || 0)}
-                    className="w-20 text-center border-b-2 border-gray-300 focus:border-[#2962FF] outline-none text-xl font-bold py-1"
+                    className="w-24 text-center bg-transparent border-b-2 border-primary/10 focus:border-primary outline-none text-3xl font-display font-extrabold py-2"
                   />
                   <button 
                     onClick={() => setNewStock(prev => prev + 1)}
-                    className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 font-bold"
+                    className="w-12 h-12 rounded-full glassmorphism flex items-center justify-center hover:bg-surface_container_high font-light text-2xl transition-all"
                   >
                     +
                   </button>
                 </div>
               </div>
 
-              <div className="flex space-x-3">
+              <div className="flex gap-4 pt-4">
                 <button 
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-6 py-4 bg-surface_container_high text-on_surface opacity-40 font-display font-extrabold text-[10px] uppercase tracking-widest hover:opacity-100 transition-all rounded-sm"
                 >
-                  Cancelar
+                  Abstain
                 </button>
                 <button 
                   onClick={saveStock}
-                  className="flex-1 px-4 py-2 bg-[#2962FF] rounded-lg text-white font-bold hover:bg-blue-700 transition-colors"
+                  className="flex-1 px-6 py-4 trust-gradient text-white font-display font-extrabold text-[10px] uppercase tracking-widest shadow-lg hover:opacity-90 transition-all rounded-sm"
                 >
-                  Guardar Cambios
+                  Commit Changes
                 </button>
               </div>
             </div>
@@ -421,32 +397,32 @@ const AdminPanel: React.FC = () => {
 
       {/* Role Management Modal */}
       {isRoleModalOpen && editingUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="bg-[#1A237E] p-4 text-white flex justify-between items-center">
-              <h3 className="font-bold text-lg">Modificar Rol de Usuario</h3>
-              <button onClick={() => setIsRoleModalOpen(false)} className="text-white hover:text-gray-200">✕</button>
+        <div className="fixed inset-0 glassmorphism flex items-center justify-center z-50 p-6 no-border">
+          <div className="bg-surface_container_lowest rounded-lg shadow-ambient max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-300 no-border">
+            <div className="trust-gradient p-8 text-white">
+              <h3 className="text-xl font-display font-extrabold uppercase tracking-tight">Escalate Privileges</h3>
+              <p className="text-[10px] font-bold opacity-60 uppercase tracking-[0.2em] mt-1">Hierarchical Shift Authority</p>
             </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <p className="text-sm text-gray-500 mb-1">Usuario</p>
-                <p className="font-bold text-gray-900">{editingUser.name}</p>
-                <p className="text-xs text-gray-400">{editingUser.email}</p>
+            <div className="p-10 space-y-8">
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.2em]">Personnel Account</p>
+                <p className="text-lg font-display font-extrabold uppercase tracking-tight">{editingUser.name}</p>
+                <p className="text-[10px] font-bold opacity-30 tracking-widest">{editingUser.email}</p>
               </div>
               
-              <div className="space-y-3 mb-8">
-                <p className="text-sm font-bold text-gray-700 mb-2">Seleccione un nuevo rol:</p>
-                {(['admin', 'coordinator', 'technician', 'client'] as UserRole[]).map((role) => (
+              <div className="space-y-3">
+                <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.2em] mb-4">Select Authorization Level:</p>
+                {(['admin', 'coordinator', 'technician', 'CLIENT'] as UserRole[]).map((role) => (
                   <button
                     key={role}
                     onClick={() => updateRole(role)}
-                    className={`w-full text-left px-4 py-3 rounded-lg border transition-all flex items-center justify-between capitalize ${
+                    className={`w-full text-left px-6 py-4 rounded-sm transition-all flex items-center justify-between uppercase tracking-widest text-[10px] font-display font-extrabold ${
                       editingUser.role === role 
-                        ? 'border-[#2962FF] bg-blue-50 text-[#2962FF]' 
-                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                        ? 'trust-gradient text-white shadow-md' 
+                        : 'bg-surface_container_high/30 hover:bg-surface_container_high text-on_surface opacity-50 hover:opacity-100'
                     }`}
                   >
-                    <span className="font-bold">{role}</span>
+                    <span>{role === 'CLIENT' ? 'External Citizen' : role}</span>
                     {editingUser.role === role && <span>✓</span>}
                   </button>
                 ))}
@@ -454,46 +430,46 @@ const AdminPanel: React.FC = () => {
 
               <button 
                 onClick={() => setIsRoleModalOpen(false)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-bold hover:bg-gray-50 transition-colors"
+                className="w-full px-6 py-4 bg-surface_container_high text-on_surface opacity-40 font-display font-extrabold text-[10px] uppercase tracking-widest hover:opacity-100 transition-all rounded-sm mt-4"
               >
-                Cancelar
+                Abstain from change
               </button>
             </div>
           </div>
         </div>
       )}
+      
+      <footer className="mt-20 text-center opacity-10 font-display font-extrabold text-[8px] uppercase tracking-[0.5em]">
+         Digital Sovereignty Systems • Architectural Guardian Protocol 2.0
+      </footer>
     </div>
   );
 };
 
 const StatusBadge: React.FC<{ status: string; label: string }> = ({ status, label }) => {
-  let bgColor = '';
-  let textColor = '';
+  let textColor = 'text-primary';
+  let bgColor = 'bg-primary/10';
 
   switch (status) {
     case 'Success':
-      bgColor = 'bg-green-100';
-      textColor = 'text-[#1B5E20]';
+      textColor = 'text-primary';
+      bgColor = 'bg-primary/10';
       break;
     case 'Warning':
-      bgColor = 'bg-orange-100';
-      textColor = 'text-[#E65100]';
+      textColor = 'text-error';
+      bgColor = 'bg-error/10';
       break;
     case 'Error':
-      bgColor = 'bg-red-100';
-      textColor = 'text-[#B71C1C]';
-      break;
-    case 'Info':
-      bgColor = 'bg-blue-100';
-      textColor = 'text-[#0D47A1]';
+      textColor = 'text-error';
+      bgColor = 'bg-error/20';
       break;
     default:
-      bgColor = 'bg-gray-100';
-      textColor = 'text-gray-800';
+      textColor = 'text-on_surface opacity-40';
+      bgColor = 'bg-surface_container_high';
   }
 
   return (
-    <span className={`${bgColor} ${textColor} px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap shadow-sm`}>
+    <span className={`${bgColor} ${textColor} px-4 py-1.5 rounded-full text-[9px] font-display font-extrabold uppercase tracking-widest shadow-sm`}>
       {label}
     </span>
   );

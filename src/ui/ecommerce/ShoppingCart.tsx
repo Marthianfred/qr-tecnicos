@@ -45,103 +45,117 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
       onOrderComplete();
     } catch (err) {
       console.error('Checkout failed:', err);
-      setError('Hubo un problema al procesar tu pedido. Por favor, inténtalo de nuevo.');
+      setError('A transmission error occurred. Please re-authenticate your request.');
       setProcessing(false);
     }
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen font-inter p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="bg-surface min-h-screen font-sans text-on_surface p-10">
+      <div className="max-w-5xl mx-auto space-y-12">
         <button 
           onClick={onBack}
-          className="mb-6 flex items-center text-blue-600 font-bold hover:underline"
+          className="flex items-center text-primary font-display font-extrabold text-[10px] uppercase tracking-[0.2em] hover:opacity-70 transition-all no-border group"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
           </svg>
-          Volver al Catálogo
+          Return to Provisioning
         </button>
 
-        <h1 className="text-3xl font-bold text-[#1A237E] mb-8">Tu Carrito de Compras</h1>
+        <div className="space-y-1">
+           <h1 className="text-4xl font-display font-extrabold text-on_surface uppercase tracking-tighter">Transaction Vault</h1>
+           <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.3em]">Authorized items pending final clearance</p>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Lista de Items */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-6">
             {items.length === 0 ? (
-              <div className="bg-white p-12 rounded-xl text-center shadow-sm border border-gray-100">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                <p className="text-gray-500 text-lg">Tu carrito está vacío</p>
+              <div className="bg-surface_container_lowest p-20 rounded-lg text-center shadow-ambient no-border space-y-6">
+                <div className="bg-surface_container_high w-16 h-16 rounded-full flex items-center justify-center mx-auto opacity-20">
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                </div>
+                <p className="text-[10px] font-display font-extrabold opacity-30 uppercase tracking-[0.3em]">Vault is currently empty</p>
                 <button 
                   onClick={onBack}
-                  className="mt-4 text-[#2962FF] font-bold hover:underline"
+                  className="text-primary font-display font-extrabold text-[10px] uppercase tracking-widest underline decoration-2 underline-offset-4"
                 >
-                  Explorar productos
+                  Locate Assets
                 </button>
               </div>
             ) : (
               items.map((item) => (
-                <div key={item.product.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center space-x-4">
-                  <img 
-                    src={item.product.image} 
-                    alt={item.product.name} 
-                    className="w-20 h-20 object-cover rounded-lg"
-                  />
-                  <div className="flex-grow">
-                    <h3 className="font-bold text-[#1A237E]">{item.product.name}</h3>
-                    <p className="text-sm text-gray-500">{item.product.category}</p>
-                    <div className="mt-2 flex items-center justify-between">
-                      <div className="flex items-center border rounded-lg overflow-hidden">
+                <div key={item.product.id} className="bg-surface_container_lowest p-6 rounded-lg shadow-ambient no-border flex items-center gap-6 group hover:bg-surface_container_low transition-colors">
+                  <div className="w-24 h-24 overflow-hidden rounded-sm bg-surface_container_high">
+                     <img 
+                      src={item.product.image} 
+                      alt={item.product.name} 
+                      className="w-full h-full object-cover opacity-90"
+                    />
+                  </div>
+                  <div className="flex-grow space-y-1">
+                    <div className="flex justify-between items-start">
+                       <h3 className="font-display font-extrabold text-on_surface uppercase tracking-tight text-sm leading-tight">{item.product.name}</h3>
+                       <button 
+                        onClick={() => onRemove(item.product.id)}
+                        className="text-error opacity-20 hover:opacity-100 transition-opacity p-1"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                    <p className="text-[9px] font-bold opacity-30 uppercase tracking-widest">{item.product.category}</p>
+                    
+                    <div className="mt-4 flex items-center justify-between pt-2">
+                      <div className="flex items-center bg-surface_container_highest rounded-sm no-border overflow-hidden">
                         <button 
                           onClick={() => onUpdateQuantity(item.product.id, -1)}
-                          className="px-3 py-1 bg-gray-50 hover:bg-gray-100 text-gray-600"
+                          className="px-3 py-1 text-primary hover:bg-primary hover:text-white transition-colors"
                         >-</button>
-                        <span className="px-4 py-1 font-bold text-sm">{item.quantity}</span>
+                        <span className="px-4 py-1 font-display font-extrabold text-[10px] text-on_surface tracking-widest">{item.quantity.toString().padStart(2, '0')}</span>
                         <button 
                           onClick={() => onUpdateQuantity(item.product.id, 1)}
-                          className="px-3 py-1 bg-gray-50 hover:bg-gray-100 text-gray-600"
+                          className="px-3 py-1 text-primary hover:bg-primary hover:text-white transition-colors"
                         >+</button>
                       </div>
-                      <span className="font-bold text-gray-900">
+                      <span className="font-display font-extrabold text-primary tracking-tighter">
                         ${(item.product.price * item.quantity).toFixed(2)}
                       </span>
                     </div>
                   </div>
-                  <button 
-                    onClick={() => onRemove(item.product.id)}
-                    className="text-red-400 hover:text-red-600 p-2"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
                 </div>
               ))
             )}
           </div>
 
           {/* Resumen de Pedido */}
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 h-fit">
-            <h2 className="text-xl font-bold text-[#1A237E] mb-6 border-b pb-4">Resumen del Pedido</h2>
-            <div className="space-y-4 mb-6">
-              <div className="flex justify-between text-gray-600">
-                <span>Subtotal</span>
+          <div className="bg-surface_container_low p-8 rounded-lg shadow-ambient no-border h-fit space-y-10">
+            <div className="space-y-1">
+               <h2 className="text-xs font-display font-extrabold text-on_surface uppercase tracking-[0.2em]">Sovereign Statement</h2>
+               <div className="h-px bg-on_surface/5"></div>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest opacity-40">
+                <span>Sub-Clearence</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-gray-600">
-                <span>Impuestos (16%)</span>
+              <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest opacity-40">
+                <span>Protocol Fee (16%)</span>
                 <span>${tax.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-xl font-bold text-[#1A237E] border-t pt-4">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+              <div className="pt-6 border-t border-on_surface/5 flex justify-between items-end">
+                <span className="text-[10px] font-display font-extrabold uppercase tracking-[0.3em]">Gross Magnitude</span>
+                <span className="text-3xl font-display font-extrabold text-primary tracking-tighter">${total.toFixed(2)}</span>
               </div>
             </div>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm">
+              <div className="p-4 bg-error/10 text-error text-[10px] font-display font-extrabold uppercase tracking-widest rounded-lg no-border animate-pulse">
                 {error}
               </div>
             )}
@@ -149,24 +163,28 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
             <button
               onClick={handleCheckout}
               disabled={items.length === 0 || processing}
-              className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg transition-all flex items-center justify-center space-x-2 ${
+              className={`w-full py-5 rounded-lg text-white font-display font-extrabold text-xs uppercase tracking-[0.2em] shadow-lg transition-all flex items-center justify-center space-x-3 no-border ${
                 items.length === 0 || processing 
-                  ? 'bg-gray-300 cursor-not-allowed' 
-                  : 'bg-[#2962FF] hover:bg-blue-700 active:scale-95'
+                  ? 'bg-surface_container_highest text-on_surface/20 cursor-not-allowed' 
+                  : 'trust-gradient hover:opacity-90 active:scale-95'
               }`}
             >
               {processing ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  <span>Procesando...</span>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Transmitting...</span>
                 </>
               ) : (
-                <span>Confirmar y Pagar</span>
+                <span>Authorize & Clear</span>
               )}
             </button>
-            <p className="mt-4 text-xs text-center text-gray-400">
-              Pago seguro procesado por GDA Pay.
-            </p>
+            
+            <div className="flex flex-col items-center space-y-4 pt-4">
+               <img src="/favicon.png" alt="Trust" className="h-6 w-6 opacity-20 grayscale" />
+               <p className="text-[8px] text-center text-on_surface opacity-20 font-bold uppercase tracking-[0.4em]">
+                  Encrypted Channel v9.0 • GDA Secure Gateway
+               </p>
+            </div>
           </div>
         </div>
       </div>

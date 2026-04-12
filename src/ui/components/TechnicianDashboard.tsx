@@ -51,7 +51,7 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
       {/* Header */}
       <header className="bg-surface_container_lowest p-6 flex justify-between items-center shadow-ambient no-border">
         <div className="flex items-center space-x-3">
-          <img src="/favicon.png" alt="Logo" className="w-10 h-10" />
+          <img src="/favicon.svg" alt="Logo" className="w-10 h-10" />
           <h1 className="text-xl font-display font-extrabold tracking-tight text-on_surface uppercase">TrustLayer <span className="text-primary">Ops</span></h1>
         </div>
         <div className="text-right flex flex-col items-end">

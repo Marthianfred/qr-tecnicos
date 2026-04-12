@@ -180,7 +180,7 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
             </button>
             
             <div className="flex flex-col items-center space-y-4 pt-4">
-               <img src="/favicon.png" alt="Trust" className="h-6 w-6 opacity-20 grayscale" />
+               <img src="/favicon.svg" alt="Trust" className="h-6 w-6 opacity-20 grayscale" />
                <p className="text-[8px] text-center text-on_surface opacity-20 font-bold uppercase tracking-[0.4em]">
                   Canal Encriptado v9.0 • Pasarela Segura GDA
                </p>

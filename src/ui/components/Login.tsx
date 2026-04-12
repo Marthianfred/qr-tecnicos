@@ -36,7 +36,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <div className="flex justify-center flex-col items-center">
             <div className="relative group">
               <div className="absolute -inset-4 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/30 transition-all"></div>
-              <img src="/logo.png" alt="Fibex Logo" className="relative h-40 w-auto object-contain transition-all hover:scale-105" />
+              <img src="/logo.webp" alt="Fibex Logo" className="relative h-40 w-auto object-contain transition-all hover:scale-105" />
             </div>
           </div>
           <h2 className="mt-6 text-center text-3xl font-display font-extrabold text-on_surface">

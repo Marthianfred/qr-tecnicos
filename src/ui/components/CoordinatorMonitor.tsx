@@ -119,7 +119,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = () => {
         {/* Simple Sidebar */}
         <aside className="w-64 bg-surface_container_lowest shadow-ambient z-10 hidden md:block no-border">
           <div className="p-8 flex items-center space-x-3">
-            <img src="/favicon.png" alt="Logo" className="w-8 h-8" />
+            <img src="/favicon.svg" alt="Logo" className="w-8 h-8" />
             <h1 className="text-lg font-display font-extrabold tracking-tight uppercase">Trust<span className="text-primary">Admin</span></h1>
           </div>
           <nav className="mt-8 space-y-1 px-4">

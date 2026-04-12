@@ -76,7 +76,7 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
     <div className="max-w-6xl mx-auto p-6 md:p-12 font-sans text-on_surface bg-surface min-h-screen">
       <header className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
         <div className="flex items-center space-x-4">
-           <img src="/logo.png" alt="Fibex Logo" className="h-14 w-auto" />
+           <img src="/logo.webp" alt="Fibex Logo" className="h-14 w-auto" />
            <div className="h-10 w-px bg-on_surface/10"></div>
            <div>
               <h1 className="text-3xl font-display font-extrabold text-on_surface uppercase tracking-tighter leading-none">Autorización de Seguridad</h1>
@@ -239,7 +239,7 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
             </div>
             
             <div className="flex flex-col items-center space-y-4 pt-6">
-               <img src="/favicon.png" alt="Trust" className="h-6 w-6 opacity-20 grayscale" />
+               <img src="/favicon.svg" alt="Trust" className="h-6 w-6 opacity-20 grayscale" />
                <p className="text-[8px] text-center text-on_surface opacity-20 font-bold uppercase tracking-[0.5em]">
                   Encriptación de Extremo a Extremo Activa
                </p>

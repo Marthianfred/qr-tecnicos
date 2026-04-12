@@ -59,7 +59,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
       {/* Header del Catálogo */}
       <header className="bg-surface_container_lowest p-8 shadow-ambient sticky top-0 z-10 flex justify-between items-center no-border">
         <div className="flex items-center space-x-4">
-          <img src="/logo.png" alt="Fibex Logo" className="h-12 w-auto" />
+          <img src="/logo.webp" alt="Fibex Logo" className="h-12 w-auto" />
           <div className="hidden sm:block h-8 w-px bg-on_surface/10"></div>
           <div className="hidden sm:block">
             <h1 className="text-xl font-display font-extrabold tracking-tight uppercase">Catálogo de <span className="text-primary">Servicios</span></h1>

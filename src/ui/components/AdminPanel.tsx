@@ -148,7 +148,7 @@ const AdminPanel: React.FC = () => {
       <header className="mb-12 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
         <div className="space-y-2">
           <div className="flex items-center space-x-3 mb-2">
-            <img src="/favicon.png" alt="Logo" className="w-8 h-8" />
+            <img src="/favicon.svg" alt="Logo" className="w-8 h-8" />
             <span className="text-[10px] font-display font-extrabold text-primary uppercase tracking-[0.4em]">TrustLayer Infrastructure</span>
           </div>
           <h1 className="text-4xl font-display font-extrabold text-on_surface tracking-tighter uppercase leading-none">Panel de Control Global</h1>

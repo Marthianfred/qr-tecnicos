@@ -105,7 +105,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
         <div className="w-full max-w-sm bg-surface_container_lowest rounded-lg shadow-ambient overflow-hidden mt-4 no-border relative">
           {/* Watermark/Seal */}
           <div className="absolute top-8 right-8 opacity-[0.03] rotate-12">
-            <img src="/favicon.png" alt="Seal" className="w-48 h-48" />
+            <img src="/favicon.svg" alt="Seal" className="w-48 h-48" />
           </div>
 
           <div className="p-10 flex flex-col items-center space-y-8 relative z-10">

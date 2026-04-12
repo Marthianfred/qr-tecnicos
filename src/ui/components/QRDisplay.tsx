@@ -93,7 +93,7 @@ export const QRDisplay: React.FC<QRDisplayProps> = ({ onBack }) => {
                 </div>
                 {/* Security Overlay */}
                 <div className="absolute inset-0 glassmorphism opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                   <img src="/favicon.png" alt="Seal" className="w-20 h-20 opacity-40" />
+                   <img src="/favicon.svg" alt="Seal" className="w-20 h-20 opacity-40" />
                 </div>
               </div>
             </div>

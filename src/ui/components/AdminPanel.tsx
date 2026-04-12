@@ -84,9 +84,51 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
         {/* Header (Fixed height, no scroll) */}
         <header className="h-20 flex-shrink-0 bg-white border-b border-slate-200 flex items-center justify-between px-10 shadow-sm z-20">
           <div className="flex items-center space-x-4">
-             <div className="bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-3">MÓDULO:</span>
-                <span className="text-[11px] font-black text-blue-700 uppercase tracking-widest">{menuItems.find(m => m.id === activeModule)?.label}</span>
+             <div className="flex items-center space-x-3">
+                <div className="bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
+                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-3">MÓDULO:</span>
+                   <span className="text-[11px] font-black text-blue-700 uppercase tracking-widest">{menuItems.find(m => m.id === activeModule)?.label}</span>
+                </div>
+                
+                {/* Botón de Ingesta Masiva */}
+                <label className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg cursor-pointer transition-all shadow-sm active:scale-95">
+                   <span className="text-sm">📥</span>
+                   <span className="text-[10px] font-black uppercase tracking-wider">Cargar Personal (Excel)</span>
+                   <input 
+                     type="file" 
+                     className="hidden" 
+                     accept=".csv,.xlsx"
+                     onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        
+                        try {
+                           setLoading(true);
+                           const response = await fetch('/api/etl/upload', {
+                              method: 'POST',
+                              body: formData,
+                              headers: {
+                                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                              }
+                           });
+                           
+                           if (response.ok) {
+                              alert('✅ Ingesta Masiva Completada con Éxito');
+                              window.location.reload();
+                           } else {
+                              alert('❌ Error en el procesamiento del archivo');
+                           }
+                        } catch (err) {
+                           alert('❌ Error de conexión con el servidor');
+                        } finally {
+                           setLoading(false);
+                        }
+                     }}
+                   />
+                </label>
              </div>
              
              <div className="h-6 w-px bg-slate-200"></div>

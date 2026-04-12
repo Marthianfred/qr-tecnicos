@@ -2,6 +2,11 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColum
 import { Certificacion } from './certificacion.entity';
 import { Cuadrilla } from './cuadrilla.entity';
 
+export enum TipoPersonal {
+  CORPORATIVO = 'corporativo',
+  ALIADO = 'aliado',
+}
+
 export enum TecnicoStatus {
   ACTIVO = 'activo',
   INACTIVO = 'inactivo',
@@ -16,10 +21,20 @@ export class Tecnico {
   nombre!: string;
 
   @Column({ unique: true })
-  documento!: string; // Cédula o DNI
+  documento!: string; 
 
   @Column()
-  pais!: string; // VE, PE, RD
+  cargo!: string; // Ej: Técnico III, Coordinador de Ops
+
+  @Column({
+    type: 'enum',
+    enum: TipoPersonal,
+    default: TipoPersonal.CORPORATIVO
+  })
+  tipoPersonal!: TipoPersonal;
+
+  @Column()
+  pais!: string; 
 
   @Column({ nullable: true })
   fotoUrl!: string;

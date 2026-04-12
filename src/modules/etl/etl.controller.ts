@@ -1,22 +1,27 @@
-import { Controller, Post, Query, Logger } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { EtlService } from './etl.service';
-import * as path from 'path';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller('etl')
 export class EtlController {
-  private readonly logger = new Logger(EtlController.name);
-
   constructor(private readonly etlService: EtlService) {}
 
-  @Post('process-technicians')
-  async processTechnicians(
-    @Query('filePath') filePath?: string,
-    @Query('skipRows') skipRows: string = '3'
-  ) {
-    const defaultPath = path.join(process.cwd(), 'src/data/tecnicos_certificaciones.csv');
-    const targetPath = filePath || defaultPath;
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, cb) => {
+        const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
+        cb(null, `${randomName}${extname(file.originalname)}`);
+      },
+    }),
+  }))
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('Se requiere un archivo CSV para la importación');
     
-    this.logger.log(`Triggering ETL for: ${targetPath}`);
-    return this.etlService.processCsv(targetPath, parseInt(skipRows));
+    // El ETL service procesa el archivo recién subido
+    return this.etlService.processCsv(file.path);
   }
 }

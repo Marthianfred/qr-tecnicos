@@ -4,6 +4,9 @@ dist/
 *.log
 *.txt
 *.json
+!package.json
+!package-lock.json
+!tsconfig.json
 *.md
 !README.md
 .DS_Store

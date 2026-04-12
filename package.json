@@ -1,0 +1,84 @@
+{
+  "name": "gda-ciclo-negocio",
+  "version": "0.1.0",
+  "description": "Repositorio base para el Ciclo de Negocio - GDA",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/main.js",
+    "start:prod": "node dist/main.js",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "vite build",
+    "build:server": "tsc",
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=src/.*\\.test\\.ts",
+    "test:api": "jest --testPathPattern=test/api/.*\\.test\\.ts",
+    "test:e2e": "jest --testPathPattern=test/e2e/.*\\.test\\.ts",
+    "test:contract:consumer": "jest --testPathPattern=test/contract/consumer.test.ts",
+    "test:contract:provider": "jest --testPathPattern=test/contract/provider.test.ts",
+    "test:contract": "npm run test:contract:consumer && npm run test:contract:provider",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts",
+    "prepare": "husky || true"
+  },
+  "keywords": [],
+  "author": "Paperclip",
+  "license": "ISC",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "npm run lint",
+      "npm run format"
+    ]
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/event-emitter": "^3.0.1",
+    "@nestjs/jwt": "^10.1.0",
+    "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/serve-static": "^4.0.0",
+    "@nestjs/typeorm": "^10.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "ioredis": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "jwks-rsa": "^4.0.1",
+    "pg": "^8.11.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.1",
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.17"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^10.0.0",
+    "@pact-foundation/pact": "^16.3.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/supertest": "^7.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "eslint": "^8.0.0",
+    "eslint-plugin-security": "^4.0.0",
+    "husky": "^9.1.7",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^30.3.0",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.0.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0",
+    "vite": "^6.4.2"
+  }
+}

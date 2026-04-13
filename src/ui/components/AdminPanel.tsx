@@ -9,6 +9,7 @@ type AdminModule =
   | 'operations' 
   | 'qr-security' 
   | 'alerts' 
+  | 'countries'
   | 'config';
 
 interface AdminPanelProps {
@@ -23,6 +24,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [squads, setSquads] = useState<Cuadrilla[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
+  const [countries, setCountries] = useState<any[]>([]);
   const [dashboardStats, setDashboardStats] = useState({ technicians: 0, activeQrs: 0, alerts: 0, recentReports: [] as any[], squads: 0 });
 
   useEffect(() => {
@@ -39,11 +41,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [techs, stats, squadsData, companiesData] = await Promise.all([
+      const [techs, stats, squadsData, companiesData, countriesData] = await Promise.all([
         apiService.getTechnicians(),
         apiService.getDashboardStats(),
         apiService.getCuadrillas(),
-        apiService.getCompanies()
+        apiService.getCompanies(),
+        apiService.getPaises()
       ]);
       
       const filteredTechs = selectedCountry === 'TODOS' ? techs : techs.filter(t => t.pais === selectedCountry);
@@ -54,6 +57,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
       setDashboardStats(stats);
       setSquads(filteredSquads);
       setCompanies(filteredCompanies);
+      setCountries(countriesData);
     } catch (err) {
       console.error('Error fetching data:', err);
     } finally {
@@ -70,6 +74,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
     { id: 'operations', label: 'Cuadrillas y Campo', icon: '🚙', description: 'Despliegue Logístico' },
     { id: 'qr-security', label: 'Centro de Seguridad', icon: '🛡️', description: 'Control de Protocolos' },
     { id: 'alerts', label: 'Alertas y Reportes', icon: '🚨', description: 'Historial de Incidentes' },
+    { id: 'countries', label: 'Expansión Global', icon: '🌍', description: 'Gestión de Naciones' },
     { id: 'config', label: 'Configuración', icon: '⚙️', description: 'Accesos y Permisos' },
   ] as const;
 
@@ -171,26 +176,32 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                 </label>
              </div>
              
-             <div className="h-6 w-px bg-slate-200"></div>
-
-             {user.paisScope ? (
+                         {user.paisScope ? (
                 <div className="flex items-center space-x-2 bg-blue-50 px-4 py-1.5 rounded-lg border border-blue-100">
                    <span className="text-sm">{user.paisScope === 'VE' ? '🇻🇪' : user.paisScope === 'PE' ? '🇵🇪' : '🇩🇴'}</span>
-                   <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Sede: {user.paisScope === 'VE' ? 'Venezuela' : user.paisScope === 'PE' ? 'Perú' : 'Rep. Dominicana'}</span>
+                   <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Sede: {countries.find(p => p.codigo === user.paisScope)?.nombre || user.paisScope}</span>
                 </div>
               ) : (
                 <div className="flex items-center bg-slate-100 rounded-lg p-1">
-                   {(['TODOS', 'VE', 'PE', 'RD'] as const).map(country => (
+                   <button
+                     onClick={() => setSelectedCountry('TODOS')}
+                     className={`px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${
+                       selectedCountry === 'TODOS' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400'
+                     }`}
+                   >
+                     🌎
+                   </button>
+                   {countries.map(p => (
                      <button
-                       key={country}
-                       onClick={() => setSelectedCountry(country)}
+                       key={p.codigo}
+                       onClick={() => setSelectedCountry(p.codigo)}
                        className={`px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${
-                         selectedCountry === country 
+                         selectedCountry === p.codigo 
                            ? 'bg-white text-blue-600 shadow-sm' 
                            : 'text-slate-400 hover:text-slate-600'
                        }`}
                      >
-                       {country === 'TODOS' ? '🌎' : country === 'VE' ? '🇻🇪' : country === 'PE' ? '🇵🇪' : '🇩🇴'}
+                       {p.bandera}
                      </button>
                    ))}
                 </div>
@@ -624,7 +635,122 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
             </div>
           )}
 
-          {activeModule !== 'dashboard' && activeModule !== 'personnel' && activeModule !== 'companies' && activeModule !== 'alerts' && activeModule !== 'qr-security' && activeModule !== 'certifications' && activeModule !== 'operations' && (
+          {activeModule === 'countries' && (
+            <div className="max-w-7xl mx-auto space-y-8">
+               <div className="bg-[#001F3D] p-10 rounded-[2.5rem] relative overflow-hidden text-white shadow-2xl">
+                  <div className="absolute right-0 bottom-0 text-white/5 text-9xl">🌎</div>
+                  <div className="relative z-10 space-y-4">
+                     <h2 className="text-4xl font-black uppercase tracking-tighter">Expansión Global Fibex</h2>
+                     <p className="text-sm font-bold opacity-70 uppercase tracking-widest max-w-xl">
+                        Centro de gobernanza para la activación de nuevas naciones y sedes internacionales de la red Fibex.
+                     </p>
+                  </div>
+               </div>
+
+               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* List of Countries */}
+                  <div className="lg:col-span-2 space-y-6">
+                     <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+                        <table className="w-full text-left">
+                           <thead>
+                              <tr className="bg-slate-50 border-b border-slate-100">
+                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nación / Sede</th>
+                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Código ISO</th>
+                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Estado</th>
+                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Acciones</th>
+                              </tr>
+                           </thead>
+                           <tbody className="divide-y divide-slate-50">
+                              {countries.map(p => (
+                                 <tr key={p.id} className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-8 py-5">
+                                       <div className="flex items-center space-x-4">
+                                          <span className="text-2xl">{p.bandera}</span>
+                                          <span className="text-xs font-black text-slate-700 uppercase">{p.nombre}</span>
+                                       </div>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                       <span className="text-[10px] font-mono font-black text-slate-400 bg-slate-100 px-3 py-1 rounded-full">{p.codigo}</span>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                       <span className={`text-[8px] font-black px-2 py-1 rounded-full ${p.activo ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                                          {p.activo ? 'ACTIVO' : 'PAUSADO'}
+                                       </span>
+                                    </td>
+                                    <td className="px-8 py-5 text-right">
+                                       <button className="text-[10px] font-black text-blue-600 hover:text-blue-800 uppercase tracking-widest">Configurar</button>
+                                    </td>
+                                 </tr>
+                              ))}
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+
+                  {/* Add New Country Form */}
+                  <div className="space-y-6">
+                     <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                        <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter mb-6">Activar Nueva Sede</h3>
+                        <form className="space-y-4" onSubmit={async (e) => {
+                           e.preventDefault();
+                           const formData = new FormData(e.currentTarget);
+                           const newPais = {
+                              nombre: formData.get('nombre') as string,
+                              codigo: formData.get('codigo') as string,
+                              bandera: formData.get('bandera') as string,
+                              activo: true
+                           };
+                           try {
+                              setLoading(true);
+                              await apiService.createPais(newPais);
+                              alert('✅ Nueva sede internacional activada con éxito');
+                              fetchData();
+                              (e.target as HTMLFormElement).reset();
+                           } catch (err) {
+                              alert('❌ Error al registrar país');
+                           } finally {
+                              setLoading(false);
+                           }
+                        }}>
+                           <div className="space-y-1">
+                              <label className="text-[9px] font-black text-slate-400 uppercase ml-1">Nombre del País</label>
+                              <input 
+                                 name="nombre" 
+                                 required 
+                                 placeholder="Ej: Panamá, Colombia..."
+                                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all outline-none"
+                              />
+                           </div>
+                           <div className="space-y-1">
+                              <label className="text-[9px] font-black text-slate-400 uppercase ml-1">Código ISO (2 Chars)</label>
+                              <input 
+                                 name="codigo" 
+                                 required 
+                                 maxLength={2}
+                                 placeholder="Ej: PA, CO..."
+                                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all outline-none"
+                              />
+                           </div>
+                           <div className="space-y-1">
+                              <label className="text-[9px] font-black text-slate-400 uppercase ml-1">Bandera (Emoji)</label>
+                              <input 
+                                 name="bandera" 
+                                 required 
+                                 placeholder="Copia el emoji de la bandera..."
+                                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all outline-none"
+                              />
+                           </div>
+                           <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] uppercase tracking-widest py-4 rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-95 mt-4">
+                              Confirmar Activación
+                           </button>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+          )}
+
+          {activeModule !== 'dashboard' && activeModule !== 'personnel' && activeModule !== 'companies' && activeModule !== 'alerts' && activeModule !== 'qr-security' && activeModule !== 'certifications' && activeModule !== 'operations' && activeModule !== 'countries' && (
             <div className="h-full flex items-center justify-center">
                <div className="bg-white rounded-3xl shadow-sm p-24 text-center border border-slate-100 animate-in fade-in zoom-in max-w-2xl">
                 <span className="text-6xl mb-6 block">🚧</span>

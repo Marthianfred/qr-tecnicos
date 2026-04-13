@@ -18,6 +18,14 @@ export interface Technician {
   cuadrillaId?: string;
 }
 
+export interface Pais {
+  id: string;
+  codigo: string;
+  nombre: string;
+  bandera: string;
+  activo: boolean;
+}
+
 export interface Cuadrilla {
   id: string;
   nombre: string;
@@ -232,5 +240,30 @@ export const apiService = {
       }
       throw e;
     }
-  }
+  },
+
+  // Gestión Internacional Dinámica (CRUD PAISES)
+  async getPaises(): Promise<any[]> {
+    return request(`${API_BASE_URL}/paises`);
+  },
+
+  async createPais(data: any): Promise<any> {
+    return request(`${API_BASE_URL}/paises`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async updatePais(id: string, data: any): Promise<any> {
+    return request(`${API_BASE_URL}/paises/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async deletePais(id: string): Promise<any> {
+    return request(`${API_BASE_URL}/paises/${id}`, {
+      method: 'DELETE',
+    });
+  },
 };

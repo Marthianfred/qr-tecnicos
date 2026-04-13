@@ -12,6 +12,7 @@ import { PricingModule } from './modules/pricing/pricing.module';
 import { RedisModule } from './common/redis/redis.module';
 import { SeedModule } from './modules/seed/seed.module';
 import { EtlModule } from './modules/etl/etl.module';
+import { PaisesModule } from './modules/paises/paises.module';
 import { KeycloakIAMService } from './services/iam.service';
 import { Tecnico } from './entities/tecnico.entity';
 import { Cuadrilla } from './entities/cuadrilla.entity';
@@ -20,6 +21,7 @@ import { ReporteInconsistencia } from './entities/reporte-inconsistencia.entity'
 import { Producto } from './entities/producto.entity';
 import { User } from './entities/user.entity';
 import { Empresa } from './entities/empresa.entity';
+import { Pais } from './entities/pais.entity';
 
 @Module({
   imports: [
@@ -42,7 +44,7 @@ import { Empresa } from './entities/empresa.entity';
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'postgres',
       database: process.env.DB_NAME || 'fibex_qr',
-      entities: [Tecnico, Cuadrilla, Certificacion, ReporteInconsistencia, Producto, User, Empresa],
+      entities: [Tecnico, Cuadrilla, Certificacion, ReporteInconsistencia, Producto, User, Empresa, Pais],
       synchronize: true, // Solo para desarrollo
       extra: {
         max: 20,
@@ -59,6 +61,7 @@ import { Empresa } from './entities/empresa.entity';
     ProductosModule,
     InventoryModule,
     PricingModule,
+    PaisesModule,
   ],
 })
 export class AppModule {}

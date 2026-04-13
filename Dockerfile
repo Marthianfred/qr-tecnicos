@@ -5,13 +5,14 @@ WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
+# Force install the specific rollup binary for Linux to avoid npm bug
+RUN npm install @rollup/rollup-linux-x64-gnu
 RUN npm install
 
 # Copy source code
 COPY . .
 
 # Build the application
-# build:client handles frontend, build:server handles backend (tsc)
 RUN npm run build
 
 # Stage 2: Production
@@ -24,7 +25,6 @@ COPY package*.json ./
 RUN npm install --omit=dev --ignore-scripts
 
 # Copy built files from build stage
-# We copy the entire dist folder to ensure all assets (client, common, modules) are present
 COPY --from=build /app/dist ./dist
 
 # Create uploads directory

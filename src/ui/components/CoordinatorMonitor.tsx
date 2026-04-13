@@ -10,7 +10,7 @@ interface Alert {
 
 const CoordinatorMonitor: React.FC = () => {
   const [alerts] = useState<Alert[]>([
-    { id: '1', technician: 'Juan Perez', reason: 'Error de foto detectado por IA Cliente', timestamp: '10:45 AM', severity: 'high' },
+    { id: '1', technician: 'Juan Perez', reason: 'Discrepancia de foto detectada por IA Cliente', timestamp: '10:45 AM', severity: 'high' },
     { id: '2', technician: 'Maria Garcia', reason: 'Entrada a zona no autorizada', timestamp: '11:12 AM', severity: 'medium' },
   ]);
 
@@ -23,7 +23,7 @@ const CoordinatorMonitor: React.FC = () => {
         </div>
         <div className="flex items-center space-x-6">
            <div className="text-right">
-              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest text-balance">Cuadrillas Activas</p>
+              <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Cuadrillas Activas</p>
               <p className="text-2xl font-black italic">24</p>
            </div>
            <div className="h-10 w-px bg-white/10"></div>
@@ -53,7 +53,7 @@ const CoordinatorMonitor: React.FC = () => {
                          <div>
                             <div className="flex items-center space-x-3 mb-1">
                                <span className="text-[10px] font-black uppercase text-slate-300 italic">{alert.technician}</span>
-                               <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest italic">• {alert.timestamp}</span>
+                               <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">• {alert.timestamp}</span>
                             </div>
                             <h3 className="text-lg font-black uppercase tracking-tight text-white mb-4">{alert.reason}</h3>
                             <div className="flex space-x-3">
@@ -63,7 +63,7 @@ const CoordinatorMonitor: React.FC = () => {
                          </div>
                       </div>
                       <span className={`text-[8px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${alert.severity === 'high' ? 'bg-red-600 text-white animate-pulse' : 'bg-amber-600 text-white'}`}>
-                         Prioridad {alert.severity === 'high' ? 'ALTA' : 'MEDIA'}
+                         Prioridad {alert.severity === 'high' ? 'ALTA' : alert.severity === 'medium' ? 'MEDIA' : 'BAJA'}
                       </span>
                    </div>
                 </div>
@@ -75,7 +75,7 @@ const CoordinatorMonitor: React.FC = () => {
            <div className="bg-blue-600 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-blue-500/20 relative overflow-hidden group">
               <div className="absolute -right-10 -bottom-10 text-white/5 text-9xl transition-transform group-hover:scale-110">📡</div>
               <h3 className="text-xl font-black uppercase tracking-tighter italic mb-2">Sincronización Satelital</h3>
-              <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest mb-10">Análisis GPS en Tiempo Real</p>
+              <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest mb-10">Análisis de Rastreo GPS en Tiempo Real</p>
               
               <div className="h-48 bg-black/20 rounded-3xl border border-white/5 flex items-center justify-center p-4">
                  <div className="text-center">
@@ -90,7 +90,7 @@ const CoordinatorMonitor: React.FC = () => {
               <div className="space-y-6">
                  {[
                    { label: 'CUMPLIMIENTO SLA', val: 94, color: 'bg-green-500' },
-                   { label: 'RATING SEGURIDAD', val: 88, color: 'bg-blue-500' },
+                   { label: 'RATING DE SEGURIDAD', val: 88, color: 'bg-blue-500' },
                    { label: 'VALIDACIONES ID', val: 100, color: 'bg-indigo-500' }
                  ].map(stat => (
                    <div key={stat.label} className="space-y-2">
@@ -109,7 +109,7 @@ const CoordinatorMonitor: React.FC = () => {
       </div>
 
       <footer className="mt-20 pt-8 border-t border-white/5 flex justify-between items-center text-[9px] font-black text-slate-600 uppercase tracking-[0.5em]">
-         <span>Consola de Comando Fibex • Supervisión Multiterritorio • v5.0.0</span>
+         <span>Consola de Comando Fibex • Supervisión Multi-Territorio • v5.0.0 Master</span>
          <span className="text-blue-500/40">Conexión Segura: Encriptado de 128-bit</span>
       </footer>
     </div>

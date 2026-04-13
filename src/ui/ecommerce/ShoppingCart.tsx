@@ -14,7 +14,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ items, onRemove, onCheckout
       <div className="flex items-center justify-between mb-10 pb-6 border-b border-slate-50">
         <div>
            <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter italic">Resumen de Orden</h3>
-           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Protocolo de Adquisición v5.0</p>
+           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Protocolo de Adquisición v5.0 Master</p>
         </div>
         <span className="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">{items.length} Unidades</span>
       </div>
@@ -44,7 +44,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ items, onRemove, onCheckout
         )) : (
           <div className="h-full flex flex-col items-center justify-center text-center opacity-30 space-y-4 py-20">
              <div className="text-6xl grayscale opacity-50 mb-4 animate-bounce">🛒</div>
-             <p className="text-[11px] font-black uppercase tracking-[0.4em] italic leading-loose">El carrito está vacío.<br/>Favor agregue productos desde el mercado.</p>
+             <p className="text-[11px] font-black uppercase tracking-[0.4em] italic leading-loose">El carrito está vacío.<br/>Por favor agregue activos desde el mercado.</p>
           </div>
         )}
       </div>

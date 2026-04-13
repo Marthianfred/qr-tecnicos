@@ -31,7 +31,7 @@ export const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ total, onCancel, onSuc
         </button>
         <div className="ml-6">
            <h1 className="text-2xl font-black uppercase tracking-tighter italic">Pasarela Segura</h1>
-           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Protocolo de Verificación de Pago v5.0</p>
+           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Protocolo de Verificación de Pago v5.0 Master</p>
         </div>
       </header>
 
@@ -51,16 +51,16 @@ export const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ total, onCancel, onSuc
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Nombre Legal Completo</label>
-                  <input required placeholder="Nombre del propietario principal" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
+                  <input required placeholder="Nombre del titular principal" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
                </div>
                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">ID Oficial / RIF / TAX-ID</label>
-                  <input required placeholder="Documento de Identificación" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
+                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Cédula ID / RIF / TAX-ID</label>
+                  <input required placeholder="Identificación del Documento" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
                </div>
             </div>
 
             <div className="space-y-2">
-               <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Identidad Digital (Email)</label>
+               <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Identidad Digital (Correo)</label>
                <input type="email" required placeholder="nombre@corporativo.com" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
             </div>
 
@@ -95,7 +95,7 @@ export const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ total, onCancel, onSuc
       </main>
 
       <footer className="p-10 text-center opacity-30 mt-auto border-t border-slate-50">
-         <p className="text-[9px] font-black text-slate-900 uppercase tracking-[0.4em]">Logística Estratégica Fibex • Conexión Segura Activa • v5.0.0</p>
+         <p className="text-[9px] font-black text-slate-900 uppercase tracking-[0.4em]">Logística Estratégica Fibex • Conexión Segura Activa • v5.0.0 Master</p>
       </footer>
     </div>
   );

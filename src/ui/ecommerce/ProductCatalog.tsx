@@ -10,7 +10,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart }) => {
 
   const filteredProducts = filter === 'TODOS' 
     ? MOCK_PRODUCTS 
-    : MOCK_PRODUCTS.filter(p => p.category.toUpperCase() === (filter === 'PLANES' ? 'INTERNET' : 'EQUIPMENT'));
+    : MOCK_PRODUCTS.filter(p => p.category.toUpperCase() === (filter === 'PLANES' ? 'INTERNET' : 'EQUIPOS'));
 
   return (
     <div className="bg-slate-50 min-h-screen p-10 font-sans">
@@ -39,7 +39,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart }) => {
             <div className="h-56 bg-slate-100 relative overflow-hidden">
                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[8px] font-black text-slate-900 uppercase tracking-widest shadow-lg">
-                  {product.category === 'INTERNET' ? 'INTERNET' : 'EQUIPO'}
+                  {product.category === 'INTERNET' ? 'PLAN INTERNET' : 'EQUIPO TÉCNICO'}
                </div>
             </div>
             

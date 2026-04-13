@@ -160,11 +160,13 @@ export class EtlService {
       if (parts.length < 5) continue;
 
       const zonaExcel = parts[2]?.trim() || 'General';
+      const empresaNombre = parts[4]?.trim() || 'Fibex';
+      const nil = parts[5]?.trim() || 'N/A';
       const nombre = parts[6]?.trim();
       const documento = parts[7]?.trim();
       const cargo = parts[8]?.trim() || 'Técnico de Campo';
       const departamentoNombre = parts[9]?.trim() || 'General';
-      const statusExcel = parts[18]?.trim(); // Columna "PERSONAL" (S)
+      const statusExcel = parts[22]?.trim(); // Columna "PERSONAL" (W)
       const paisFinal = paisScope || (documento?.startsWith('V') ? 'VE' : (documento?.length === 11 ? 'RD' : 'PE'));
       const statusFinal = statusExcel === 'INACTIVO' ? TecnicoStatus.INACTIVO : TecnicoStatus.ACTIVO;
 
@@ -195,6 +197,17 @@ export class EtlService {
       await this.departamentosService.ensureDefaultDepartments([departamentoNombre]);
       const departamentoObj = await this.departamentosService.findByNombre(departamentoNombre);
 
+      // Resolver Empresa relacional
+      let empresaObj = await this.empresaRepository.findOneBy({ nil });
+      if (!empresaObj && !dryRun) {
+        empresaObj = this.empresaRepository.create({
+          nombre: empresaNombre,
+          nil: nil,
+          pais: paisFinal,
+        });
+        empresaObj = await this.empresaRepository.save(empresaObj);
+      }
+
       // En un flujo real, aquí buscaríamos la cuadrilla si es necesario
       let tecnico = await this.tecnicoRepository.findOneBy({ documento });
       if (!tecnico) {
@@ -209,7 +222,7 @@ export class EtlService {
           departamento: departamentoObj,
         });
         tecnico = await this.tecnicoRepository.save(tecnico);
-        this.logger.log(`Importado ${cargo}: ${nombre} (${tipoPers}) en Departamento: ${departamentoNombre}`);
+        this.logger.log(`IMPORTACIÓN EXACTA: ${nombre} -> Dept: ${departamentoNombre}, Empresa: ${empresaNombre}, Zona: ${zonaExcel}`);
       }
 
         const certsToLoad = [

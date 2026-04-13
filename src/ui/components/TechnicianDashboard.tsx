@@ -55,7 +55,7 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
           <h1 className="text-xl font-display font-extrabold tracking-tight text-on_surface uppercase">Fibex <span className="text-primary">Operaciones</span></h1>
         </div>
         <div className="text-right flex flex-col items-end">
-          <p className="text-sm font-display font-bold text-on_surface tracking-tight">{technician.nombre}</p>
+          <p className="text-sm font-display font-bold text-on_surface tracking-tight">{technician.name}</p>
           <div className="flex items-center space-x-2 glassmorphism px-2 py-0.5 rounded-full">
             <span className={`w-2 h-2 rounded-full ${technician.status === 'ACTIVO' ? 'bg-green-500 glow-pulse' : 'bg-red-500'}`}></span>
             <span className={`text-[10px] font-bold tracking-widest uppercase ${technician.status === 'ACTIVO' ? 'text-primary' : 'text-error'}`}>{technician.status}</span>
@@ -90,7 +90,7 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
       <footer className="bg-surface_container_lowest p-8 no-border">
         <div className="max-w-md mx-auto">
           <p className="text-[8px] font-black text-slate-900 uppercase tracking-[0.4em]">Protocolo Fibex Seguridad v5.0</p>
-          <h3 className="text-[10px] font-bold text-on_surface opacity-40 uppercase tracking-[0.2em] mb-4">Certificaciones Oficiales</h3>
+          <h3 className="text-[10px] font-bold text-on_surface opacity-40 uppercase tracking-[0.2em] mb-4">Certificationes Oficiales</h3>
           <div className="flex flex-wrap gap-3">
             {technician.certificaciones && technician.certificaciones.map((cert: any, idx: number) => (
               <span key={idx} className="px-4 py-2 bg-surface_container_highest text-primary text-[10px] font-display font-extrabold rounded-sm uppercase tracking-wider">

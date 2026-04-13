@@ -8,7 +8,7 @@ interface ProductCatalogProps {
 }
 
 /**
- * Componente de Catálogo de Productos para Carlos (Cliente Final)
+ * Componente de Catálogo de Products para Carlos (Cliente Final)
  */
 export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onViewCart }) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -126,7 +126,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
         </div>
       </div>
 
-      {/* Grid de Productos */}
+      {/* Grid de Products */}
       <main className="max-w-7xl mx-auto p-8">
         {filteredProducts.length === 0 ? (
           <div className="text-center py-32 space-y-6">

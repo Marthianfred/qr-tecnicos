@@ -1,57 +1,57 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Departamento } from '../../entities/departamento.entity';
-import { CreateDepartamentoDto } from './dto/create-departamento.dto';
+import { Department } from '../../entities/department.entity';
+import { CreateDepartmentDto } from './dto/create-departamento.dto';
 
 @Injectable()
-export class DepartamentosService {
+export class DepartmentsService {
   constructor(
-    @InjectRepository(Departamento)
-    private readonly departamentoRepository: Repository<Departamento>,
+    @InjectRepository(Department)
+    private readonly departmentRepository: Repository<Department>,
   ) {}
 
-  async create(createDepartamentoDto: CreateDepartamentoDto): Promise<Departamento> {
-    const dep = this.departamentoRepository.create(createDepartamentoDto);
-    return await this.departamentoRepository.save(dep);
+  async create(createDepartmentDto: CreateDepartmentDto): Promise<Department> {
+    const dep = this.departmentRepository.create(createDepartmentDto);
+    return await this.departmentRepository.save(dep);
   }
 
-  async findAll(): Promise<Departamento[]> {
-    return await this.departamentoRepository.find({
-      order: { nombre: 'ASC' },
-      relations: ['tecnicos']
+  async findAll(): Promise<Department[]> {
+    return await this.departmentRepository.find({
+      order: { name: 'ASC' },
+      relations: ['technicians']
     });
   }
 
-  async findByNombre(nombre: string): Promise<Departamento | null> {
-    return await this.departamentoRepository.findOneBy({ nombre });
+  async findByName(name: string): Promise<Department | null> {
+    return await this.departmentRepository.findOneBy({ name });
   }
 
-  async findOne(id: string): Promise<Departamento> {
-    const dep = await this.departamentoRepository.findOne({
+  async findOne(id: string): Promise<Department> {
+    const dep = await this.departmentRepository.findOne({
       where: { id },
-      relations: ['tecnicos']
+      relations: ['technicians']
     });
-    if (!dep) throw new NotFoundException(`Departamento ccon ID ${id} no encontrado`);
+    if (!dep) throw new NotFoundException(`Department with ID ${id} not found`);
     return dep;
   }
 
-  async update(id: string, updateDto: Partial<CreateDepartamentoDto>): Promise<Departamento> {
+  async update(id: string, updateDto: Partial<CreateDepartmentDto>): Promise<Department> {
     const dep = await this.findOne(id);
     Object.assign(dep, updateDto);
-    return await this.departamentoRepository.save(dep);
+    return await this.departmentRepository.save(dep);
   }
 
   async remove(id: string): Promise<void> {
     const dep = await this.findOne(id);
-    await this.departamentoRepository.remove(dep);
+    await this.departmentRepository.remove(dep);
   }
 
-  async ensureDefaultDepartments(nombres: string[]) {
-    for (const nombre of nombres) {
-      const exists = await this.departamentoRepository.findOneBy({ nombre });
+  async ensureDefaultDepartments(names: string[]) {
+    for (const name of names) {
+      const exists = await this.departmentRepository.findOneBy({ name });
       if (!exists) {
-        await this.create({ nombre });
+        await this.create({ name } as any);
       }
     }
   }

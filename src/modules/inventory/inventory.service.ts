@@ -1,14 +1,14 @@
 import { Injectable, Inject, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Producto } from '../../entities/producto.entity';
+import { Product } from '../../entities/product.entity';
 import Redis from 'ioredis';
 
 @Injectable()
 export class InventoryService implements OnModuleInit {
   constructor(
-    @InjectRepository(Producto)
-    private readonly productosRepository: Repository<Producto>,
+    @InjectRepository(Product)
+    private readonly productosRepository: Repository<Product>,
     @Inject('REDIS_CLIENT')
     private readonly redis: Redis,
   ) {}

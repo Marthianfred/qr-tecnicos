@@ -1,47 +1,47 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Pais } from '../../entities/pais.entity';
+import { Country } from '../../entities/country.entity';
 
 @Injectable()
-export class PaisesService implements OnModuleInit {
+export class CountryesService implements OnModuleInit {
   constructor(
-    @InjectRepository(Pais)
-    private paisRepository: Repository<Pais>,
+    @InjectRepository(Country)
+    private countryRepository: Repository<Country>,
   ) {}
 
   async onModuleInit() {
-    const count = await this.paisRepository.count();
+    const count = await this.countryRepository.count();
     if (count === 0) {
-      await this.paisRepository.save([
-        { codigo: 'VE', nombre: 'Venezuela', bandera: '🇻🇪' },
-        { codigo: 'PE', nombre: 'Perú', bandera: '🇵🇪' },
-        { codigo: 'RD', nombre: 'República Dominicana', bandera: '🇩🇴' },
+      await this.countryRepository.save([
+        { code: 'VE', name: 'Venezuela', flag: '🇻🇪' },
+        { code: 'PE', name: 'Perú', flag: '🇵🇪' },
+        { code: 'RD', name: 'República Dominicana', flag: '🇩🇴' },
       ]);
-      console.log('🌎 Países base inicializados en el sistema');
+      console.log('🌎 Base countries initialized in the system');
     }
   }
 
   async findAll() {
-    return this.paisRepository.find({ order: { nombre: 'ASC' } });
+    return this.countryRepository.find({ order: { name: 'ASC' } });
   }
 
   async findOne(id: string) {
-    return this.paisRepository.findOneBy({ id });
+    return this.countryRepository.findOneBy({ id });
   }
 
-  async create(paisData: Partial<Pais>) {
-    const pais = this.paisRepository.create(paisData);
-    return this.paisRepository.save(pais);
+  async create(countryData: Partial<Country>) {
+    const country = this.countryRepository.create(countryData);
+    return this.countryRepository.save(country);
   }
 
-  async update(id: string, paisData: Partial<Pais>) {
-    await this.paisRepository.update(id, paisData);
+  async update(id: string, countryData: Partial<Country>) {
+    await this.countryRepository.update(id, countryData);
     return this.findOne(id);
   }
 
   async remove(id: string) {
-    await this.paisRepository.delete(id);
+    await this.countryRepository.delete(id);
     return { deleted: true };
   }
 }

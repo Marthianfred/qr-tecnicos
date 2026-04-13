@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiService, Technician, Cuadrilla } from '../services/api';
+import { apiService, Technician, Squad } from '../services/api';
 
 interface CoordinatorMonitorProps {
   onLogout?: () => void;
@@ -7,13 +7,13 @@ interface CoordinatorMonitorProps {
 }
 
 /**
- * Pantalla 4.1: Monitor de Cuadrillas (Interfaz del Coordinador)
+ * Pantalla 4.1: Monitor de Squads (Interfaz del Coordinador)
  */
 export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout }) => {
   const [filterCountry, setFilterCountry] = useState('Total');
   const [activeTab, setActiveTab] = useState<'tecnicos' | 'cuadrillas'>('tecnicos');
   const [technicians, setTechnicians] = useState<Technician[]>([]);
-  const [cuadrillas, setCuadrillas] = useState<Cuadrilla[]>([]);
+  const [cuadrillas, setSquads] = useState<Squad[]>([]);
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,11 +22,11 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
       const [techsData, reportsData, cuadrillasData] = await Promise.all([
         apiService.getTechnicians(),
         apiService.getReports(),
-        apiService.getCuadrillas(),
+        apiService.getSquads(),
       ]);
       setTechnicians(techsData);
       setReports(reportsData);
-      setCuadrillas(cuadrillasData);
+      setSquads(cuadrillasData);
       setLoading(false);
     } catch (err) {
       console.error('Error fetching coordinator data:', err);
@@ -68,7 +68,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
 
   const filteredSquad = filterCountry === 'Total' 
     ? technicians 
-    : technicians.filter(tech => tech.pais === filterCountry);
+    : technicians.filter(tech => tech.country === filterCountry);
 
   const suspendTech = async (id: string) => {
     try {
@@ -87,18 +87,18 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
     setReports(reports.filter(r => r.id !== id));
   };
 
-  const assignToCuadrilla = async (tecnicoId: string, cuadrillaId: string) => {
+  const assignToSquad = async (tecnicoId: string, cuadrillaId: string) => {
     try {
-      await apiService.assignTecnicosToCuadrilla(cuadrillaId, [tecnicoId]);
+      await apiService.assignTechniciansToSquad(cuadrillaId, [tecnicoId]);
       await fetchData();
     } catch (err) {
       console.error('Error assigning tech:', err);
     }
   };
 
-  const removeFromCuadrilla = async (cuadrillaId: string, tecnicoId: string) => {
+  const removeFromSquad = async (cuadrillaId: string, tecnicoId: string) => {
     try {
-      await apiService.removeTecnicoFromCuadrilla(cuadrillaId, tecnicoId);
+      await apiService.removeTechnicianFromSquad(cuadrillaId, tecnicoId);
       await fetchData();
     } catch (err) {
       console.error('Error removing tech:', err);
@@ -149,7 +149,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
               onClick={() => setActiveTab('cuadrillas')}
               className={`w-full text-left flex items-center px-4 py-4 rounded-xl transition-all duration-300 group relative ${activeTab === 'cuadrillas' ? 'trust-gradient text-white shadow-xl border border-white/20' : 'text-on_surface opacity-40 hover:opacity-100 hover:bg-white/5'}`}
             >
-              <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Control de Cuadrillas</span>
+              <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">Control de Squads</span>
               {activeTab === 'cuadrillas' && (
                 <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
               )}
@@ -178,7 +178,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
           {/* Top Bar (Fixed) */}
           <header className="bg-surface_container_lowest h-20 shadow-ambient flex items-center justify-between px-10 no-border relative z-20 flex-shrink-0">
             <h2 className="text-2xl font-display font-extrabold text-on_surface tracking-tighter uppercase">
-              {activeTab === 'tecnicos' ? 'Supervisión Operativa' : 'Gestión Estratégica de Cuadrillas'}
+              {activeTab === 'tecnicos' ? 'Supervisión Operativa' : 'Gestión Estratégica de Squads'}
             </h2>
             <div className="flex items-center space-x-6">
               <div className="relative glassmorphism p-2 rounded-full cursor-pointer hover:scale-110 transition-transform">
@@ -225,7 +225,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                       </div>
                       <div>
                         <p className="text-lg font-display font-extrabold text-on_surface tracking-tight uppercase">Anomalía de Identidad Detectada</p>
-                        <p className="text-xs font-bold text-on_surface opacity-50 tracking-widest uppercase">Objetivo: {report.tecnico?.nombre || 'Anónimo'} • Razón: {report.reason}</p>
+                        <p className="text-xs font-bold text-on_surface opacity-50 tracking-widest uppercase">Objetivo: {report.tecnico?.name || 'Anónimo'} • Razón: {report.reason}</p>
                       </div>
                     </div>
                     <div className="flex space-x-3 w-full md:w-auto">
@@ -278,7 +278,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                       <tr className="bg-surface_container_highest/30">
                         <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Personal</th>
                         <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Región</th>
-                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">ID Cuadrilla</th>
+                        <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">ID Squad</th>
                         <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em]">Estado</th>
                         <th className="px-8 py-5 text-[10px] font-display font-extrabold text-on_surface opacity-40 uppercase tracking-[0.2em] text-right">Protocolo</th>
                       </tr>
@@ -291,28 +291,28 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                               <div className="w-10 h-10 rounded-full bg-surface_container_highest overflow-hidden border-2 border-primary/5">
                                 {tech.fotoUrl && <img src={tech.fotoUrl} alt="" className="w-full h-full object-cover" />}
                               </div>
-                              <span className="font-display font-extrabold text-on_surface tracking-tight uppercase text-xs">{tech.nombre}</span>
+                              <span className="font-display font-extrabold text-on_surface tracking-tight uppercase text-xs">{tech.name}</span>
                             </div>
                           </td>
                           <td className="px-8 py-6">
                              <div className="bg-surface_container_highest px-3 py-1 rounded-sm inline-block">
-                                <span className="text-[10px] font-display font-extrabold text-primary uppercase tracking-widest">{tech.pais === 'Venezuela' ? '🇻🇪 ' : tech.pais === 'Perú' ? '🇵🇪 ' : '🇩🇴 '}{tech.pais}</span>
+                                <span className="text-[10px] font-display font-extrabold text-primary uppercase tracking-widest">{tech.country === 'Venezuela' ? '🇻🇪 ' : tech.country === 'Perú' ? '🇵🇪 ' : '🇩🇴 '}{tech.country}</span>
                              </div>
                           </td>
                           <td className="px-8 py-6">
                             {tech.cuadrillaId ? (
                               <span className="text-xs font-bold text-on_surface opacity-60 tracking-tighter">
-                                {cuadrillas.find(c => c.id === tech.cuadrillaId)?.nombre || 'ASIGNADO'}
+                                {cuadrillas.find(c => c.id === tech.cuadrillaId)?.name || 'ASIGNADO'}
                               </span>
                             ) : (
                               <select 
                                 className="text-[10px] font-display font-extrabold bg-surface_container_high text-primary px-3 py-1.5 rounded-sm uppercase tracking-widest no-border outline-none focus:ring-1 ring-primary/20 cursor-pointer"
-                                onChange={(e) => assignToCuadrilla(tech.id, e.target.value)}
+                                onChange={(e) => assignToSquad(tech.id, e.target.value)}
                                 defaultValue=""
                               >
                                 <option value="" disabled>SIN ASIGNAR</option>
                                 {cuadrillas.map(c => (
-                                  <option key={c.id} value={c.id}>{c.nombre}</option>
+                                  <option key={c.id} value={c.id}>{c.name}</option>
                                 ))}
                               </select>
                             )}
@@ -348,7 +348,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                     <div key={cuadrilla.id} className="bg-surface_container_lowest rounded-lg shadow-ambient p-8 space-y-6 no-border group hover:scale-[1.02] transition-transform">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="text-lg font-display font-extrabold text-on_surface tracking-tight uppercase">{cuadrilla.nombre}</h4>
+                          <h4 className="text-lg font-display font-extrabold text-on_surface tracking-tight uppercase">{cuadrilla.name}</h4>
                           <p className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-widest">{cuadrilla.zona}</p>
                         </div>
                         <div className="bg-primary/5 px-3 py-1 rounded-sm">
@@ -363,9 +363,9 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                         <div className="space-y-3">
                           {cuadrilla.tecnicos?.map(tech => (
                             <div key={tech.id} className="flex justify-between items-center group/item">
-                              <span className="text-xs font-bold text-on_surface opacity-60 group-hover/item:opacity-100 transition-opacity uppercase tracking-tight">{tech.nombre}</span>
+                              <span className="text-xs font-bold text-on_surface opacity-60 group-hover/item:opacity-100 transition-opacity uppercase tracking-tight">{tech.name}</span>
                               <button 
-                                onClick={() => removeFromCuadrilla(cuadrilla.id, tech.id)}
+                                onClick={() => removeFromSquad(cuadrilla.id, tech.id)}
                                 className="w-6 h-6 rounded-full bg-error/10 text-error flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-all hover:bg-error hover:text-white"
                               >
                                 <span className="text-sm font-bold">&times;</span>
@@ -382,16 +382,16 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                   
                   <button 
                     onClick={() => {
-                      const nombre = prompt('Nombre de la Cuadrilla:');
+                      const nombre = prompt('Nombre de la Squad:');
                       const zona = prompt('Designación de Zona:');
-                      if (nombre && zona) apiService.createCuadrilla({ nombre, zona }).then(() => fetchData());
+                      if (nombre && zona) apiService.createSquad({ nombre, zona }).then(() => fetchData());
                     }}
                     className="bg-surface_container_highest/20 border-2 border-dashed border-primary/10 rounded-lg flex flex-col items-center justify-center p-10 text-primary/40 hover:border-primary/40 hover:text-primary transition-all group min-h-[220px]"
                   >
                     <div className="w-12 h-12 rounded-full border-2 border-dashed border-primary/20 flex items-center justify-center group-hover:border-primary/40 mb-4">
                       <span className="text-2xl font-light">+</span>
                     </div>
-                    <span className="text-[10px] font-display font-extrabold uppercase tracking-[0.3em]">Inicializar Cuadrilla</span>
+                    <span className="text-[10px] font-display font-extrabold uppercase tracking-[0.3em]">Inicializar Squad</span>
                   </button>
                 </div>
               </div>

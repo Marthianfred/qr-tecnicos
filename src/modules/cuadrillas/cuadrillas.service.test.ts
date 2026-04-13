@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CuadrillasService } from './cuadrillas.service';
-import { Cuadrilla } from '../../entities/cuadrilla.entity';
-import { Tecnico } from '../../entities/tecnico.entity';
+import { SquadsService } from './cuadrillas.service';
+import { Squad } from '../../entities/squad.entity';
+import { Technician } from '../../entities/technician.entity';
 import { NotFoundException } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
-describe('CuadrillasService', () => {
-  let service: CuadrillasService;
+describe('SquadsService', () => {
+  let service: SquadsService;
 
-  const mockCuadrillaRepository = {
+  const mockSquadRepository = {
     find: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
@@ -18,7 +18,7 @@ describe('CuadrillasService', () => {
     remove: jest.fn(),
   };
 
-  const mockTecnicoRepository = {
+  const mockTechnicianRepository = {
     update: jest.fn(),
     findOneBy: jest.fn(),
   };
@@ -26,19 +26,19 @@ describe('CuadrillasService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CuadrillasService,
+        SquadsService,
         {
-          provide: getRepositoryToken(Cuadrilla),
-          useValue: mockCuadrillaRepository,
+          provide: getRepositoryToken(Squad),
+          useValue: mockSquadRepository,
         },
         {
-          provide: getRepositoryToken(Tecnico),
-          useValue: mockTecnicoRepository,
+          provide: getRepositoryToken(Technician),
+          useValue: mockTechnicianRepository,
         },
       ],
     }).compile();
 
-    service = module.get<CuadrillasService>(CuadrillasService);
+    service = module.get<SquadsService>(SquadsService);
   });
 
   it('should be defined', () => {
@@ -47,60 +47,60 @@ describe('CuadrillasService', () => {
 
   describe('findAll', () => {
     it('should return all cuadrillas', async () => {
-      mockCuadrillaRepository.find.mockResolvedValue([]);
+      mockSquadRepository.find.mockResolvedValue([]);
       const result = await service.findAll();
       expect(result).toEqual([]);
-      expect(mockCuadrillaRepository.find).toHaveBeenCalledWith({ relations: ['tecnicos', 'supervisor'] });
+      expect(mockSquadRepository.find).toHaveBeenCalledWith({ relations: ['tecnicos', 'supervisor'] });
     });
   });
 
   describe('findOne', () => {
     it('should return one cuadrilla', async () => {
       const cuadrilla = { id: '123' };
-      mockCuadrillaRepository.findOne.mockResolvedValue(cuadrilla);
+      mockSquadRepository.findOne.mockResolvedValue(cuadrilla);
       const result = await service.findOne('123');
       expect(result).toEqual(cuadrilla);
     });
 
     it('should throw NotFoundException if not found', async () => {
-      mockCuadrillaRepository.findOne.mockResolvedValue(null);
+      mockSquadRepository.findOne.mockResolvedValue(null);
       await expect(service.findOne('123')).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('create', () => {
     it('should create and save a cuadrilla', async () => {
-      const dto = { nombre: 'Cuadrilla 1', zona: 'Norte' };
-      mockCuadrillaRepository.create.mockReturnValue(dto);
-      mockCuadrillaRepository.save.mockResolvedValue({ id: '123', ...dto });
+      const dto = { name: 'Squad 1', zona: 'Norte' };
+      mockSquadRepository.create.mockReturnValue(dto);
+      mockSquadRepository.save.mockResolvedValue({ id: '123', ...dto });
       const result = await service.create(dto);
       expect(result.id).toBe('123');
-      expect(mockCuadrillaRepository.save).toHaveBeenCalled();
+      expect(mockSquadRepository.save).toHaveBeenCalled();
     });
   });
 
-  describe('addTecnicos', () => {
+  describe('addTechnicians', () => {
     it('should update tecnicos with cuadrillaId', async () => {
-      mockCuadrillaRepository.findOne.mockResolvedValue({ id: 'c1' });
-      await service.addTecnicos('c1', ['t1', 't2']);
-      expect(mockTecnicoRepository.update).toHaveBeenCalledTimes(2);
-      expect(mockTecnicoRepository.update).toHaveBeenCalledWith('t1', { cuadrillaId: 'c1' });
-      expect(mockTecnicoRepository.update).toHaveBeenCalledWith('t2', { cuadrillaId: 'c1' });
+      mockSquadRepository.findOne.mockResolvedValue({ id: 'c1' });
+      await service.addTechnicians('c1', ['t1', 't2']);
+      expect(mockTechnicianRepository.update).toHaveBeenCalledTimes(2);
+      expect(mockTechnicianRepository.update).toHaveBeenCalledWith('t1', { cuadrillaId: 'c1' });
+      expect(mockTechnicianRepository.update).toHaveBeenCalledWith('t2', { cuadrillaId: 'c1' });
     });
   });
 
-  describe('removeTecnico', () => {
+  describe('removeTechnician', () => {
     it('should throw if tecnico not in cuadrilla', async () => {
-      mockCuadrillaRepository.findOne.mockResolvedValue({ id: 'c1' });
-      mockTecnicoRepository.findOneBy.mockResolvedValue(null);
-      await expect(service.removeTecnico('c1', 't1')).rejects.toThrow(NotFoundException);
+      mockSquadRepository.findOne.mockResolvedValue({ id: 'c1' });
+      mockTechnicianRepository.findOneBy.mockResolvedValue(null);
+      await expect(service.removeTechnician('c1', 't1')).rejects.toThrow(NotFoundException);
     });
 
     it('should remove tecnico from cuadrilla', async () => {
-      mockCuadrillaRepository.findOne.mockResolvedValue({ id: 'c1' });
-      mockTecnicoRepository.findOneBy.mockResolvedValue({ id: 't1', cuadrillaId: 'c1' });
-      await service.removeTecnico('c1', 't1');
-      expect(mockTecnicoRepository.update).toHaveBeenCalledWith('t1', { cuadrillaId: undefined });
+      mockSquadRepository.findOne.mockResolvedValue({ id: 'c1' });
+      mockTechnicianRepository.findOneBy.mockResolvedValue({ id: 't1', cuadrillaId: 'c1' });
+      await service.removeTechnician('c1', 't1');
+      expect(mockTechnicianRepository.update).toHaveBeenCalledWith('t1', { cuadrillaId: undefined });
     });
   });
 });

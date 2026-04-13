@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { AuthService } from './auth.service';
-import { Tecnico, TecnicoStatus } from '../../entities/tecnico.entity';
-import { Certificacion, NivelCertificacion } from '../../entities/certificacion.entity';
+import { Technician, TechnicianStatus } from '../../entities/technician.entity';
+import { Certification, NivelCertification } from '../../entities/certification.entity';
 import { User } from '../../entities/user.entity';
 import { TrustLayerService } from './trust-layer.service';
 import { UnauthorizedException } from '@nestjs/common';
@@ -14,11 +14,11 @@ describe('AuthService', () => {
   let jwtService: JwtService;
   let trustLayer: TrustLayerService;
 
-  const mockTecnicoRepository = {
+  const mockTechnicianRepository = {
     findOne: jest.fn(),
   };
 
-  const mockCertificacionRepository = {
+  const mockCertificationRepository = {
     find: jest.fn(),
   };
 
@@ -48,12 +48,12 @@ describe('AuthService', () => {
           useValue: mockTrustLayerService,
         },
         {
-          provide: getRepositoryToken(Tecnico),
-          useValue: mockTecnicoRepository,
+          provide: getRepositoryToken(Technician),
+          useValue: mockTechnicianRepository,
         },
         {
-          provide: getRepositoryToken(Certificacion),
-          useValue: mockCertificacionRepository,
+          provide: getRepositoryToken(Certification),
+          useValue: mockCertificationRepository,
         },
         {
           provide: getRepositoryToken(User),
@@ -75,14 +75,14 @@ describe('AuthService', () => {
     it('should call trustLayer.validateTriplePlay', async () => {
       const tecnico = {
         id: '123',
-        nombre: 'Juan Perez',
-        documento: 'V12345678',
-        pais: 'VE',
-        status: TecnicoStatus.ACTIVO,
-        certificaciones: [{ nivel: NivelCertificacion.INTEGRAL }],
+        name: 'Juan Perez',
+        documentId: 'V12345678',
+        country: 'VE',
+        status: TechnicianStatus.ACTIVO,
+        certificaciones: [{ nivel: NivelCertification.INTEGRAL }],
       };
-      mockTecnicoRepository.findOne.mockResolvedValue(tecnico);
-      mockTrustLayerService.validateTriplePlay.mockResolvedValue({ nivel: NivelCertificacion.INTEGRAL });
+      mockTechnicianRepository.findOne.mockResolvedValue(tecnico);
+      mockTrustLayerService.validateTriplePlay.mockResolvedValue({ nivel: NivelCertification.INTEGRAL });
 
       await service.generateQR('123');
       expect(mockTrustLayerService.validateTriplePlay).toHaveBeenCalledWith(tecnico);
@@ -91,21 +91,21 @@ describe('AuthService', () => {
     it('should return a qr_token if trustLayer validation passes', async () => {
       const tecnico = {
         id: '123',
-        nombre: 'Juan Perez',
-        documento: 'V12345678',
-        pais: 'VE',
-        status: TecnicoStatus.ACTIVO,
-        certificaciones: [{ nivel: NivelCertificacion.INTEGRAL }],
+        name: 'Juan Perez',
+        documentId: 'V12345678',
+        country: 'VE',
+        status: TechnicianStatus.ACTIVO,
+        certificaciones: [{ nivel: NivelCertification.INTEGRAL }],
       };
-      mockTecnicoRepository.findOne.mockResolvedValue(tecnico);
-      mockTrustLayerService.validateTriplePlay.mockResolvedValue({ nivel: NivelCertificacion.INTEGRAL });
+      mockTechnicianRepository.findOne.mockResolvedValue(tecnico);
+      mockTrustLayerService.validateTriplePlay.mockResolvedValue({ nivel: NivelCertification.INTEGRAL });
 
       const result = await service.generateQR('123');
       expect(result).toHaveProperty('qr_token');
     });
 
     it('should throw if trustLayer.validateTriplePlay throws', async () => {
-      mockTecnicoRepository.findOne.mockResolvedValue({ id: '123' });
+      mockTechnicianRepository.findOne.mockResolvedValue({ id: '123' });
       mockTrustLayerService.validateTriplePlay.mockRejectedValue(new UnauthorizedException('TrustLayer Fail'));
 
       await expect(service.generateQR('123')).rejects.toThrow('TrustLayer Fail');
@@ -114,7 +114,7 @@ describe('AuthService', () => {
 
   describe('validateToken', () => {
     it('should call trustLayer.validateAntiReplay and markTokenAsUsed', async () => {
-      const payload = { sub: '123', nombre: 'Juan' };
+      const payload = { sub: '123', name: 'Juan' };
       const token = jwtService.sign(payload);
       
       mockTrustLayerService.validateAntiReplay.mockResolvedValue(undefined);
@@ -124,7 +124,7 @@ describe('AuthService', () => {
       
       expect(mockTrustLayerService.validateAntiReplay).toHaveBeenCalledWith(token);
       expect(mockTrustLayerService.markTokenAsUsed).toHaveBeenCalledWith(token);
-      expect(result.nombre).toBe('Juan');
+      expect(result.name).toBe('Juan');
     });
 
     it('should throw if trustLayer.validateAntiReplay throws', async () => {

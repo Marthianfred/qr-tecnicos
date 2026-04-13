@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { PricingService } from './pricing.service';
 import { InventoryService } from '../inventory/inventory.service';
-import { Producto } from '../../entities/producto.entity';
+import { Product } from '../../entities/product.entity';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 describe('PricingService', () => {
@@ -21,7 +21,7 @@ describe('PricingService', () => {
           },
         },
         {
-          provide: getRepositoryToken(Producto),
+          provide: getRepositoryToken(Product),
           useValue: {
             findOneBy: jest.fn(),
           },
@@ -31,16 +31,16 @@ describe('PricingService', () => {
 
     service = module.get<PricingService>(PricingService);
     inventoryService = module.get<InventoryService>(InventoryService);
-    repo = module.get(getRepositoryToken(Producto));
+    repo = module.get(getRepositoryToken(Product));
   });
 
   it('should return base price when stock is high', async () => {
-    const mockProducto = {
+    const mockProduct = {
       id: '1',
-      precio: 100,
+      price: 100,
       stockInicial: 100,
     };
-    repo.findOneBy.mockResolvedValue(mockProducto);
+    repo.findOneBy.mockResolvedValue(mockProduct);
     (inventoryService.checkAvailability as jest.Mock).mockResolvedValue(50);
 
     const price = await service.calculateDynamicPrice('1');
@@ -48,12 +48,12 @@ describe('PricingService', () => {
   });
 
   it('should increase price by 15% when stock is low (< 20%)', async () => {
-    const mockProducto = {
+    const mockProduct = {
       id: '1',
-      precio: 100,
+      price: 100,
       stockInicial: 100,
     };
-    repo.findOneBy.mockResolvedValue(mockProducto);
+    repo.findOneBy.mockResolvedValue(mockProduct);
     (inventoryService.checkAvailability as jest.Mock).mockResolvedValue(15);
 
     const price = await service.calculateDynamicPrice('1');
@@ -61,12 +61,12 @@ describe('PricingService', () => {
   });
 
   it('should increase price by 30% when stock is very low (< 5%)', async () => {
-    const mockProducto = {
+    const mockProduct = {
       id: '1',
-      precio: 100,
+      price: 100,
       stockInicial: 100,
     };
-    repo.findOneBy.mockResolvedValue(mockProducto);
+    repo.findOneBy.mockResolvedValue(mockProduct);
     (inventoryService.checkAvailability as jest.Mock).mockResolvedValue(4);
 
     const price = await service.calculateDynamicPrice('1');

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiService, Technician, Cuadrilla } from '../services/api';
+import { apiService, Technician, Squad } from '../services/api';
 
 type AdminModule = 
   | 'dashboard' 
@@ -20,11 +20,11 @@ interface AdminPanelProps {
 const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const [activeModule, setActiveModule] = useState<AdminModule>('dashboard');
-  const [selectedCountry, setSelectedCountry] = useState<'TODOS' | 'VE' | 'PE' | 'RD'>(user.paisScope || 'TODOS');
+  const [selectedCountry, setSelectedCountry] = useState<'TODOS' | 'VE' | 'PE' | 'RD'>(user.countryScope || 'TODOS');
   const [loading, setLoading] = useState(false);
   const [technicians, setTechnicians] = useState<Technician[]>([]);
-  const [squads, setSquads] = useState<Cuadrilla[]>([]);
-  const [departamentos, setDepartamentos] = useState<any[]>([]);
+  const [squads, setSquads] = useState<Squad[]>([]);
+  const [departamentos, setDepartments] = useState<any[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
   const [countries, setCountries] = useState<any[]>([]);
   const [dashboardStats, setDashboardStats] = useState({ technicians: 0, activeQrs: 0, alerts: 0, recentReports: [] as any[], squads: 0 });
@@ -43,16 +43,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
 
   useEffect(() => {
     // Si el usuario tiene scope, forzamos el país
-    if (user.paisScope && selectedCountry !== user.paisScope) {
-       setSelectedCountry(user.paisScope);
+    if (user.countryScope && selectedCountry !== user.countryScope) {
+       setSelectedCountry(user.countryScope);
     }
-  }, [user.paisScope]);
+  }, [user.countryScope]);
 
   // Carga de datos globales una sola vez al montar el componente
   useEffect(() => {
     const loadGlobalData = async () => {
       try {
-        const countriesData = await apiService.getPaises();
+        const countriesData = await apiService.getCountries();
         setCountries(countriesData);
       } catch (err) {
         console.error('Error al cargar datos globales:', err);
@@ -77,25 +77,25 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           break;
         case 'personnel':
           const techs = await apiService.getTechnicians();
-          const filteredTechs = selectedCountry === 'TODOS' ? techs : techs.filter(t => t.pais === selectedCountry);
+          const filteredTechs = selectedCountry === 'TODOS' ? techs : techs.filter(t => t.country === selectedCountry);
           setTechnicians(filteredTechs);
           break;
         case 'companies':
           const companiesData = await apiService.getCompanies();
-          const filteredCompanies = selectedCountry === 'TODOS' ? companiesData : companiesData.filter(c => c.pais === selectedCountry);
+          const filteredCompanies = selectedCountry === 'TODOS' ? companiesData : companiesData.filter(c => c.country === selectedCountry);
           setCompanies(filteredCompanies);
           break;
         case 'operations':
-          const squadsData = await apiService.getCuadrillas();
-          const filteredSquads = selectedCountry === 'TODOS' ? squadsData : squadsData.filter(s => s.nombre.includes(selectedCountry));
+          const squadsData = await apiService.getSquads();
+          const filteredSquads = selectedCountry === 'TODOS' ? squadsData : squadsData.filter(s => s.name.includes(selectedCountry));
           setSquads(filteredSquads);
           break;
         case 'departamentos':
-          const depts = await apiService.getDepartamentos();
-          setDepartamentos(depts);
+          const depts = await apiService.getDepartments();
+          setDepartments(depts);
           break;
         case 'countries':
-          const freshCountries = await apiService.getPaises();
+          const freshCountries = await apiService.getCountries();
           setCountries(freshCountries);
           break;
         default:
@@ -111,11 +111,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   // Sidebar Menu Definition
   const menuItems = [
     { id: 'dashboard', label: 'Panel Operativo', icon: '📊', description: 'Resumen Tres Países' },
-    { id: 'companies', label: 'Gestión Corporativa', icon: '🏢', description: 'Empresas y Aliados' },
-    { id: 'departamentos', label: 'Departamentos', icon: '🏢', description: 'Áreas Operativas' },
+    { id: 'companies', label: 'Gestión Corporativa', icon: '🏢', description: 'Companys y Aliados' },
+    { id: 'departamentos', label: 'Departments', icon: '🏢', description: 'Áreas Operativas' },
     { id: 'personnel', label: 'Gestión de Personal', icon: '👥', description: 'Recursos Humanos' },
     { id: 'certifications', label: 'Historial Académico', icon: '🎓', description: 'Niveles Técnicos' },
-    { id: 'operations', label: 'Cuadrillas y Campo', icon: '🚙', description: 'Despliegue Logístico' },
+    { id: 'operations', label: 'Squads y Campo', icon: '🚙', description: 'Despliegue Logístico' },
     { id: 'qr-security', label: 'Centro de Seguridad', icon: '🛡️', description: 'Control de Protocolos' },
     { id: 'alerts', label: 'Alertas y Reportes', icon: '🚨', description: 'Historial de Incidentes' },
     { id: 'countries', label: 'Expansión Global', icon: '🌍', description: 'Gestión de Naciones' },
@@ -180,10 +180,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                 </div>
              </div>
              
-                         {user.paisScope ? (
+                         {user.countryScope ? (
                 <div className="flex items-center space-x-2 bg-blue-50 px-4 py-1.5 rounded-lg border border-blue-100">
-                   <span className="text-sm">{user.paisScope === 'VE' ? '🇻🇪' : user.paisScope === 'PE' ? '🇵🇪' : '🇩🇴'}</span>
-                   <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">País: {countries.find(p => p.codigo === user.paisScope)?.nombre || user.paisScope}</span>
+                   <span className="text-sm">{user.countryScope === 'VE' ? '🇻🇪' : user.countryScope === 'PE' ? '🇵🇪' : '🇩🇴'}</span>
+                   <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">País: {countries.find(p => p.codigo === user.countryScope)?.name || user.countryScope}</span>
                 </div>
               ) : (
                 <div className="flex items-center bg-slate-100 rounded-lg p-1">
@@ -234,7 +234,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                <div className="grid grid-cols-4 gap-8">
                   {[
                     { label: 'Técnicos Totales', value: dashboardStats.technicians.toLocaleString(), delta: 'BASE REAL', color: 'border-blue-500' },
-                    { label: 'Cuadrillas Vivas', value: dashboardStats.squads.toString(), delta: 'OPERATIVO', color: 'border-green-500' },
+                    { label: 'Squads Vivas', value: dashboardStats.squads.toString(), delta: 'OPERATIVO', color: 'border-green-500' },
                     { label: 'Validaciones Activas', value: dashboardStats.activeQrs.toLocaleString(), delta: 'PROTOCOLO', color: 'border-amber-500' },
                     { label: 'Alertas Críticas', value: dashboardStats.alerts.toString(), delta: 'ATENCIÓN', color: 'border-red-500' },
                   ].map((stat, i) => (
@@ -287,7 +287,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                   <div className="space-y-8">
                     <div className="bg-slate-900 rounded-3xl shadow-2xl p-4 text-white relative overflow-hidden group">
                       <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform">🎓</div>
-                      <h3 className="text-xl font-black uppercase tracking-tighter mb-4">Certificaciones de Personal</h3>
+                      <h3 className="text-xl font-black uppercase tracking-tighter mb-4">Certificationes de Personal</h3>
                       <p className="text-xs opacity-50 mb-8 leading-relaxed">Resumen de cumplimiento normativo y certificaciones técnicas globales.</p>
                       
                       <div className="space-y-6">
@@ -309,7 +309,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                       </div>
                       
                       <button className="w-full mt-10 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all">
-                          Gestionar Certificaciones
+                          Gestionar Certificationes
                       </button>
                     </div>
 
@@ -367,7 +367,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         <tr className="bg-slate-50 border-b border-slate-100">
                             <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Personal</th>
                             <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Documento</th>
-                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Empresa / Tipo</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Company / Tipo</th>
                             <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Zona Ops</th>
                             <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Estatus</th>
                             <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Acciones</th>
@@ -386,19 +386,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                        </div>
                                     </div>
                                     <div>
-                                       <p className="text-[12px] font-black text-slate-800 uppercase whitespace-nowrap">{tech.nombre}</p>
+                                       <p className="text-[12px] font-black text-slate-800 uppercase whitespace-nowrap">{tech.name}</p>
                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
-                                          {tech.cargo || 'Especialista'} • {tech.departamento?.nombre || 'General'}
+                                          {tech.role || 'Especialista'} • {tech.departamento?.name || 'General'}
                                        </p>
                                     </div>
                                  </div>
                               </td>
-                              <td className="px-8 py-5 text-[11px] font-bold text-slate-500 font-mono tracking-tighter">{tech.documento}</td>
+                              <td className="px-8 py-5 text-[11px] font-bold text-slate-500 font-mono tracking-tighter">{tech.documentId}</td>
                               <td className="px-8 py-5">
                                  <div className="flex flex-col">
-                                    <span className="text-[10px] font-black text-slate-700 uppercase">{tech.tipoPersonal === 'corporativo' ? 'FIBEX GLOBAL' : 'ALIADO TERCERO'}</span>
-                                    <span className={`text-[8px] font-black w-fit px-2 py-0.5 rounded-full mt-1 ${tech.pais === 'VE' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
-                                       {tech.pais}
+                                    <span className="text-[10px] font-black text-slate-700 uppercase">{tech.staffType === 'corporativo' ? 'FIBEX GLOBAL' : 'ALIADO TERCERO'}</span>
+                                    <span className={`text-[8px] font-black w-fit px-2 py-0.5 rounded-full mt-1 ${tech.country === 'VE' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
+                                       {tech.country}
                                     </span>
                                  </div>
                               </td>
@@ -464,8 +464,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                   {companies.slice(0, 3).map(emp => (
                     <div key={emp.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative group overflow-hidden">
                        <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full opacity-50 transition-transform group-hover:scale-110"></div>
-                       <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Empresa en {emp.pais}</h4>
-                       <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter mb-4">{emp.nombre}</h3>
+                       <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Company en {emp.country}</h4>
+                       <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter mb-4">{emp.name}</h3>
                        <div className="flex items-center space-x-6">
                           <div>
                              <p className="text-[9px] font-black text-slate-400 uppercase">Técnicos</p>
@@ -478,13 +478,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                
                <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
                   <div className="p-8 border-b border-slate-100 flex justify-between items-center">
-                     <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Listado de Empresas Aliadas / Contratistas</h3>
+                     <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Listado de Companys Aliadas / Contratistas</h3>
                      <button className="bg-slate-900 text-white px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-md">Añadir Aliado</button>
                   </div>
                   <table className="w-full text-left">
                      <thead>
                         <tr className="bg-slate-50 text-[9px] font-black text-slate-400 uppercase tracking-widest italic">
-                           <th className="px-8 py-4">Empresa</th>
+                           <th className="px-8 py-4">Company</th>
                            <th className="px-8 py-4">Documento / RIF</th>
                            <th className="px-8 py-4">País</th>
                            <th className="px-8 py-4">Suscripción</th>
@@ -494,9 +494,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                      <tbody className="divide-y divide-slate-100">
                         {companies.length > 0 ? companies.map(aliado => (
                           <tr key={aliado.id} className="hover:bg-slate-50 transition-colors">
-                            <td className="px-8 py-4 font-black text-[11px] text-slate-800 uppercase">{aliado.nombre}</td>
+                            <td className="px-8 py-4 font-black text-[11px] text-slate-800 uppercase">{aliado.name}</td>
                             <td className="px-8 py-4 font-mono text-[10px] text-slate-400">{aliado.rif || 'J-0000000-0'}</td>
-                            <td className="px-8 py-4 text-[11px] font-bold text-slate-600">{aliado.pais}</td>
+                            <td className="px-8 py-4 text-[11px] font-bold text-slate-600">{aliado.country}</td>
                             <td className="px-8 py-4">
                                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-tighter">Activo</span>
                             </td>
@@ -517,7 +517,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                <div className="flex justify-between items-center bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
                   <div className="space-y-1">
                      <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter italic">Estructura Organizativa</h2>
-                     <p className="text-xs text-slate-400 uppercase tracking-widest font-bold">Gestión de Departamentos y Áreas Operativas</p>
+                     <p className="text-xs text-slate-400 uppercase tracking-widest font-bold">Gestión de Departments y Áreas Operativas</p>
                   </div>
                   <button 
                      onClick={() => setShowDeptModal(true)}
@@ -532,7 +532,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                      <table className="w-full text-left border-collapse">
                         <thead>
                            <tr className="bg-slate-50 border-b border-slate-100">
-                               <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Departamento</th>
+                               <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Department</th>
                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Personal Asignado</th>
                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Estatus</th>
                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Acciones</th>
@@ -544,10 +544,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                  <td className="px-8 py-6">
                                     <div className="flex items-center space-x-4">
                                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-xs uppercase">
-                                          {dept.nombre.substring(0,2)}
+                                          {dept.name.substring(0,2)}
                                        </div>
                                        <div>
-                                          <p className="text-[13px] font-black text-slate-800 uppercase tracking-tight">{dept.nombre}</p>
+                                          <p className="text-[13px] font-black text-slate-800 uppercase tracking-tight">{dept.name}</p>
                                           <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Fibex Operaciones</p>
                                        </div>
                                     </div>
@@ -562,9 +562,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                     <div className="flex items-center justify-end space-x-3">
                                        <button 
                                           onClick={async () => {
-                                             if (confirm(`¿Eliminar área ${dept.nombre}?`)) {
+                                             if (confirm(`¿Eliminar área ${dept.name}?`)) {
                                                 try {
-                                                   await apiService.deleteDepartamento(dept.id);
+                                                   await apiService.deleteDepartment(dept.id);
                                                    fetchModuleData();
                                                 } catch (e) { setNotification({ type: 'error', message: 'No se puede eliminar (existen técnicos asociados)' }); }
                                              }
@@ -606,21 +606,21 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                   <div className="space-y-1 p-4 border-b border-slate-50">
                      {dashboardStats.recentReports.length > 0 ? dashboardStats.recentReports.map((report: any) => (
                        <div key={report.id} className="flex items-center space-x-6 p-6 hover:bg-red-50/30 transition-all rounded-2xl group border border-transparent hover:border-red-100">
-                          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl shadow-sm ${!report.resuelto ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-slate-100 text-slate-400'}`}>
-                             {!report.resuelto ? '⚠️' : '✅'}
+                          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl shadow-sm ${!report.resolved ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-slate-100 text-slate-400'}`}>
+                             {!report.resolved ? '⚠️' : '✅'}
                           </div>
                           <div className="flex-grow">
                              <div className="flex items-center space-x-3 mb-1">
-                                <span className={`text-[9px] font-black px-2 py-0.5 rounded-sm uppercase tracking-tighter ${!report.resuelto ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-500'}`}>
-                                   {!report.resuelto ? 'URGENTE' : 'RESUELTO'}
+                                <span className={`text-[9px] font-black px-2 py-0.5 rounded-sm uppercase tracking-tighter ${!report.resolved ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                                   {!report.resolved ? 'URGENTE' : 'RESUELTO'}
                                 </span>
                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">INC-{report.id.substring(0,6)}</span>
-                                <span className="text-[10px] text-slate-300 font-bold">• {new Date(report.fechaReporte).toLocaleDateString()}</span>
+                                <span className="text-[10px] text-slate-300 font-bold">• {new Date(report.reportedAt).toLocaleDateString()}</span>
                              </div>
-                             <h4 className="text-[13px] font-black text-slate-800 uppercase tracking-tight">{report.descripcion}</h4>
-                             <p className="text-[11px] text-slate-400 font-medium">Técnico involucrado: {report.tecnico?.nombre || 'Desconocido'}</p>
+                             <h4 className="text-[13px] font-black text-slate-800 uppercase tracking-tight">{report.description}</h4>
+                             <p className="text-[11px] text-slate-400 font-medium">Técnico involucrado: {report.tecnico?.name || 'Desconocido'}</p>
                           </div>
-                          {!report.resuelto && (
+                          {!report.resolved && (
                              <button 
                                 onClick={async () => {
                                    try {
@@ -702,14 +702,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
             </div>
           )}
 
-          {/* Módulo: Cuadrillas y Campo */}
+          {/* Módulo: Squads y Campo */}
           {activeModule === 'operations' && (
             <div className="max-w-7xl mx-auto space-y-8 animate-in slide-in-from-right-10 duration-500">
                <div className="flex justify-between items-center bg-blue-600 p-10 rounded-3xl text-white shadow-xl relative overflow-hidden">
                   <div className="absolute right-0 bottom-0 text-white/5 text-9xl">🚙</div>
                   <div className="space-y-2">
                      <h2 className="text-3xl font-black uppercase tracking-tighter">Despliegue Operativo</h2>
-                     <p className="text-xs font-bold opacity-70 uppercase tracking-widest">Control logístico nacional de Cuadrillas en Campo.</p>
+                     <p className="text-xs font-bold opacity-70 uppercase tracking-widest">Control logístico nacional de Squads en Campo.</p>
                   </div>
                   <div className="flex space-x-4">
                      <div className="bg-white/10 px-6 py-3 rounded-2xl border border-white/20 text-center">
@@ -726,7 +726,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                           <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">🚙</div>
                           <span className="text-[10px] font-black text-green-500 uppercase tracking-widest">Operativa</span>
                        </div>
-                       <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter mb-1">{squad.nombre}</h3>
+                       <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter mb-1">{squad.name}</h3>
                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-6">Sector: {squad.zona || 'Nacional'}</p>
                        <div className="flex -space-x-3 overflow-hidden">
                           {squad.tecnicos?.map((t: any) => (
@@ -773,15 +773,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                     <td className="px-8 py-5">
                                        <div className="flex items-center space-x-4">
                                           <span className="text-2xl">{p.bandera}</span>
-                                          <span className="text-xs font-black text-slate-700 uppercase">{p.nombre}</span>
+                                          <span className="text-xs font-black text-slate-700 uppercase">{p.name}</span>
                                        </div>
                                     </td>
                                     <td className="px-8 py-5">
                                        <span className="text-[10px] font-mono font-black text-slate-400 bg-slate-100 px-3 py-1 rounded-full">{p.codigo}</span>
                                     </td>
                                     <td className="px-8 py-5">
-                                       <span className={`text-[8px] font-black px-2 py-1 rounded-full ${p.activo ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
-                                          {p.activo ? 'ACTIVO' : 'PAUSADO'}
+                                       <span className={`text-[8px] font-black px-2 py-1 rounded-full ${p.active ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                                          {p.active ? 'ACTIVO' : 'PAUSADO'}
                                        </span>
                                     </td>
                                     <td className="px-8 py-5 text-right">
@@ -790,7 +790,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                               onClick={async () => {
                                                  try {
                                                     setLoading(true);
-                                                    await apiService.updatePais(p.id, { activo: !p.activo });
+                                                    await apiService.updateCountry(p.id, { active: !p.active });
                                                     fetchModuleData();
                                                  } catch (err) {
                                                     setNotification({ type: 'error', message: 'Error al actualizar estado' });
@@ -798,17 +798,17 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                                     setLoading(false);
                                                  }
                                               }}
-                                              className={`text-[9px] font-black px-3 py-1 rounded-sm uppercase tracking-widest transition-all ${p.activo ? 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white' : 'bg-green-50 text-green-600 hover:bg-green-600 hover:text-white'}`}
+                                              className={`text-[9px] font-black px-3 py-1 rounded-sm uppercase tracking-widest transition-all ${p.active ? 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white' : 'bg-green-50 text-green-600 hover:bg-green-600 hover:text-white'}`}
                                            >
-                                              {p.activo ? 'Pausar' : 'Activar'}
+                                              {p.active ? 'Pausar' : 'Activar'}
                                            </button>
                                            <button 
                                               onClick={async () => {
-                                                 const nuevoNombre = prompt('Nuevo nombre de la nación:', p.nombre);
-                                                 if (nuevoNombre && nuevoNombre !== p.nombre) {
+                                                 const nuevoNombre = prompt('Nuevo nombre de la nación:', p.name);
+                                                 if (nuevoNombre && nuevoNombre !== p.name) {
                                                     try {
                                                        setLoading(true);
-                                                       await apiService.updatePais(p.id, { nombre: nuevoNombre });
+                                                       await apiService.updateCountry(p.id, { name: nuevoNombre });
                                                        fetchModuleData();
                                                     } catch (err) {
                                                        setNotification({ type: 'error', message: 'Error al editar nombre' });
@@ -837,15 +837,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         <form className="space-y-4" onSubmit={async (e) => {
                            e.preventDefault();
                            const formData = new FormData(e.currentTarget);
-                           const newPais = {
-                              nombre: formData.get('nombre') as string,
+                           const newCountry = {
+                              name: formData.get('nombre') as string,
                               codigo: formData.get('codigo') as string,
                               bandera: formData.get('bandera') as string,
-                              activo: true
+                              active: true
                            };
                            try {
                               setLoading(true);
-                              await apiService.createPais(newPais);
+                              await apiService.createCountry(newCountry);
                               setNotification({ type: 'success', message: 'Nuevo país internacional activado con éxito' });
                               fetchModuleData();
                               (e.target as HTMLFormElement).reset();
@@ -922,7 +922,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                  <div className="p-10 bg-slate-900 text-white flex justify-between items-center">
                     <div className="space-y-1">
                        <h3 className="text-2xl font-black uppercase tracking-tighter">Previsualización de Ingesta</h3>
-                       <p className="text-[10px] font-bold opacity-50 uppercase tracking-widest italic">Ámbito de Destino: {selectedCountry === 'TODOS' ? 'NACIONAL (GLOBAL)' : `${countries.find(p => p.codigo === selectedCountry)?.nombre || selectedCountry}`}</p>
+                       <p className="text-[10px] font-bold opacity-50 uppercase tracking-widest italic">Ámbito de Destino: {selectedCountry === 'TODOS' ? 'NACIONAL (GLOBAL)' : `${countries.find(p => p.codigo === selectedCountry)?.name || selectedCountry}`}</p>
                     </div>
                     <div className="bg-blue-600 px-6 py-2 rounded-xl">
                        <span className="text-xl font-black">{previewData.length}</span>
@@ -943,10 +943,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                        <tbody className="divide-y divide-slate-50">
                           {previewData.map((row, i) => (
                              <tr key={i} className="group hover:bg-slate-50 transition-colors">
-                                <td className="py-4 text-xs font-black text-slate-800 uppercase">{row.nombre}</td>
-                                <td className="py-4 text-xs font-mono font-bold text-slate-400">{row.documento}</td>
-                                <td className="py-4 text-[10px] font-black text-blue-600 uppercase italic">{row.cargo}</td>
-                                <td className="py-4 text-[10px] font-black text-slate-400 text-right uppercase tracking-widest">{row.pais}</td>
+                                <td className="py-4 text-xs font-black text-slate-800 uppercase">{row.name}</td>
+                                <td className="py-4 text-xs font-mono font-bold text-slate-400">{row.documentId}</td>
+                                <td className="py-4 text-[10px] font-black text-blue-600 uppercase italic">{row.role}</td>
+                                <td className="py-4 text-[10px] font-black text-slate-400 text-right uppercase tracking-widest">{row.country}</td>
                              </tr>
                           ))}
                        </tbody>
@@ -985,7 +985,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
            </div>
         )}
 
-         {/* Modal Premium para Departamentos */}
+         {/* Modal Premium para Departments */}
          {showDeptModal && (
             <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[110] flex items-center justify-center p-6 animate-in zoom-in-95 duration-200">
                <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 space-y-8 border border-white/20">
@@ -1005,7 +1005,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                              if (e.key === 'Enter' && newDeptName) {
                                try {
                                  setLoading(true);
-                                 await apiService.createDepartamento({ nombre: newDeptName });
+                                 await apiService.createDepartment({ name: newDeptName });
                                  setShowDeptModal(false);
                                  setNewDeptName('');
                                  fetchModuleData();
@@ -1029,7 +1029,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                            if (!newDeptName) return;
                            try {
                               setLoading(true);
-                              await apiService.createDepartamento({ nombre: newDeptName });
+                              await apiService.createDepartment({ name: newDeptName });
                               setShowDeptModal(false);
                               setNewDeptName('');
                               fetchModuleData();

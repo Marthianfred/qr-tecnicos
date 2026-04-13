@@ -1,5 +1,5 @@
 /**
- * Mock data for Fibex Qr Tecnicos (FIB-20)
+ * Mock data for Fibex Qr Technicians (FIB-20)
  */
 
 export const MOCK_TECHNICIAN = {

@@ -37,10 +37,10 @@ describe('ClientVerification Component', () => {
   test('renders success state with technician data', async () => {
     const mockTechData = {
       sub: 'TECH-123',
-      nombre: 'Juan Perez',
-      documento: 'V-12345678',
-      pais: 'Venezuela',
-      cargo: 'Técnico Especialista III',
+      name: 'Juan Perez',
+      documentId: 'V-12345678',
+      country: 'Venezuela',
+      role: 'Técnico Especialista III',
       empresa: 'Fibex Services',
       nivel: 'Senior',
       foto: 'https://example.com/foto.jpg'
@@ -84,10 +84,10 @@ describe('ClientVerification Component', () => {
   test('calls onReport when the report button is clicked', async () => {
     const mockTechData = {
       sub: 'TECH-123',
-      nombre: 'Juan Perez',
-      documento: 'V-12345678',
-      pais: 'Venezuela',
-      cargo: 'Técnico Especialista III',
+      name: 'Juan Perez',
+      documentId: 'V-12345678',
+      country: 'Venezuela',
+      role: 'Técnico Especialista III',
       empresa: 'Fibex Services',
       nivel: 'Senior'
     };

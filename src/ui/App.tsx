@@ -29,7 +29,7 @@ interface User {
 }
 
 /**
- * Main Application Wrapper for Fibex Qr Tecnicos & Ciclo de Negocio
+ * Main Application Wrapper for Fibex Qr Technicians & Ciclo de Negocio
  */
 export const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);

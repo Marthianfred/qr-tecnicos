@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Tecnico } from '../../entities/tecnico.entity';
-import { Certificacion } from '../../entities/certificacion.entity';
-import { ReporteInconsistencia } from '../../entities/reporte-inconsistencia.entity';
-import { TecnicosService } from './tecnicos.service';
-import { TecnicosController } from './tecnicos.controller';
+import { Technician } from '../../entities/technician.entity';
+import { Certification } from '../../entities/certification.entity';
+import { InconsistencyReport } from '../../entities/inconsistency-report.entity';
+import { TechniciansService } from './tecnicos.service';
+import { TechniciansController } from './tecnicos.controller';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Tecnico, Certificacion, ReporteInconsistencia]),
+    TypeOrmModule.forFeature([Technician, Certification, InconsistencyReport]),
     AuthModule,
   ],
-  controllers: [TecnicosController],
-  providers: [TecnicosService],
+  controllers: [TechniciansController],
+  providers: [TechniciansService],
 })
-export class TecnicosModule {}
+export class TechniciansModule {}

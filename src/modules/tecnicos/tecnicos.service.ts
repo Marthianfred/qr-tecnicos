@@ -2,157 +2,158 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Tecnico, TecnicoStatus } from '../../entities/tecnico.entity';
-import { Certificacion } from '../../entities/certificacion.entity';
-import { ReporteInconsistencia } from '../../entities/reporte-inconsistencia.entity';
+import { Technician, TechnicianStatus } from '../../entities/technician.entity';
+import { Certification } from '../../entities/certification.entity';
+import { InconsistencyReport } from '../../entities/inconsistency-report.entity';
 
 @Injectable()
-export class TecnicosService {
+export class TechniciansService {
   constructor(
-    @InjectRepository(Tecnico)
-    private tecnicoRepository: Repository<Tecnico>,
-    @InjectRepository(Certificacion)
-    private certificacionRepository: Repository<Certificacion>,
-    @InjectRepository(ReporteInconsistencia)
-    private reporteRepository: Repository<ReporteInconsistencia>,
+    @InjectRepository(Technician)
+    private technicianRepository: Repository<Technician>,
+    @InjectRepository(Certification)
+    private certificationRepository: Repository<Certification>,
+    @InjectRepository(InconsistencyReport)
+    private reportRepository: Repository<InconsistencyReport>,
     private eventEmitter: EventEmitter2,
   ) {}
 
-  async findAll(paisScope?: string) {
-    const where = paisScope ? { pais: paisScope } : {};
-    return this.tecnicoRepository.find({ 
+  async findAll(countryScope?: string) {
+    const where = countryScope ? { country: countryScope } : {};
+    return this.technicianRepository.find({ 
       where,
-      relations: ['certificaciones'] 
+      relations: ['certifications'] 
     });
   }
 
   async findOne(id: string) {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    // Allow ID '1' for legacy Pact tests and UUID for production
     if (id !== '1' && !uuidRegex.test(id)) {
-      throw new BadRequestException(`El ID proporcionado ('${id}') no es un UUID válido.`);
+      throw new BadRequestException(`The provided ID ('${id}') is not a valid UUID.`);
     }
-    return this.tecnicoRepository.findOne({
+    return this.technicianRepository.findOne({
       where: { id },
-      relations: ['certificaciones'],
+      relations: ['certifications'],
     });
   }
 
-  async create(tecnicoData: Partial<Tecnico>) {
-    // Validar formato de documento según país
-    const { documento, pais } = tecnicoData;
+  async create(technicianData: Partial<Technician>) {
+    const { documentId, country } = technicianData;
     
-    if (pais === 'VE') {
-      if (!/^[VE]\d{7,9}$/.test(documento || '')) {
-        throw new BadRequestException('Formato de documento inválido para Venezuela (Ej: V12345678)');
+    if (country === 'VE') {
+      if (!/^[VE]\d{7,9}$/.test(documentId || '')) {
+        throw new BadRequestException('Invalid document format for Venezuela (Ex: V12345678)');
       }
-    } else if (pais === 'PE') {
-      if (!/^\d{8}$/.test(documento || '')) {
-        throw new BadRequestException('Formato de documento inválido para Perú (8 dígitos)');
+    } else if (country === 'PE') {
+      if (!/^\d{8}$/.test(documentId || '')) {
+        throw new BadRequestException('Invalid document format for Peru (8 digits)');
       }
-    } else if (pais === 'RD') {
-      if (!/^\d{11}$/.test(documento || '')) {
-        throw new BadRequestException('Formato de documento inválido para Rep. Dominicana (11 dígitos)');
+    } else if (country === 'RD') {
+      if (!/^\d{11}$/.test(documentId || '')) {
+        throw new BadRequestException('Invalid document format for Dominican Rep. (11 digits)');
       }
     }
 
-    const tecnico = this.tecnicoRepository.create(tecnicoData);
-    const savedTecnico = await this.tecnicoRepository.save(tecnico);
-    this.eventEmitter.emit('tecnico.created', savedTecnico);
-    return savedTecnico;
+    const technician = this.technicianRepository.create(technicianData);
+    const savedTechnician = await this.technicianRepository.save(technician);
+    this.eventEmitter.emit('technician.created', savedTechnician);
+    return savedTechnician;
   }
 
-  async addCertificacion(tecnicoId: string, certificacionData: Partial<Certificacion>) {
-    const tecnico = await this.findOne(tecnicoId);
-    if (!tecnico) return null;
+  async addCertification(technicianId: string, certificationData: Partial<Certification>) {
+    const technician = await this.findOne(technicianId);
+    if (!technician) return null;
 
-    const certificacion = this.certificacionRepository.create({
-      ...certificacionData,
-      tecnico,
+    const certification = this.certificationRepository.create({
+      ...certificationData,
+      technician,
     });
-    const savedCert = await this.certificacionRepository.save(certificacion);
-    this.eventEmitter.emit('tecnico.certificacion.added', { tecnicoId, certificacion: savedCert });
+    const savedCert = await this.certificationRepository.save(certification);
+    this.eventEmitter.emit('technician.certification.added', { technicianId, certification: savedCert });
     return savedCert;
   }
 
-  async reportInconsistency(tecnicoId: string, reportData: Partial<ReporteInconsistencia>) {
-    const tecnico = await this.tecnicoRepository.findOneBy({ id: tecnicoId });
-    if (!tecnico) throw new NotFoundException('Técnico no encontrado');
+  async reportInconsistency(technicianId: string, reportData: Partial<InconsistencyReport>) {
+    const technician = await this.technicianRepository.findOneBy({ id: technicianId });
+    if (!technician) throw new NotFoundException('Technician not found');
 
-    // Prevenir reportes duplicados (misma descripción en las últimas 24h)
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    const existingReport = await this.reporteRepository.findOne({
+    const existingReport = await this.reportRepository.findOne({
       where: {
-        tecnicoId,
-        descripcion: reportData.descripcion,
-        fechaReporte: MoreThan(yesterday)
+        technicianId,
+        description: reportData.description,
+        reportedAt: MoreThan(yesterday)
       }
     });
 
     if (existingReport) {
-      throw new BadRequestException('Ya existe un reporte idéntico para este técnico en las últimas 24 horas');
+      throw new BadRequestException('An identical report already exists for this technician in the last 24 hours');
     }
 
-    const reporte = this.reporteRepository.create({
+    const report = this.reportRepository.create({
       ...reportData,
-      tecnicoId,
+      technicianId,
     });
-    const savedReport = await this.reporteRepository.save(reporte);
-    
-    // Emitir evento en tiempo real para el coordinador
-    this.eventEmitter.emit('report.created', { ...savedReport, tecnico });
-    
+    const savedReport = await this.reportRepository.save(report);
+    this.eventEmitter.emit('report.created', { ...savedReport, technician });
     return savedReport;
   }
 
   async findAllReports() {
-    return this.reporteRepository.find({
-      relations: ['tecnico'],
-      order: { fechaReporte: 'DESC' },
+    return this.reportRepository.find({
+      relations: ['technician'],
+      order: { reportedAt: 'DESC' },
     });
   }
 
-  async updateStatus(id: string, status: TecnicoStatus) {
-    const tecnico = await this.tecnicoRepository.findOneBy({ id });
-    if (!tecnico) throw new NotFoundException('Técnico no encontrado');
+  async updateStatus(id: string, status: TechnicianStatus) {
+    const technician = await this.technicianRepository.findOneBy({ id });
+    if (!technician) throw new NotFoundException('Technician not found');
 
-    tecnico.status = status;
-    const savedTecnico = await this.tecnicoRepository.save(tecnico);
-    this.eventEmitter.emit('tecnico.status.updated', savedTecnico);
-    return savedTecnico;
+    technician.status = status;
+    const savedTechnician = await this.technicianRepository.save(technician);
+    this.eventEmitter.emit('technician.status.updated', savedTechnician);
+    return savedTechnician;
   }
 
-  async updatePhoto(id: string, fotoUrl: string) {
-    const tecnico = await this.tecnicoRepository.findOneBy({ id });
-    if (!tecnico) throw new NotFoundException('Técnico no encontrado');
-    tecnico.fotoUrl = fotoUrl;
-    return this.tecnicoRepository.save(tecnico);
+  async updatePhoto(id: string, photoUrl: string) {
+    const technician = await this.technicianRepository.findOneBy({ id });
+    if (!technician) throw new NotFoundException('Technician not found');
+    technician.photoUrl = photoUrl;
+    return this.technicianRepository.save(technician);
   }
 
-  async getDashboardStats(paisScope?: string) {
-    const techWhere = paisScope ? { pais: paisScope } : {};
-    const reportWhere = paisScope ? { tecnico: { pais: paisScope }, resuelto: false } : { resuelto: false };
-    const recentReportWhere = paisScope ? { tecnico: { pais: paisScope } } : {};
+  async getDashboardStats(countryScope?: string) {
+    const techWhere = countryScope ? { country: countryScope } : {};
+    const reportWhere = countryScope ? { technician: { country: countryScope }, resolved: false } : { resolved: false };
+    const recentReportWhere = countryScope ? { technician: { country: countryScope } } : {};
 
     const [total, alerts, reports] = await Promise.all([
-      this.tecnicoRepository.count({ where: techWhere }),
-      this.reporteRepository.count({ where: reportWhere }),
-      this.reporteRepository.find({ 
+      this.technicianRepository.count({ where: techWhere }),
+      this.reportRepository.count({ where: reportWhere }),
+      this.reportRepository.find({ 
         where: recentReportWhere,
         take: 5, 
-        relations: ['tecnico'], 
-        order: { fechaReporte: 'DESC' } 
+        relations: ['technician'], 
+        order: { reportedAt: 'DESC' } 
       })
     ]);
 
     return {
       technicians: total,
-      activeQrs: total * 2, // Estimación operativa
+      activeQrs: total * 2,
       alerts,
       recentReports: reports,
-      squads: 0 // TODO: Implementar conteo de cuadrillas real
+      squads: 0
     };
+  }
+
+  async resolveReport(id: string) {
+    const report = await this.reportRepository.findOneBy({ id });
+    if (!report) throw new NotFoundException('Report not found');
+    report.resolved = true;
+    return this.reportRepository.save(report);
   }
 }

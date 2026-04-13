@@ -7,12 +7,12 @@ interface ClientVerificationProps {
 
 interface TechnicianFromToken {
   sub: string;
-  nombre: string;
-  documento: string;
-  cargo: string;
+  name: string;
+  documentId: string;
+  role: string;
   empresa: string;
-  tipoPersonal: string;
-  pais: string;
+  staffType: string;
+  country: string;
   nivel: string;
   foto?: string;
 }
@@ -105,7 +105,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
              <div className="w-40 h-40 rounded-3xl border-[8px] border-white shadow-2xl bg-white overflow-hidden transform translate-y-12 z-10 transition-transform hover:scale-105 duration-500">
                 <img 
                   src={techData.foto || `https://i.pravatar.cc/300?u=${techData.sub}`} 
-                  alt={techData.nombre} 
+                  alt={techData.name} 
                   className="w-full h-full object-cover grayscale-[0.2]" 
                 />
              </div>
@@ -113,9 +113,9 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
 
           {/* Technician Info */}
           <div className="pt-20 pb-8 px-8 text-center">
-             <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-1 uppercase">{techData.nombre}</h2>
+             <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-1 uppercase">{techData.name}</h2>
              <div className="flex items-center justify-center space-x-2 mb-6">
-                <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[9px] font-black uppercase border border-blue-100 italic">{techData.cargo || 'Especialista III'}</span>
+                <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[9px] font-black uppercase border border-blue-100 italic">{techData.role || 'Especialista III'}</span>
                 <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
                 <span className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">{techData.empresa || 'Fibex Services'}</span>
              </div>
@@ -139,7 +139,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
              <div className="space-y-3">
                 <div className="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Documento</span>
-                   <span className="text-xs font-black text-slate-900">{techData.documento}</span>
+                   <span className="text-xs font-black text-slate-900">{techData.documentId}</span>
                 </div>
                 <div className="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Estatus Laboral</span>
@@ -150,7 +150,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
                 </div>
                 <div className="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Jurisdicción</span>
-                   <span className="text-[10px] font-black text-slate-900 italic uppercase">{techData.pais} - LATAM</span>
+                   <span className="text-[10px] font-black text-slate-900 italic uppercase">{techData.country} - LATAM</span>
                 </div>
              </div>
           </div>

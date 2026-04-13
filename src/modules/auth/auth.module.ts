@@ -6,13 +6,13 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { TrustLayerService } from './trust-layer.service';
 import { KeycloakIAMService } from '../../services/iam.service';
-import { Tecnico } from '../../entities/tecnico.entity';
-import { Certificacion } from '../../entities/certificacion.entity';
+import { Technician } from '../../entities/technician.entity';
+import { Certification } from '../../entities/certification.entity';
 import { User } from '../../entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Tecnico, Certificacion, User]),
+    TypeOrmModule.forFeature([Technician, Certification, User]),
     EventEmitterModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,

@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CuadrillasService } from './cuadrillas.service';
-import { CuadrillasController } from './cuadrillas.controller';
-import { Cuadrilla } from '../../entities/cuadrilla.entity';
-import { Tecnico } from '../../entities/tecnico.entity';
+import { SquadsService } from './cuadrillas.service';
+import { SquadsController } from './cuadrillas.controller';
+import { Squad } from '../../entities/squad.entity';
+import { Technician } from '../../entities/technician.entity';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Cuadrilla, Tecnico]),
+    TypeOrmModule.forFeature([Squad, Technician]),
     AuthModule,
   ],
-  controllers: [CuadrillasController],
-  providers: [CuadrillasService],
-  exports: [CuadrillasService],
+  controllers: [SquadsController],
+  providers: [SquadsService],
+  exports: [SquadsService],
 })
-export class CuadrillasModule {}
+export class SquadsModule {}

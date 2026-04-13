@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UnauthorizedException } from '@nestjs/common';
 import { TrustLayerService } from './trust-layer.service';
-import { TecnicoStatus } from '../../entities/tecnico.entity';
-import { NivelCertificacion } from '../../entities/certificacion.entity';
+import { TechnicianStatus } from '../../entities/technician.entity';
+import { NivelCertification } from '../../entities/certification.entity';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 describe('TrustLayerService', () => {
@@ -34,23 +34,23 @@ describe('TrustLayerService', () => {
     });
 
     it('should throw if tecnico is inactive', async () => {
-      const tecnico = { status: TecnicoStatus.INACTIVO } as any;
+      const tecnico = { status: TechnicianStatus.INACTIVO } as any;
       await expect(service.validateTriplePlay(tecnico)).rejects.toThrow(/Fallo de Estatus/);
     });
 
     it('should throw if tecnico has no certifications', async () => {
-      const tecnico = { status: TecnicoStatus.ACTIVO, certificaciones: [] } as any;
+      const tecnico = { status: TechnicianStatus.ACTIVO, certificaciones: [] } as any;
       await expect(service.validateTriplePlay(tecnico)).rejects.toThrow(/Sin registros de formación/);
     });
 
     it('should pass if tecnico has a certification without expiration date', async () => {
       const tecnico = {
-        status: TecnicoStatus.ACTIVO,
-        certificaciones: [{ nivel: NivelCertificacion.INTEGRAL, fechaExpiracion: null }],
+        status: TechnicianStatus.ACTIVO,
+        certificaciones: [{ nivel: NivelCertification.INTEGRAL, fechaExpiracion: null }],
       } as any;
       
       const result = await service.validateTriplePlay(tecnico);
-      expect(result.nivel).toBe(NivelCertificacion.INTEGRAL);
+      expect(result.nivel).toBe(NivelCertification.INTEGRAL);
     });
 
     it('should throw if tecnico has only expired certifications', async () => {
@@ -58,7 +58,7 @@ describe('TrustLayerService', () => {
       yesterday.setDate(yesterday.getDate() - 1);
       
       const tecnico = {
-        status: TecnicoStatus.ACTIVO,
+        status: TechnicianStatus.ACTIVO,
         certificaciones: [{ fechaExpiracion: yesterday }],
       } as any;
       
@@ -70,21 +70,21 @@ describe('TrustLayerService', () => {
       tomorrow.setDate(tomorrow.getDate() + 1);
       
       const tecnico = {
-        status: TecnicoStatus.ACTIVO,
+        status: TechnicianStatus.ACTIVO,
         certificaciones: [
-          { nivel: NivelCertificacion.BASICO, fechaExpiracion: tomorrow },
-          { nivel: NivelCertificacion.PREMIUM, fechaExpiracion: tomorrow },
-          { nivel: NivelCertificacion.INTEGRAL, fechaExpiracion: tomorrow },
+          { nivel: NivelCertification.BASICO, fechaExpiracion: tomorrow },
+          { nivel: NivelCertification.PREMIUM, fechaExpiracion: tomorrow },
+          { nivel: NivelCertification.INTEGRAL, fechaExpiracion: tomorrow },
         ],
       } as any;
       
       const result = await service.validateTriplePlay(tecnico);
-      expect(result.nivel).toBe(NivelCertificacion.PREMIUM);
+      expect(result.nivel).toBe(NivelCertification.PREMIUM);
     });
 
     it('should throw if tecnico has no certifications at all', async () => {
       const tecnico = {
-        status: TecnicoStatus.ACTIVO,
+        status: TechnicianStatus.ACTIVO,
         certificaciones: [],
       } as any;
       
@@ -97,14 +97,14 @@ describe('TrustLayerService', () => {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tecnico = {
-        status: TecnicoStatus.ACTIVO,
-        certificaciones: [{ nivel: NivelCertificacion.INTEGRAL, fechaExpiracion: tomorrow }],
+        status: TechnicianStatus.ACTIVO,
+        certificaciones: [{ nivel: NivelCertification.INTEGRAL, fechaExpiracion: tomorrow }],
       } as any;
       
       mockRedis.get.mockResolvedValue(null);
       
       const result = await service.validateFullTrust(tecnico, 'token123');
-      expect(result.nivel).toBe(NivelCertificacion.INTEGRAL);
+      expect(result.nivel).toBe(NivelCertification.INTEGRAL);
       expect(mockRedis.get).toHaveBeenCalledWith('used_token:token123');
     });
 
@@ -112,12 +112,12 @@ describe('TrustLayerService', () => {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tecnico = {
-        status: TecnicoStatus.ACTIVO,
-        certificaciones: [{ nivel: NivelCertificacion.INTEGRAL, fechaExpiracion: tomorrow }],
+        status: TechnicianStatus.ACTIVO,
+        certificaciones: [{ nivel: NivelCertification.INTEGRAL, fechaExpiracion: tomorrow }],
       } as any;
       
       const result = await service.validateFullTrust(tecnico);
-      expect(result.nivel).toBe(NivelCertificacion.INTEGRAL);
+      expect(result.nivel).toBe(NivelCertification.INTEGRAL);
       expect(mockRedis.get).not.toHaveBeenCalled();
     });
   });

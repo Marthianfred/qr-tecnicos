@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Param, Query, Patch, Delete } from '@nestjs/common';
-import { ProductosService } from './productos.service';
-import { Producto } from '../../entities/producto.entity';
+import { ProductsService } from './productos.service';
+import { Product } from '../../entities/product.entity';
 
-@Controller('productos')
-export class ProductosController {
-  constructor(private readonly productosService: ProductosService) {}
+@Controller('products')
+export class ProductsController {
+  constructor(private readonly productosService: ProductsService) {}
 
   @Get()
   findAll(@Query('categoria') categoria?: string) {
@@ -43,12 +43,12 @@ export class ProductosController {
   }
 
   @Post()
-  create(@Body() productoData: Partial<Producto>) {
+  create(@Body() productoData: Partial<Product>) {
     return this.productosService.create(productoData);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() productoData: Partial<Producto>) {
+  update(@Param('id') id: string, @Body() productoData: Partial<Product>) {
     return this.productosService.update(id, productoData);
   }
 

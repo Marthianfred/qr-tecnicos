@@ -1,18 +1,18 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
-import { Tecnico } from './tecnico.entity';
+import { Technician } from './technician.entity';
 import { User } from './user.entity';
-import { Empresa } from './empresa.entity';
+import { Company } from './company.entity';
 
-@Entity('cuadrillas')
-export class Cuadrilla {
+@Entity('squads')
+export class Squad {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column()
-  nombre!: string;
+  name!: string;
 
   @Column()
-  zona!: string;
+  zone!: string;
 
   @Column({ nullable: true })
   supervisorId!: string;
@@ -22,14 +22,14 @@ export class Cuadrilla {
   supervisor!: User;
 
   @Column({ nullable: true })
-  empresaId!: string;
+  companyId!: string;
 
-  @ManyToOne(() => Empresa, (empresa) => empresa.cuadrillas, { nullable: true })
-  @JoinColumn({ name: 'empresaId' })
-  empresa!: Empresa;
+  @ManyToOne(() => Company, (company) => company.squads, { nullable: true })
+  @JoinColumn({ name: 'companyId' })
+  company!: Company;
 
-  @OneToMany(() => Tecnico, (tecnico) => tecnico.cuadrilla)
-  tecnicos!: Tecnico[];
+  @OneToMany(() => Technician, (technician) => technician.squad)
+  technicians!: Technician[];
 
   @CreateDateColumn()
   createdAt!: Date;

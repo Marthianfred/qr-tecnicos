@@ -4,20 +4,20 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Observable, fromEvent, map } from 'rxjs';
-import { TecnicosService } from './tecnicos.service';
+import { TechniciansService } from './tecnicos.service';
 import { AuthService } from '../auth/auth.service';
-import { Tecnico, TecnicoStatus } from '../../entities/tecnico.entity';
-import { Certificacion } from '../../entities/certificacion.entity';
-import { ReporteInconsistencia } from '../../entities/reporte-inconsistencia.entity';
+import { Technician, TechnicianStatus } from '../../entities/technician.entity';
+import { Certification } from '../../entities/certification.entity';
+import { InconsistencyReport } from '../../entities/inconsistency-report.entity';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../../entities/user.entity';
 
-@Controller('tecnicos')
-export class TecnicosController {
+@Controller('technicians')
+export class TechniciansController {
   constructor(
-    private readonly tecnicosService: TecnicosService,
+    private readonly tecnicosService: TechniciansService,
     private readonly authService: AuthService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
@@ -38,19 +38,25 @@ export class TecnicosController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
   findAll(@Req() req: any) {
-    return this.tecnicosService.findAll(req.user.paisScope);
+    return this.tecnicosService.findAll(req.user.countryScope);
   }
 
-  @Get('reports')
+  @Get('inconsistency-reports')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
   findAllReports() {
     return this.tecnicosService.findAllReports();
   }
 
-  @Get('validate/:token')
+  @Get('statistics')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
+  async getDashboardStats(@Req() req: any) {
+    return this.tecnicosService.getDashboardStats(req.user.countryScope);
+  }
+
+  @Get('validations/:token')
   validateToken(@Param('token') token: string) {
-    // Público para que los clientes puedan validar el QR
     return this.authService.validateToken(token);
   }
 
@@ -64,11 +70,11 @@ export class TecnicosController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
-  create(@Body() tecnicoData: Partial<Tecnico>) {
+  create(@Body() tecnicoData: Partial<Technician>) {
     return this.tecnicosService.create(tecnicoData);
   }
 
-  @Post('upload-photo/:id')
+  @Patch(':id/foto')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @UseInterceptors(FileInterceptor('file', {
@@ -86,42 +92,42 @@ export class TecnicosController {
     return this.tecnicosService.updatePhoto(id, fotoUrl);
   }
 
-  @Post(':id/qr')
+  @Post(':id/qr-codes')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.TECHNICIAN, UserRole.ADMIN, UserRole.COORDINATOR)
   generateQR(@Param('id') id: string) {
     return this.authService.generateQR(id);
   }
 
-  @Post(':id/certificaciones')
+  @Post(':id/certifications')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
-  addCertificacion(
+  addCertification(
     @Param('id') id: string,
-    @Body() certificacionData: Partial<Certificacion>,
+    @Body() certificacionData: Partial<Certification>,
   ) {
-    return this.tecnicosService.addCertificacion(id, certificacionData);
+    return this.tecnicosService.addCertification(id, certificacionData);
   }
 
-  @Post(':id/report')
+  @Post(':id/inconsistency-reports')
   reportInconsistency(
     @Param('id') id: string,
-    @Body() reportData: Partial<ReporteInconsistencia>,
+    @Body() reportData: Partial<InconsistencyReport>,
   ) {
     return this.tecnicosService.reportInconsistency(id, reportData);
   }
 
-  @Patch(':id/status')
+  @Patch('inconsistency-reports/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
-  async updateStatus(@Param('id') id: string, @Body('status') status: TecnicoStatus) {
-    return this.tecnicosService.updateStatus(id, status);
+  resolveReport(@Param('id') id: string) {
+    return this.tecnicosService.resolveReport(id);
   }
 
-  @Get('stats/dashboard')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
-  async getDashboardStats(@Req() req: any) {
-    return this.tecnicosService.getDashboardStats(req.user.paisScope);
+  async updateStatus(@Param('id') id: string, @Body('status') status: TechnicianStatus) {
+    return this.tecnicosService.updateStatus(id, status);
   }
 }

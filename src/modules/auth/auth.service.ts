@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Tecnico } from '../../entities/tecnico.entity';
-import { Certificacion } from '../../entities/certificacion.entity';
+import { Technician } from '../../entities/technician.entity';
+import { Certification } from '../../entities/certification.entity';
 import { User } from '../../entities/user.entity';
 import { TrustLayerService } from './trust-layer.service';
 import * as bcrypt from 'bcrypt';
@@ -14,10 +14,10 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private trustLayer: TrustLayerService,
-    @InjectRepository(Tecnico)
-    private tecnicoRepository: Repository<Tecnico>,
-    @InjectRepository(Certificacion)
-    private certificacionRepository: Repository<Certificacion>,
+    @InjectRepository(Technician)
+    private tecnicoRepository: Repository<Technician>,
+    @InjectRepository(Certification)
+    private certificacionRepository: Repository<Certification>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private eventEmitter: EventEmitter2,
@@ -26,7 +26,7 @@ export class AuthService {
   async login(username: string, pass: string) {
     const user = await this.userRepository.findOne({ where: { username } });
     if (user && await bcrypt.compare(pass, user.password)) {
-      const payload = { username: user.username, sub: user.id, role: user.role, paisScope: user.paisScope };
+      const payload = { username: user.username, sub: user.id, role: user.role, paisScope: user.countryScope };
       return {
         access_token: this.jwtService.sign(payload, { expiresIn: '8h' }),
         refresh_token: this.jwtService.sign(payload, { expiresIn: '24h' }),
@@ -34,7 +34,7 @@ export class AuthService {
           id: user.id,
           username: user.username,
           role: user.role,
-          paisScope: user.paisScope,
+          paisScope: user.countryScope,
         },
       };
     }
@@ -44,7 +44,7 @@ export class AuthService {
   async refreshToken(token: string) {
     try {
       const payload = this.jwtService.verify(token);
-      const newPayload = { username: payload.username, sub: payload.sub, role: payload.role, paisScope: payload.paisScope };
+      const newPayload = { username: payload.username, sub: payload.sub, role: payload.role, paisScope: payload.countryScope };
       return {
         access_token: this.jwtService.sign(newPayload, { expiresIn: '8h' }),
       };
@@ -65,16 +65,16 @@ export class AuthService {
 
     const payload = {
       sub: tecnico!.id,
-      nombre: tecnico!.nombre,
-      documento: tecnico!.documento,
-      pais: tecnico!.pais,
+      name: tecnico!.name,
+      documentId: tecnico!.documentId,
+      country: tecnico!.country,
       nivel: bestCert.nivel,
     };
 
     const qr_token = this.jwtService.sign(payload, { expiresIn: '15m' });
     
     // Emitir evento para el monitor de real-time
-    this.eventEmitter.emit('qr.generated', { tecnicoId, pais: tecnico!.pais });
+    this.eventEmitter.emit('qr.generated', { tecnicoId, country: tecnico!.country });
 
     return { qr_token };
   }

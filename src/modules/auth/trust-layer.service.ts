@@ -1,13 +1,13 @@
 import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import { Redis } from 'ioredis';
-import { Tecnico, TecnicoStatus } from '../../entities/tecnico.entity';
-import { Certificacion, NivelCertificacion } from '../../entities/certificacion.entity';
+import { Technician, TechnicianStatus } from '../../entities/technician.entity';
+import { Certification, NivelCertification } from '../../entities/certification.entity';
 
-const NIVEL_HIERARCHY: Record<NivelCertificacion, number> = {
-  [NivelCertificacion.INICIAL]: 1,
-  [NivelCertificacion.BASICO]: 2,
-  [NivelCertificacion.INTEGRAL]: 3,
-  [NivelCertificacion.PREMIUM]: 4,
+const NIVEL_HIERARCHY: Record<NivelCertification, number> = {
+  [NivelCertification.INICIAL]: 1,
+  [NivelCertification.BASICO]: 2,
+  [NivelCertification.INTEGRAL]: 3,
+  [NivelCertification.PREMIUM]: 4,
 };
 
 @Injectable()
@@ -19,7 +19,7 @@ export class TrustLayerService {
   /**
    * Valida integralmente el modelo Triple Play + Anti-Replay
    */
-  async validateFullTrust(tecnico: Tecnico, token?: string): Promise<Certificacion> {
+  async validateFullTrust(tecnico: Technician, token?: string): Promise<Certification> {
     // 1. Validaciones Triple Play Core
     const highestCert = await this.validateTriplePlay(tecnico);
 
@@ -38,14 +38,14 @@ export class TrustLayerService {
    * 3. Certificación: El técnico tiene certificaciones vigentes.
    * @returns La certificación de mayor nivel encontrada.
    */
-  async validateTriplePlay(tecnico: Tecnico): Promise<Certificacion> {
+  async validateTriplePlay(tecnico: Technician): Promise<Certification> {
     // Factor 1: Identidad
     if (!tecnico) {
       throw new UnauthorizedException('TrustLayer: Fallo de Identidad - Técnico no encontrado');
     }
 
     // Factor 2: Estatus Operativo
-    if (tecnico.status !== TecnicoStatus.ACTIVO) {
+    if (tecnico.status !== TechnicianStatus.ACTIVO) {
       throw new UnauthorizedException(`TrustLayer: Fallo de Estatus - Técnico en estado ${tecnico.status}`);
     }
 
@@ -68,7 +68,7 @@ export class TrustLayerService {
   /**
    * Filtra certificaciones vigentes
    */
-  getValidCertifications(tecnico: Tecnico): Certificacion[] {
+  getValidCertifications(tecnico: Technician): Certification[] {
     if (!tecnico.certificaciones) return [];
     
     const now = new Date();

@@ -2,20 +2,20 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EtlService } from './etl.service';
 import { EtlController } from './etl.controller';
-import { Empresa } from '../../entities/empresa.entity';
+import { Company } from '../../entities/company.entity';
 import { User } from '../../entities/user.entity';
-import { Cuadrilla } from '../../entities/cuadrilla.entity';
-import { Tecnico } from '../../entities/tecnico.entity';
-import { Certificacion } from '../../entities/certificacion.entity';
+import { Squad } from '../../entities/squad.entity';
+import { Technician } from '../../entities/technician.entity';
+import { Certification } from '../../entities/certification.entity';
 
 import { AuthModule } from '../auth/auth.module';
-import { DepartamentosModule } from '../departamentos/departamentos.module';
+import { DepartmentsModule } from '../departamentos/departamentos.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Empresa, User, Cuadrilla, Tecnico, Certificacion]),
+    TypeOrmModule.forFeature([Company, User, Squad, Technician, Certification]),
     AuthModule,
-    DepartamentosModule,
+    DepartmentsModule,
   ],
   controllers: [EtlController],
   providers: [EtlService],

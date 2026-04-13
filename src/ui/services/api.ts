@@ -6,9 +6,9 @@ export const setApiBaseUrl = (url: string) => {
 
 export interface Technician {
   id: string;
-  nombre: string;
-  documento: string;
-  pais: string;
+  name: string;
+  documentId: string;
+  country: string;
   cargo?: string;
   zona?: string;
   tipoPersonal?: string;
@@ -16,20 +16,20 @@ export interface Technician {
   certificaciones?: any[];
   fotoUrl?: string;
   cuadrillaId?: string;
-  departamento?: { id: string, nombre: string };
+  departamento?: { id: string, name: string };
 }
 
-export interface Pais {
+export interface Country {
   id: string;
   codigo: string;
-  nombre: string;
+  name: string;
   bandera: string;
-  activo: boolean;
+  active: boolean;
 }
 
-export interface Cuadrilla {
+export interface Squad {
   id: string;
-  nombre: string;
+  name: string;
   zona: string;
   supervisorId?: string;
   tecnicos?: Technician[];
@@ -108,39 +108,39 @@ async function request(url: string, options: any = {}): Promise<any> {
 
 export const apiService = {
   async getTechnician(id: string): Promise<Technician> {
-    return request(`${API_BASE_URL}/tecnicos/${id}`);
+    return request(`${API_BASE_URL}/technicians/${id}`);
   },
 
   async generateQR(id: string): Promise<QRResponse> {
-    return request(`${API_BASE_URL}/tecnicos/${id}/qr`, {
+    return request(`${API_BASE_URL}/technicians/${id}/qr-codes`, {
       method: 'POST',
     });
   },
 
   async validateQR(token: string): Promise<any> {
-    return request(`${API_BASE_URL}/tecnicos/validate/${token}`);
+    return request(`${API_BASE_URL}/technicians/validations/${token}`);
   },
 
   async reportInconsistency(id: string, report: InconsistencyReport): Promise<any> {
-    return request(`${API_BASE_URL}/tecnicos/${id}/report`, {
+    return request(`${API_BASE_URL}/technicians/${id}/inconsistency-reports`, {
       method: 'POST',
       body: JSON.stringify({
-        descripcion: report.reason,
+        description: report.reason,
         detalles: report.details,
       }),
     });
   },
 
   async getTechnicians(): Promise<Technician[]> {
-    return request(`${API_BASE_URL}/tecnicos`);
+    return request(`${API_BASE_URL}/technicians`);
   },
 
   async getReports(): Promise<any[]> {
-    return request(`${API_BASE_URL}/tecnicos/reports`);
+    return request(`${API_BASE_URL}/technicians/inconsistency-reports`);
   },
 
   async resolveReport(id: string): Promise<any> {
-    return request(`${API_BASE_URL}/tecnicos/reports/${id}/resolve`, {
+    return request(`${API_BASE_URL}/technicians/inconsistency-reports/${id}`, {
       method: 'PATCH'
     });
   },
@@ -161,8 +161,8 @@ export const apiService = {
   async uploadPhoto(id: string, file: File): Promise<any> {
     const formData = new FormData();
     formData.append('file', file);
-    return request(`${API_BASE_URL}/tecnicos/upload-photo/${id}`, {
-      method: 'POST',
+    return request(`${API_BASE_URL}/technicians/${id}/foto`, {
+      method: 'PATCH',
       body: formData,
     });
   },
@@ -171,7 +171,7 @@ export const apiService = {
   async uploadExcel(file: File, scope: string = 'GLOBAL'): Promise<any> {
     const formData = new FormData();
     formData.append('file', file);
-    return request(`${API_BASE_URL}/etl/upload?scope=${scope}`, {
+    return request(`${API_BASE_URL}/bulk-loads?scope=${scope}`, {
       method: 'POST',
       body: formData,
     });
@@ -180,7 +180,7 @@ export const apiService = {
   async previewExcel(file: File, scope: string = 'GLOBAL'): Promise<any> {
     const formData = new FormData();
     formData.append('file', file);
-    return request(`${API_BASE_URL}/etl/preview?scope=${scope}`, {
+    return request(`${API_BASE_URL}/bulk-loads/simulation?scope=${scope}`, {
       method: 'POST',
       body: formData,
     });
@@ -188,34 +188,34 @@ export const apiService = {
 
   // Security & Config
   async getDashboardStats(): Promise<any> {
-    return request(`${API_BASE_URL}/tecnicos/stats/dashboard`);
+    return request(`${API_BASE_URL}/technicians/statistics`);
   },
 
-  // Cuadrilla Methods
-  async getCuadrillas(): Promise<Cuadrilla[]> {
-    return request(`${API_BASE_URL}/cuadrillas`);
+  // Squad Methods
+  async getSquads(): Promise<Squad[]> {
+    return request(`${API_BASE_URL}/squads`);
   },
 
-  async getCuadrilla(id: string): Promise<Cuadrilla> {
-    return request(`${API_BASE_URL}/cuadrillas/${id}`);
+  async getSquad(id: string): Promise<Squad> {
+    return request(`${API_BASE_URL}/squads/${id}`);
   },
 
-  async createCuadrilla(data: Partial<Cuadrilla>): Promise<Cuadrilla> {
-    return request(`${API_BASE_URL}/cuadrillas`, {
+  async createSquad(data: Partial<Squad>): Promise<Squad> {
+    return request(`${API_BASE_URL}/squads`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   },
 
-  async assignTecnicosToCuadrilla(id: string, tecnicoIds: string[]): Promise<Cuadrilla> {
-    return request(`${API_BASE_URL}/cuadrillas/${id}/tecnicos`, {
+  async assignTechniciansToSquad(id: string, tecnicoIds: string[]): Promise<Squad> {
+    return request(`${API_BASE_URL}/squads/${id}/tecnicos`, {
       method: 'POST',
       body: JSON.stringify({ tecnicoIds }),
     });
   },
 
-  async removeTecnicoFromCuadrilla(id: string, tecnicoId: string): Promise<Cuadrilla> {
-    return request(`${API_BASE_URL}/cuadrillas/${id}/tecnicos/${tecnicoId}`, {
+  async removeTechnicianFromSquad(id: string, tecnicoId: string): Promise<Squad> {
+    return request(`${API_BASE_URL}/squads/${id}/tecnicos/${tecnicoId}`, {
       method: 'DELETE',
     });
   },
@@ -235,12 +235,12 @@ export const apiService = {
 
   // Ecommerce Methods
   async getProducts(): Promise<any[]> {
-    const data = await request(`${API_BASE_URL}/productos`);
+    const data = await request(`${API_BASE_URL}/products`);
     return data.map((p: any) => ({
       id: p.id,
-      name: p.nombre,
-      description: p.descripcion,
-      price: parseFloat(p.precio),
+      name: p.name,
+      description: p.description,
+      price: parseFloat(p.price),
       category: p.categoria,
       stock: p.stock,
       stockInicial: p.stockInicial,
@@ -264,51 +264,51 @@ export const apiService = {
   },
 
   // Gestión Internacional Dinámica (CRUD PAISES)
-  async getPaises(): Promise<any[]> {
-    return request(`${API_BASE_URL}/paises`);
+  async getCountries(): Promise<any[]> {
+    return request(`${API_BASE_URL}/countries`);
   },
 
-  async createPais(data: any): Promise<any> {
-    return request(`${API_BASE_URL}/paises`, {
+  async createCountry(data: any): Promise<any> {
+    return request(`${API_BASE_URL}/countries`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   },
 
-  async updatePais(id: string, data: any): Promise<any> {
-    return request(`${API_BASE_URL}/paises/${id}`, {
+  async updateCountry(id: string, data: any): Promise<any> {
+    return request(`${API_BASE_URL}/countries/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     });
   },
 
-  async deletePais(id: string): Promise<any> {
-    return request(`${API_BASE_URL}/paises/${id}`, {
+  async deleteCountry(id: string): Promise<any> {
+    return request(`${API_BASE_URL}/countries/${id}`, {
       method: 'DELETE',
     });
   },
 
-  // Gestión de Departamentos (CRUD)
-  async getDepartamentos(): Promise<any[]> {
-    return request(`${API_BASE_URL}/departamentos`);
+  // Management of Departments (CRUD)
+  async getDepartments(): Promise<any[]> {
+    return request(`${API_BASE_URL}/departments`);
   },
 
-  async createDepartamento(data: any): Promise<any> {
-    return request(`${API_BASE_URL}/departamentos`, {
+  async createDepartment(data: any): Promise<any> {
+    return request(`${API_BASE_URL}/departments`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   },
 
-  async updateDepartamento(id: string, data: any): Promise<any> {
-    return request(`${API_BASE_URL}/departamentos/${id}`, {
+  async updateDepartment(id: string, data: any): Promise<any> {
+    return request(`${API_BASE_URL}/departments/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     });
   },
 
-  async deleteDepartamento(id: string): Promise<any> {
-    return request(`${API_BASE_URL}/departamentos/${id}`, {
+  async deleteDepartment(id: string): Promise<any> {
+    return request(`${API_BASE_URL}/departments/${id}`, {
       method: 'DELETE',
     });
   },

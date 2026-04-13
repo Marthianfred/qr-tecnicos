@@ -8,12 +8,12 @@ jest.mock('../services/api', () => ({
   apiService: {
     getTechnicians: jest.fn().mockResolvedValue([]),
     getDashboardStats: jest.fn().mockResolvedValue({ technicians: 150, activeQrs: 450, alerts: 3, recentReports: [], squads: 12 }),
-    getCuadrillas: jest.fn().mockResolvedValue([]),
+    getSquads: jest.fn().mockResolvedValue([]),
     getCompanies: jest.fn().mockResolvedValue([]),
-    getPaises: jest.fn().mockResolvedValue([
-      { id: '1', nombre: 'Venezuela', codigo: 'VE', bandera: '🇻🇪', activo: true },
-      { id: '2', nombre: 'Perú', codigo: 'PE', bandera: '🇵🇪', activo: true },
-      { id: '3', nombre: 'República Dominicana', codigo: 'RD', bandera: '🇩🇴', activo: true }
+    getCountryes: jest.fn().mockResolvedValue([
+      { id: '1', name: 'Venezuela', codigo: 'VE', bandera: '🇻🇪', active: true },
+      { id: '2', name: 'Perú', codigo: 'PE', bandera: '🇵🇪', active: true },
+      { id: '3', name: 'República Dominicana', codigo: 'RD', bandera: '🇩🇴', active: true }
     ])
   }
 }));

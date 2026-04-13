@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { InventoryService } from './inventory.service';
-import { Producto } from '../../entities/producto.entity';
+import { Product } from '../../entities/product.entity';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 describe('InventoryService', () => {
@@ -24,7 +24,7 @@ describe('InventoryService', () => {
           },
         },
         {
-          provide: getRepositoryToken(Producto),
+          provide: getRepositoryToken(Product),
           useValue: {
             find: jest.fn(),
           },
@@ -34,7 +34,7 @@ describe('InventoryService', () => {
 
     service = module.get<InventoryService>(InventoryService);
     redis = module.get('REDIS_CLIENT');
-    repo = module.get(getRepositoryToken(Producto));
+    repo = module.get(getRepositoryToken(Product));
   });
 
   it('should check availability from redis', async () => {

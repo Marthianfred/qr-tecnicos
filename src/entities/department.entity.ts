@@ -1,19 +1,19 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Tecnico } from './tecnico.entity';
+import { Technician } from './technician.entity';
 
-@Entity('departamentos')
-export class Departamento {
+@Entity('departments')
+export class Department {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ unique: true })
-  nombre: string;
+  name: string;
 
   @Column({ nullable: true })
-  descripcion: string;
+  description: string;
 
-  @OneToMany(() => Tecnico, (tecnico) => tecnico.departamento)
-  tecnicos: Tecnico[];
+  @OneToMany(() => Technician, (technician) => technician.department)
+  technicians: Technician[];
 
   @Column({ default: true })
   isActive: boolean;

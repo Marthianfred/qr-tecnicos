@@ -2,10 +2,10 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole } from '../../entities/user.entity';
-import { Tecnico, TecnicoStatus } from '../../entities/tecnico.entity';
-import { Certificacion, NivelCertificacion } from '../../entities/certificacion.entity';
-import { Producto } from '../../entities/producto.entity';
-import { Pais } from '../../entities/pais.entity';
+import { Technician, TechnicianStatus } from '../../entities/technician.entity';
+import { Certification, NivelCertification } from '../../entities/certification.entity';
+import { Product } from '../../entities/product.entity';
+import { Country } from '../../entities/country.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -13,14 +13,14 @@ export class SeedService implements OnModuleInit {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(Tecnico)
-    private tecnicoRepository: Repository<Tecnico>,
-    @InjectRepository(Certificacion)
-    private certificacionRepository: Repository<Certificacion>,
-    @InjectRepository(Producto)
-    private productoRepository: Repository<Producto>,
-    @InjectRepository(Pais)
-    private paisRepository: Repository<Pais>,
+    @InjectRepository(Technician)
+    private tecnicoRepository: Repository<Technician>,
+    @InjectRepository(Certification)
+    private certificacionRepository: Repository<Certification>,
+    @InjectRepository(Product)
+    private productoRepository: Repository<Product>,
+    @InjectRepository(Country)
+    private paisRepository: Repository<Country>,
   ) {}
 
   async onModuleInit() {
@@ -30,24 +30,24 @@ export class SeedService implements OnModuleInit {
 
   async runSeed() {
     await this.seedUsers();
-    await this.seedTecnicos();
-    await this.seedProductos();
-    await this.seedPaises();
+    await this.seedTechnicians();
+    await this.seedProducts();
+    await this.seedCountryes();
     return { message: 'Seed completed successfully' };
   }
 
-  private async seedPaises() {
+  private async seedCountryes() {
     const paisesData = [
-      { codigo: 'VE', nombre: 'Venezuela', bandera: '🇻🇪' },
-      { codigo: 'PE', nombre: 'Perú', bandera: '🇵🇪' },
-      { codigo: 'RD', nombre: 'República Dominicana', bandera: '🇩🇴' },
+      { codigo: 'VE', name: 'Venezuela', bandera: '🇻🇪' },
+      { codigo: 'PE', name: 'Perú', bandera: '🇵🇪' },
+      { codigo: 'RD', name: 'República Dominicana', bandera: '🇩🇴' },
     ];
 
     for (const p of paisesData) {
-      const exists = await this.paisRepository.findOneBy({ codigo: p.codigo });
+      const exists = await this.countryRepository.findOneBy({ codigo: p.codigo });
       if (!exists) {
-        const pais = this.paisRepository.create(p);
-        await this.paisRepository.save(pais);
+        const pais = this.countryRepository.create(p);
+        await this.countryRepository.save(pais);
       }
     }
   }
@@ -78,21 +78,21 @@ export class SeedService implements OnModuleInit {
     }
   }
 
-  private async seedTecnicos() {
+  private async seedTechnicians() {
     const tecnicosData = [
-      { nombre: 'Juan Perez', documento: '12345678', cargo: 'Técnico Especialista III', pais: 'VE', zona: 'Caracas - Capitolio', status: TecnicoStatus.ACTIVO },
-      { nombre: 'Maria Garcia', documento: '87654321', cargo: 'Coordinadora de Cuadrilla', pais: 'VE', zona: 'Caracas - Chacao', status: TecnicoStatus.ACTIVO },
+      { name: 'Juan Perez', documentId: '12345678', role: 'Técnico Especialista III', country: 'VE', zona: 'Caracas - Capitolio', status: TechnicianStatus.ACTIVO },
+      { name: 'Maria Garcia', documentId: '87654321', role: 'Coordinadora de Squad', country: 'VE', zona: 'Caracas - Chacao', status: TechnicianStatus.ACTIVO },
     ];
 
     for (const tData of tecnicosData) {
-      let tecnico = await this.tecnicoRepository.findOneBy({ documento: tData.documento });
+      let tecnico = await this.tecnicoRepository.findOneBy({ documentId: tData.documentId });
       if (!tecnico) {
         tecnico = this.tecnicoRepository.create(tData);
         tecnico = await this.tecnicoRepository.save(tecnico);
 
         // Add some certifications
         const cert = this.certificacionRepository.create({
-          nivel: NivelCertificacion.PREMIUM,
+          nivel: NivelCertification.PREMIUM,
           fechaEmision: new Date(),
           fechaExpiracion: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
           tecnico: tecnico,
@@ -102,10 +102,10 @@ export class SeedService implements OnModuleInit {
     }
   }
 
-  private async seedProductos() {
+  private async seedProducts() {
     const productosData = [
-      { nombre: 'Router Dual Band', sku: 'ROUT-001', precio: 45.0, stock: 100 },
-      { nombre: 'ONT Fibex Plus', sku: 'ONT-002', precio: 60.0, stock: 50 },
+      { name: 'Router Dual Band', sku: 'ROUT-001', price: 45.0, stock: 100 },
+      { name: 'ONT Fibex Plus', sku: 'ONT-002', price: 60.0, stock: 50 },
     ];
 
     for (const p of productosData) {

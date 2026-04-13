@@ -54,7 +54,14 @@ const getHeaders = () => {
 let isRefreshing = false;
 
 async function request(url: string, options: any = {}): Promise<any> {
+  const isFormData = options.body instanceof FormData;
   const headers = { ...getHeaders(), ...options.headers };
+  
+  // Si es FormData, dejamos que el navegador ponga el Content-Type (boundary)
+  if (isFormData) {
+    delete (headers as any)['Content-Type'];
+  }
+
   const response = await fetch(url, { ...options, headers });
 
   if (response.status === 401 && !url.includes('/auth/login') && !url.includes('/auth/refresh') && !isRefreshing) {
@@ -153,15 +160,19 @@ export const apiService = {
   async uploadPhoto(id: string, file: File): Promise<any> {
     const formData = new FormData();
     formData.append('file', file);
-    return fetch(`${API_BASE_URL}/tecnicos/upload-photo/${id}`, {
+    return request(`${API_BASE_URL}/tecnicos/upload-photo/${id}`, {
       method: 'POST',
       body: formData,
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then(res => {
-      if (!res.ok) throw new Error('Error al subir foto');
-      return res.json();
+    });
+  },
+
+  // Bulk Upload (Excel/ETL)
+  async uploadExcel(file: File): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return request(`${API_BASE_URL}/etl/upload`, {
+      method: 'POST',
+      body: formData,
     });
   },
 

@@ -147,27 +147,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
                         
-                        const formData = new FormData();
-                        formData.append('file', file);
-                        
                         try {
                            setLoading(true);
-                           const response = await fetch('/api/etl/upload', {
-                              method: 'POST',
-                              body: formData,
-                              headers: {
-                                 'Authorization': `Bearer ${localStorage.getItem('token')}`
-                              }
-                           });
-                           
-                           if (response.ok) {
-                              alert('✅ Ingesta Masiva Completada con Éxito');
-                              window.location.reload();
-                           } else {
-                              alert('❌ Error en el procesamiento del archivo');
-                           }
-                        } catch (err) {
-                           alert('❌ Error de conexión con el servidor');
+                           await apiService.uploadExcel(file);
+                           alert('✅ Ingesta Masiva Completada con Éxito');
+                           fetchData();
+                        } catch (err: any) {
+                           alert(`❌ Error: ${err.message || 'Error en el procesamiento del archivo'}`);
                         } finally {
                            setLoading(false);
                         }

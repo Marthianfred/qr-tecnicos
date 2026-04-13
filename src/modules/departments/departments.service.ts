@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Department } from '../../entities/department.entity';
-import { CreateDepartmentDto } from './dto/create-departamento.dto';
+import { CreateDepartmentDto } from './dto/create-department.dto';
 
 @Injectable()
 export class DepartmentsService {
@@ -13,7 +13,7 @@ export class DepartmentsService {
 
   async create(createDepartmentDto: CreateDepartmentDto): Promise<Department> {
     const dep = this.departmentRepository.create(createDepartmentDto);
-    return await this.departmentRepository.save(dep);
+    return await this.departmentRepository.save(dep) as Department;
   }
 
   async findAll(): Promise<Department[]> {
@@ -39,7 +39,7 @@ export class DepartmentsService {
   async update(id: string, updateDto: Partial<CreateDepartmentDto>): Promise<Department> {
     const dep = await this.findOne(id);
     Object.assign(dep, updateDto);
-    return await this.departmentRepository.save(dep);
+    return await this.departmentRepository.save(dep) as Department;
   }
 
   async remove(id: string): Promise<void> {

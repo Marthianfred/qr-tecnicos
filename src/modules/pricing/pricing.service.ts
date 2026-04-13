@@ -8,24 +8,24 @@ import { InventoryService } from '../inventory/inventory.service';
 export class PricingService {
   constructor(
     @InjectRepository(Product)
-    private readonly productosRepository: Repository<Product>,
+    private readonly productRepository: Repository<Product>,
     private readonly inventoryService: InventoryService,
   ) {}
 
   async calculateDynamicPrice(productId: string): Promise<number> {
-    const producto = await this.productosRepository.findOneBy({ id: productId });
-    if (!producto) {
-      throw new Error('Product no encontrado');
+    const product = await this.productRepository.findOneBy({ id: productId });
+    if (!product) {
+      throw new Error('Product not found');
     }
 
     const currentStock = await this.inventoryService.checkAvailability(productId);
-    const basePrice = Number(producto.price);
+    const basePrice = Number(product.price);
 
-    // Lógica de precio dinámico: 
-    // Si el stock es bajo (< 20% del inicial), el precio sube un 15%
-    // Si el stock es muy bajo (< 5% del inicial), el precio sube un 30%
-    const lowStockThreshold = producto.stockInicial * 0.2;
-    const veryLowStockThreshold = producto.stockInicial * 0.05;
+    // Dynamic pricing logic:
+    // If stock is low (< 20% of initial), price increases 15%
+    // If stock is very low (< 5% of initial), price increases 30%
+    const lowStockThreshold = product.initialStock * 0.2;
+    const veryLowStockThreshold = product.initialStock * 0.05;
     
     if (currentStock <= veryLowStockThreshold && currentStock > 0) {
       return Math.round(basePrice * 1.3 * 100) / 100;

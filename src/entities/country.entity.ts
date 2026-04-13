@@ -6,13 +6,13 @@ export class Country {
   id!: string;
 
   @Column({ unique: true })
-  code!: string; // Ej: 'VE', 'PE', 'RD', 'CO'
+  code!: string; 
 
   @Column()
-  name!: string; // Ej: 'Venezuela', 'Perú'
+  name!: string; 
 
   @Column({ nullable: true })
-  flag!: string; // Emoji o URL de icono
+  flag!: string; 
 
   @Column({ default: true })
   active!: boolean;

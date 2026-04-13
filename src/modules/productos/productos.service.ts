@@ -9,79 +9,79 @@ import { PricingService } from '../pricing/pricing.service';
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
-    private productosRepository: Repository<Product>,
+    private productRepository: Repository<Product>,
     private inventoryService: InventoryService,
     private pricingService: PricingService,
   ) {}
 
-  async findAll(filters?: { categoria?: string }) {
+  async findAll(filters?: { category?: string }) {
     const where: any = { active: true };
-    if (filters?.categoria) {
-      where.categoria = filters.categoria;
+    if (filters?.category) {
+      where.category = filters.category;
     }
-    return this.productosRepository.find({ where });
+    return this.productRepository.find({ where });
   }
 
   async findOne(id: string) {
-    const producto = await this.productosRepository.findOneBy({ id });
-    if (!producto) {
-      throw new NotFoundException(`Product con ID ${id} no encontrado`);
+    const product = await this.productRepository.findOneBy({ id });
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
     }
-    return producto;
+    return product;
   }
 
   async findBySku(sku: string) {
-    const producto = await this.productosRepository.findOneBy({ sku });
-    if (!producto) {
-      throw new NotFoundException(`Product con SKU ${sku} no encontrado`);
+    const product = await this.productRepository.findOneBy({ sku });
+    if (!product) {
+      throw new NotFoundException(`Product with SKU ${sku} not found`);
     }
-    return producto;
+    return product;
   }
 
   async search(query: string) {
-    return this.productosRepository.find({
+    return this.productRepository.find({
       where: [
         { name: Like(`%${query}%`), active: true },
         { description: Like(`%${query}%`), active: true },
-        { categoria: Like(`%${query}%`), active: true },
+        { category: Like(`%${query}%`), active: true },
       ],
     });
   }
 
   async getStockRealTime(id: string) {
-    await this.findOne(id); // Verificar que existe
+    await this.findOne(id);
     const stock = await this.inventoryService.checkAvailability(id);
     return { id, stock };
   }
 
-  async getPrecioDinamico(id: string) {
-    await this.findOne(id); // Verificar que existe
-    const precio = await this.pricingService.calculateDynamicPrice(id);
-    return { id, precio };
+  async getPriceDynamic(id: string) {
+    await this.findOne(id);
+    const price = await this.pricingService.calculateDynamicPrice(id);
+    return { id, price };
   }
 
-  async reservarStock(id: string, cantidad: number) {
-    await this.findOne(id); // Verificar que existe
-    return this.inventoryService.reserveStock(id, cantidad);
+  async reserveStock(id: string, quantity: number) {
+    await this.findOne(id);
+    return this.inventoryService.reserveStock(id, quantity);
   }
 
-  async create(productoData: Partial<Product>) {
-    if (productoData.stock && !productoData.stockInicial) {
-      productoData.stockInicial = productoData.stock;
+  async create(productData: Partial<Product>) {
+    if (productData.stock && !productData.initialStock) {
+      productData.initialStock = productData.stock;
     }
-    const producto = this.productosRepository.create(productoData);
-    return this.productosRepository.save(producto);
+    const product = this.productRepository.create(productData);
+    return this.productRepository.save(product);
   }
 
-  async update(id: string, productoData: Partial<Product>) {
-    const producto = await this.findOne(id);
-    Object.assign(producto, productoData);
-    return this.productosRepository.save(producto);
+  async update(id: string, productData: Partial<Product>) {
+    const product = await this.findOne(id);
+    Object.assign(product, productData);
+    return this.productRepository.save(product);
   }
 
   async remove(id: string) {
-    const producto = await this.findOne(id);
-    producto.active = false;
-    return this.productosRepository.save(producto);
+    const product = await this.findOne(id);
+    product.active = false;
+    return this.productRepository.save(product);
   }
 }

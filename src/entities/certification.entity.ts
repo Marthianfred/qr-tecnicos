@@ -14,15 +14,15 @@ export class Certification {
   id!: string;
 
   @Column({
-    type: 'enum',
+    type: 'varchar',
     enum: CertificationLevel,
   })
   level!: CertificationLevel;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   issuedAt!: Date;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   expiresAt!: Date;
 
   @ManyToOne(() => Technician, (technician) => technician.certifications)

@@ -15,9 +15,9 @@ export class AuthService {
     private jwtService: JwtService,
     private trustLayer: TrustLayerService,
     @InjectRepository(Technician)
-    private tecnicoRepository: Repository<Technician>,
+    private technicianRepository: Repository<Technician>,
     @InjectRepository(Certification)
-    private certificacionRepository: Repository<Certification>,
+    private certificationRepository: Repository<Certification>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private eventEmitter: EventEmitter2,
@@ -26,7 +26,7 @@ export class AuthService {
   async login(username: string, pass: string) {
     const user = await this.userRepository.findOne({ where: { username } });
     if (user && await bcrypt.compare(pass, user.password)) {
-      const payload = { username: user.username, sub: user.id, role: user.role, paisScope: user.countryScope };
+      const payload = { username: user.username, sub: user.id, role: user.role, countryScope: user.countryScope };
       return {
         access_token: this.jwtService.sign(payload, { expiresIn: '8h' }),
         refresh_token: this.jwtService.sign(payload, { expiresIn: '24h' }),
@@ -34,65 +34,60 @@ export class AuthService {
           id: user.id,
           username: user.username,
           role: user.role,
-          paisScope: user.countryScope,
+          countryScope: user.countryScope,
         },
       };
     }
-    throw new UnauthorizedException('Credenciales inválidas');
+    throw new UnauthorizedException('Invalid credentials');
   }
 
   async refreshToken(token: string) {
     try {
       const payload = this.jwtService.verify(token);
-      const newPayload = { username: payload.username, sub: payload.sub, role: payload.role, paisScope: payload.countryScope };
+      const newPayload = { username: payload.username, sub: payload.sub, role: payload.role, countryScope: payload.countryScope };
       return {
         access_token: this.jwtService.sign(newPayload, { expiresIn: '8h' }),
       };
     } catch (e) {
-      throw new UnauthorizedException('Sesión expirada. Por favor, inicie sesión de nuevo.');
+      throw new UnauthorizedException('Session expired. Please login again.');
     }
   }
 
-  async generateQR(tecnicoId: string) {
-    const tecnico = await this.tecnicoRepository.findOne({
-      where: { id: tecnicoId },
-      relations: ['certificaciones'],
+  async generateQR(technicianId: string) {
+    const technician = await this.technicianRepository.findOne({
+      where: { id: technicianId },
+      relations: ['certifications'],
     });
 
-    // Aplicar Motor de Validaciones Triple Play (TrustLayer)
-    // El motor ahora retorna la mejor certificación válida
-    const bestCert = await this.trustLayer.validateTriplePlay(tecnico!);
+    if (!technician) throw new UnauthorizedException('Technician not found');
+
+    const bestCert = await this.trustLayer.validateTriplePlay(technician);
 
     const payload = {
-      sub: tecnico!.id,
-      name: tecnico!.name,
-      documentId: tecnico!.documentId,
-      country: tecnico!.country,
-      nivel: bestCert.nivel,
+      sub: technician.id,
+      name: technician.name,
+      documentId: technician.documentId,
+      country: technician.country,
+      level: bestCert.level,
     };
 
     const qr_token = this.jwtService.sign(payload, { expiresIn: '15m' });
     
-    // Emitir evento para el monitor de real-time
-    this.eventEmitter.emit('qr.generated', { tecnicoId, country: tecnico!.country });
+    this.eventEmitter.emit('qr.generated', { technicianId, country: technician.country });
 
     return { qr_token };
   }
 
   async validateToken(token: string) {
-    // Aplicar Factor 4: Anti-Replay (TrustLayer)
     await this.trustLayer.validateAntiReplay(token);
 
     try {
       const payload = this.jwtService.verify(token);
-      
-      // Marcar como usado después de la primera validación exitosa
       await this.trustLayer.markTokenAsUsed(token);
-      
       return payload;
     } catch (e) {
       if (e instanceof UnauthorizedException) throw e;
-      throw new UnauthorizedException('TrustLayer: Token inválido o expirado');
+      throw new UnauthorizedException('TrustLayer: Invalid or expired token');
     }
   }
 }

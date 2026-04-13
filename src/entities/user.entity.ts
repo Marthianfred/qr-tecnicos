@@ -16,7 +16,7 @@ export class User {
   username!: string;
 
   @Column()
-  password!: string; // In a real app, this should be hashed
+  password!: string; 
 
   @Column({
     type: 'varchar',
@@ -29,5 +29,5 @@ export class User {
   isActive!: boolean;
 
   @Column({ nullable: true })
-  paisScope?: string; // 'VE', 'PE', 'RD' o null para GLOBAL
+  countryScope?: string; 
 }

@@ -9,30 +9,30 @@ export interface Technician {
   name: string;
   documentId: string;
   country: string;
-  cargo?: string;
-  zona?: string;
-  tipoPersonal?: string;
+  role?: string;
+  zone?: string;
+  staffType?: string;
   status: string;
-  certificaciones?: any[];
-  fotoUrl?: string;
-  cuadrillaId?: string;
-  departamento?: { id: string, name: string };
+  certifications?: any[];
+  photoUrl?: string;
+  squadId?: string;
+  department?: { id: string, name: string };
 }
 
 export interface Country {
   id: string;
-  codigo: string;
+  code: string;
   name: string;
-  bandera: string;
+  flag: string;
   active: boolean;
 }
 
 export interface Squad {
   id: string;
   name: string;
-  zona: string;
+  zone: string;
   supervisorId?: string;
-  tecnicos?: Technician[];
+  technicians?: Technician[];
 }
 
 export interface QRResponse {
@@ -58,7 +58,7 @@ async function request(url: string, options: any = {}): Promise<any> {
   const isFormData = options.body instanceof FormData;
   const headers = { ...getHeaders(), ...options.headers };
   
-  // Si es FormData, dejamos que el navegador ponga el Content-Type (boundary)
+  
   if (isFormData) {
     delete (headers as any)['Content-Type'];
   }
@@ -81,7 +81,7 @@ async function request(url: string, options: any = {}): Promise<any> {
           const data = await refreshResponse.json();
           localStorage.setItem('token', data.access_token);
           isRefreshing = false;
-          // Retry original request
+          
           return request(url, options);
         }
       } catch (e) {
@@ -89,12 +89,12 @@ async function request(url: string, options: any = {}): Promise<any> {
       }
     }
     
-    // If refresh failed or no token, logout
+    
     isRefreshing = false;
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
-    window.location.reload(); // Force app to go back to login
+    window.location.reload(); 
     throw new Error('Sesión expirada');
   }
 
@@ -145,7 +145,7 @@ export const apiService = {
     });
   },
 
-  // Company Methods
+  
   async getCompanies(): Promise<any[]> {
     return request(`${API_BASE_URL}/empresas`);
   },
@@ -157,7 +157,7 @@ export const apiService = {
     });
   },
 
-  // Personnel Photo
+  
   async uploadPhoto(id: string, file: File): Promise<any> {
     const formData = new FormData();
     formData.append('file', file);
@@ -167,7 +167,7 @@ export const apiService = {
     });
   },
 
-  // Bulk Upload (Excel/ETL)
+  
   async uploadExcel(file: File, scope: string = 'GLOBAL'): Promise<any> {
     const formData = new FormData();
     formData.append('file', file);
@@ -186,12 +186,12 @@ export const apiService = {
     });
   },
 
-  // Security & Config
+  
   async getDashboardStats(): Promise<any> {
     return request(`${API_BASE_URL}/technicians/statistics`);
   },
 
-  // Squad Methods
+  
   async getSquads(): Promise<Squad[]> {
     return request(`${API_BASE_URL}/squads`);
   },
@@ -226,14 +226,14 @@ export const apiService = {
       body: JSON.stringify({ username, password }),
     });
     
-    // Persist tokens
+    
     localStorage.setItem('token', data.access_token);
     localStorage.setItem('refreshToken', data.refresh_token);
     
     return data;
   },
 
-  // Ecommerce Methods
+  
   async getProducts(): Promise<any[]> {
     const data = await request(`${API_BASE_URL}/products`);
     return data.map((p: any) => ({
@@ -263,7 +263,7 @@ export const apiService = {
     }
   },
 
-  // Gestión Internacional Dinámica (CRUD PAISES)
+  
   async getCountries(): Promise<any[]> {
     return request(`${API_BASE_URL}/countries`);
   },
@@ -288,7 +288,7 @@ export const apiService = {
     });
   },
 
-  // Management of Departments (CRUD)
+  
   async getDepartments(): Promise<any[]> {
     return request(`${API_BASE_URL}/departments`);
   },

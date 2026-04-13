@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Country } from '../../entities/country.entity';
 
 @Injectable()
-export class CountryesService implements OnModuleInit {
+export class CountriesService implements OnModuleInit {
   constructor(
     @InjectRepository(Country)
     private countryRepository: Repository<Country>,

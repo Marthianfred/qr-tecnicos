@@ -42,13 +42,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   }, [notification]);
 
   useEffect(() => {
-    // Si el usuario tiene scope, forzamos el país
+    
     if (user.countryScope && selectedCountry !== user.countryScope) {
        setSelectedCountry(user.countryScope);
     }
   }, [user.countryScope]);
 
-  // Carga de datos globales una sola vez al montar el componente
+  
   useEffect(() => {
     const loadGlobalData = async () => {
       try {
@@ -69,7 +69,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
     try {
       setLoading(true);
       
-      // Ejecutamos solo la petición necesaria para el módulo actual
+      
       switch (activeModule) {
         case 'dashboard':
           const stats = await apiService.getDashboardStats();
@@ -87,7 +87,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           break;
         case 'operations':
           const squadsData = await apiService.getSquads();
-          const filteredSquads = selectedCountry === 'TODOS' ? squadsData : squadsData.filter(s => s.name.includes(selectedCountry));
+          const filteredSquads = selectedCountry === 'TODOS' ? squadsData : squadsData.filter(s => s.name.includes(selectedCountry) || s.zone?.includes(selectedCountry));
           setSquads(filteredSquads);
           break;
         case 'departamentos':
@@ -108,7 +108,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
     }
   };
 
-  // Sidebar Menu Definition
+  
   const menuItems = [
     { id: 'dashboard', label: 'Panel Operativo', icon: '📊', description: 'Resumen Tres Países' },
     { id: 'companies', label: 'Gestión Corporativa', icon: '🏢', description: 'Companys y Aliados' },
@@ -124,7 +124,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 font-sans text-slate-900">
-      {/* SIDEBAR: Corporate Deep Blue */}
+      {}
       <aside className="w-80 bg-[#001F3D] text-white flex flex-col shadow-2xl z-30 h-full">
         <div className="p-8 border-b border-white/10 flex flex-col items-center flex-shrink-0">
           <img src="/logo.webp" alt="Fibex" className="h-16 w-auto mb-4" />
@@ -168,9 +168,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
         </div>
       </aside>
 
-      {/* MAIN CONTENT: Light Theme */}
+      {}
       <main className="flex-grow flex flex-col h-full overflow-hidden">
-        {/* Header (Fixed height, no scroll) */}
+        {}
         <header className="h-20 flex-shrink-0 bg-white border-b border-slate-200 flex items-center justify-between px-10 shadow-sm z-20">
           <div className="flex items-center space-x-4">
              <div className="flex items-center space-x-3">
@@ -183,7 +183,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                          {user.countryScope ? (
                 <div className="flex items-center space-x-2 bg-blue-50 px-4 py-1.5 rounded-lg border border-blue-100">
                    <span className="text-sm">{user.countryScope === 'VE' ? '🇻🇪' : user.countryScope === 'PE' ? '🇵🇪' : '🇩🇴'}</span>
-                   <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">País: {countries.find(p => p.codigo === user.countryScope)?.name || user.countryScope}</span>
+                   <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">País: {countries.find(p => p.code === user.countryScope)?.name || user.countryScope}</span>
                 </div>
               ) : (
                 <div className="flex items-center bg-slate-100 rounded-lg p-1">
@@ -197,15 +197,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                    </button>
                    {countries.map(p => (
                      <button
-                       key={p.codigo}
-                       onClick={() => setSelectedCountry(p.codigo)}
+                       key={p.code}
+                       onClick={() => setSelectedCountry(p.code)}
                        className={`px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${
-                         selectedCountry === p.codigo 
+                         selectedCountry === p.code 
                            ? 'bg-white text-blue-600 shadow-sm' 
                            : 'text-slate-400 hover:text-slate-600'
                        }`}
                      >
-                       {p.bandera}
+                       {p.flag}
                      </button>
                    ))}
                 </div>
@@ -226,11 +226,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           </div>
         </header>
 
-        {/* Content Area (Scrollable) */}
+        {}
         <div className="flex-grow overflow-y-auto p-10 custom-scrollbar bg-slate-50/50">
           {activeModule === 'dashboard' && (
             <div className="space-y-10 max-w-7xl mx-auto">
-               {/* Metrics Row */}
+               {}
                <div className="grid grid-cols-4 gap-8">
                   {[
                     { label: 'Técnicos Totales', value: dashboardStats.technicians.toLocaleString(), delta: 'BASE REAL', color: 'border-blue-500' },
@@ -250,7 +250,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                   ))}
                </div>
 
-               {/* Real-time Monitoring Simulation */}
+               {}
                <div className="grid grid-cols-3 gap-8 pb-10">
                   <div className="col-span-2 bg-white rounded-3xl shadow-sm p-10 border border-slate-100">
                      <div className="flex justify-between items-center mb-10">
@@ -265,7 +265,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                           const countries = ['VE', 'PE', 'RD'];
                           const currentTechCountry = countries[i % 3];
                           
-                          // Filter logic simulation
+                          
                           if (selectedCountry !== 'TODOS' && selectedCountry !== currentTechCountry) return null;
 
                           return (
@@ -374,13 +374,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         </tr>
                      </thead>
                      <tbody className="divide-y divide-slate-50">
-                        {/* Simulación de datos cargados del backend */}
+                        {}
                         {technicians.length > 0 ? technicians.map(tech => (
                            <tr key={tech.id} className="hover:bg-slate-50 transition-colors group">
                               <td className="px-8 py-5">
                                  <div className="flex items-center space-x-4">
                                     <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative group-hover:shadow-md transition-all">
-                                       <img src={tech.fotoUrl || `https://i.pravatar.cc/100?u=${tech.id}`} alt="Tech" className="w-full h-full object-cover" />
+                                       <img src={tech.photoUrl || `https:
                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
                                           <span className="text-xs">📸</span>
                                        </div>
@@ -388,7 +388,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                     <div>
                                        <p className="text-[12px] font-black text-slate-800 uppercase whitespace-nowrap">{tech.name}</p>
                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
-                                          {tech.role || 'Especialista'} • {tech.departamento?.name || 'General'}
+                                          {tech.role || 'Especialista'} • {tech.department?.name || 'General'}
                                        </p>
                                     </div>
                                  </div>
@@ -404,13 +404,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                               </td>
                               <td className="px-8 py-5">
                                  <div className="flex flex-col">
-                                    <span className="text-[10px] font-black text-slate-800 uppercase italic tracking-tighter">{tech.zona || 'Nacional'}</span>
+                                    <span className="text-[10px] font-black text-slate-800 uppercase italic tracking-tighter">{tech.zone || 'Nacional'}</span>
                                     <span className="text-[8px] font-bold text-slate-400 uppercase tracking-[0.2em]">Sector Activado</span>
                                  </div>
                               </td>
                               <td className="px-8 py-5">
                                  <div className="flex items-center space-x-2">
-                                    <div className={`w-2 h-2 rounded-full ${tech.status === 'ACTIVO' ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                    <div className={`w-2 h-2 rounded-full ${tech.status === 'active' ? 'bg-green-500' : 'bg-red-500'}`}></div>
                                     <span className="text-[10px] font-black text-slate-600 uppercase">{tech.status}</span>
                                  </div>
                               </td>
@@ -659,7 +659,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
             </div>
           )}
 
-          {/* Módulo: Historial Académico */}
+          {}
           {activeModule === 'certifications' && (
             <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
                <div className="flex justify-between items-center">
@@ -702,7 +702,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
             </div>
           )}
 
-          {/* Módulo: Squads y Campo */}
+          {}
           {activeModule === 'operations' && (
             <div className="max-w-7xl mx-auto space-y-8 animate-in slide-in-from-right-10 duration-500">
                <div className="flex justify-between items-center bg-blue-600 p-10 rounded-3xl text-white shadow-xl relative overflow-hidden">
@@ -727,12 +727,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                           <span className="text-[10px] font-black text-green-500 uppercase tracking-widest">Operativa</span>
                        </div>
                        <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter mb-1">{squad.name}</h3>
-                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-6">Sector: {squad.zona || 'Nacional'}</p>
+                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-6">Sector: {squad.zone || 'Nacional'}</p>
                        <div className="flex -space-x-3 overflow-hidden">
-                          {squad.tecnicos?.map((t: any) => (
-                            <img key={t.id} className="inline-block h-8 w-8 rounded-full ring-4 ring-white" src={t.foto || `https://i.pravatar.cc/100?u=${t.id}`} alt="Staff" />
+                          {squad.technicians?.map((t: any) => (
+                            <img key={t.id} className="inline-block h-8 w-8 rounded-full ring-4 ring-white" src={t.photo || `https:
                           ))}
-                          <div className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-50 ring-4 ring-white text-[9px] font-black text-slate-400">+{(squad.tecnicos?.length || 0) > 3 ? (squad.tecnicos?.length || 0) - 3 : 0}</div>
+                          <div className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-50 ring-4 ring-white text-[9px] font-black text-slate-400">+{(squad.technicians?.length || 0) > 3 ? (squad.technicians?.length || 0) - 3 : 0}</div>
                        </div>
                     </div>
                   )) : (
@@ -755,7 +755,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                </div>
 
                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {/* List of Countries */}
+                  {}
                   <div className="lg:col-span-2 space-y-6">
                      <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
                         <table className="w-full text-left">
@@ -830,7 +830,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                      </div>
                   </div>
 
-                  {/* Add New Country Form */}
+                  {}
                   <div className="space-y-6">
                      <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
                         <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter mb-6">Activar Nuevo País</h3>
@@ -915,7 +915,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
            <span>Huso Horario Global: {selectedCountry === 'PE' ? 'PET (UTC-5)' : 'AST (UTC-4)'}</span>
         </footer>
 
-        {/* Modal de Previsualización de Datos */}
+        {}
         {previewData && (
            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
               <div className="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] border border-slate-100">
@@ -985,7 +985,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
            </div>
         )}
 
-         {/* Modal Premium para Departments */}
+         {}
          {showDeptModal && (
             <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[110] flex items-center justify-center p-6 animate-in zoom-in-95 duration-200">
                <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 space-y-8 border border-white/20">
@@ -1054,7 +1054,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
             </div>
          )}
 
-         {/* Sistema de Notificaciones Premium */}
+         {}
          {notification && (
             <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] animate-in slide-in-from-bottom-5 fade-in duration-300">
                <div className={`

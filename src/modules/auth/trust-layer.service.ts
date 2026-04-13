@@ -1,13 +1,13 @@
 import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { Technician, TechnicianStatus } from '../../entities/technician.entity';
-import { Certification, NivelCertification } from '../../entities/certification.entity';
+import { Certification, CertificationLevel } from '../../entities/certification.entity';
 
-const NIVEL_HIERARCHY: Record<NivelCertification, number> = {
-  [NivelCertification.INICIAL]: 1,
-  [NivelCertification.BASICO]: 2,
-  [NivelCertification.INTEGRAL]: 3,
-  [NivelCertification.PREMIUM]: 4,
+const LEVEL_HIERARCHY: Record<CertificationLevel, number> = {
+  [CertificationLevel.INITIAL]: 1,
+  [CertificationLevel.BASIC]: 2,
+  [CertificationLevel.INTEGRAL]: 3,
+  [CertificationLevel.PREMIUM]: 4,
 };
 
 @Injectable()
@@ -17,13 +17,11 @@ export class TrustLayerService {
   ) {}
 
   /**
-   * Valida integralmente el modelo Triple Play + Anti-Replay
+   * Integrally validates the Triple Play model + Anti-Replay
    */
-  async validateFullTrust(tecnico: Technician, token?: string): Promise<Certification> {
-    // 1. Validaciones Triple Play Core
-    const highestCert = await this.validateTriplePlay(tecnico);
+  async validateFullTrust(technician: Technician, token?: string): Promise<Certification> {
+    const highestCert = await this.validateTriplePlay(technician);
 
-    // 2. Validación Anti-Replay (Factor 4) si se provee un token
     if (token) {
       await this.validateAntiReplay(token);
     }
@@ -32,65 +30,54 @@ export class TrustLayerService {
   }
 
   /**
-   * Valida los 3 factores del modelo Triple Play
-   * 1. Identidad: El técnico existe en el sistema.
-   * 2. Estatus Operativo: El técnico está ACTIVO.
-   * 3. Certificación: El técnico tiene certificaciones vigentes.
-   * @returns La certificación de mayor nivel encontrada.
+   * Validates the 3 factors of the Triple Play model
+   * 1. Identity: Technician exists.
+   * 2. Operating Status: Technician is ACTIVE.
+   * 3. Certification: Technician has valid certifications.
    */
-  async validateTriplePlay(tecnico: Technician): Promise<Certification> {
-    // Factor 1: Identidad
-    if (!tecnico) {
-      throw new UnauthorizedException('TrustLayer: Fallo de Identidad - Técnico no encontrado');
+  async validateTriplePlay(technician: Technician): Promise<Certification> {
+    if (!technician) {
+      throw new UnauthorizedException('TrustLayer: Identity Failure - Technician not found');
     }
 
-    // Factor 2: Estatus Operativo
-    if (tecnico.status !== TechnicianStatus.ACTIVO) {
-      throw new UnauthorizedException(`TrustLayer: Fallo de Estatus - Técnico en estado ${tecnico.status}`);
+    if (technician.status !== TechnicianStatus.ACTIVE) {
+      throw new UnauthorizedException(`TrustLayer: Status Failure - Technician in state ${technician.status}`);
     }
 
-    // Factor 3: Certificación
-    const validCerts = this.getValidCertifications(tecnico);
+    const validCerts = this.getValidCertifications(technician);
 
     if (validCerts.length === 0) {
-      if (!tecnico.certificaciones || tecnico.certificaciones.length === 0) {
-        throw new UnauthorizedException('TrustLayer: Fallo de Certificación - Sin registros de formación');
+      if (!technician.certifications || technician.certifications.length === 0) {
+        throw new UnauthorizedException('TrustLayer: Certification Failure - No training records found');
       }
-      throw new UnauthorizedException('TrustLayer: Fallo de Certificación - El técnico posee certificaciones vencidas');
+      throw new UnauthorizedException('TrustLayer: Certification Failure - Technician has expired certifications');
     }
 
-    // Retornar la de mayor nivel según la jerarquía
     return validCerts.reduce((prev, current) => {
-      return NIVEL_HIERARCHY[current.nivel] > NIVEL_HIERARCHY[prev.nivel] ? current : prev;
+      return LEVEL_HIERARCHY[current.level] > LEVEL_HIERARCHY[prev.level] ? current : prev;
     });
   }
 
   /**
-   * Filtra certificaciones vigentes
+   * Filters valid certifications
    */
-  getValidCertifications(tecnico: Technician): Certification[] {
-    if (!tecnico.certificaciones) return [];
+  getValidCertifications(technician: Technician): Certification[] {
+    if (!technician.certifications) return [];
     
     const now = new Date();
-    return tecnico.certificaciones.filter(cert => {
-      if (!cert.fechaExpiracion) return true;
-      return new Date(cert.fechaExpiracion) > now;
+    return technician.certifications.filter(cert => {
+      if (!cert.expiresAt) return true;
+      return new Date(cert.expiresAt) > now;
     });
   }
 
-  /**
-   * Implementa validación Anti-Replay (Factor 4) usando Redis
-   */
   async validateAntiReplay(token: string): Promise<void> {
     const isUsed = await this.redis.get(`used_token:${token}`);
     if (isUsed) {
-      throw new UnauthorizedException('TrustLayer: Alerta de Seguridad - Este token ya ha sido reutilizado');
+      throw new UnauthorizedException('TrustLayer: Security Alert - This token has already been reused');
     }
   }
 
-  /**
-   * Marca un token como usado en Redis con un TTL de 15 minutos (matching JWT expiry)
-   */
   async markTokenAsUsed(token: string): Promise<void> {
     await this.redis.set(`used_token:${token}`, 'true', 'EX', 15 * 60);
   }

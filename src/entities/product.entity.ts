@@ -1,34 +1,34 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('productos')
+@Entity('products')
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column()
-  nombre!: string;
+  name!: string;
 
   @Column({ type: 'text', nullable: true })
-  descripcion!: string;
+  description!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  precio!: number;
+  price!: number;
 
   @Column({ type: 'int', default: 0 })
   stock!: number;
 
   @Column({ type: 'int', default: 0 })
-  stockInicial!: number;
+  initialStock!: number;
 
   @Column({ unique: true })
   sku!: string;
 
   @Column({ nullable: true })
-  categoria!: string;
+  category!: string;
 
   @Column({ nullable: true })
-  imagenUrl!: string;
+  imageUrl!: string;
 
   @Column({ default: true })
-  activo!: boolean;
+  active!: boolean;
 }

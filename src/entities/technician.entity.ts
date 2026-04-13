@@ -25,7 +25,7 @@ export class Technician {
   documentId!: string; 
 
   @Column({ default: 'Técnico General' })
-  role!: string; // Ej: Técnico III, Coordinador de Ops
+  role!: string; 
 
   @Column({
     enum: StaffType,
@@ -37,7 +37,7 @@ export class Technician {
   country!: string; 
 
   @Column({ default: 'Sede Central' })
-  zone!: string; // Ej: Chacao, Miraflores, Santo Domingo Este
+  zone!: string; 
 
   @Column({ nullable: true })
   photoUrl!: string;

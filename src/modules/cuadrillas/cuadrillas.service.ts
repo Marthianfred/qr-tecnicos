@@ -8,56 +8,55 @@ import { Technician } from '../../entities/technician.entity';
 export class SquadsService {
   constructor(
     @InjectRepository(Squad)
-    private cuadrillaRepository: Repository<Squad>,
+    private squadRepository: Repository<Squad>,
     @InjectRepository(Technician)
-    private tecnicoRepository: Repository<Technician>,
+    private technicianRepository: Repository<Technician>,
   ) {}
 
   async findAll() {
-    return this.cuadrillaRepository.find({ relations: ['tecnicos', 'supervisor'] });
+    return this.squadRepository.find({ relations: ['technicians', 'supervisor'] });
   }
 
   async findOne(id: string) {
-    const cuadrilla = await this.cuadrillaRepository.findOne({
+    const squad = await this.squadRepository.findOne({
       where: { id },
-      relations: ['tecnicos', 'supervisor'],
+      relations: ['technicians', 'supervisor'],
     });
-    if (!cuadrilla) throw new NotFoundException('Squad no encontrada');
-    return cuadrilla;
+    if (!squad) throw new NotFoundException('Squad not found');
+    return squad;
   }
 
-  async create(cuadrillaData: Partial<Squad>) {
-    const cuadrilla = this.cuadrillaRepository.create(cuadrillaData);
-    return this.cuadrillaRepository.save(cuadrilla);
+  async create(squadData: Partial<Squad>) {
+    const squad = this.squadRepository.create(squadData);
+    return this.squadRepository.save(squad);
   }
 
-  async update(id: string, cuadrillaData: Partial<Squad>) {
+  async update(id: string, squadData: Partial<Squad>) {
     await this.findOne(id);
-    await this.cuadrillaRepository.update(id, cuadrillaData);
+    await this.squadRepository.update(id, squadData);
     return this.findOne(id);
   }
 
   async remove(id: string) {
-    const cuadrilla = await this.findOne(id);
-    // Antes de eliminar, desvincular técnicos
-    await this.tecnicoRepository.update({ cuadrillaId: id }, { cuadrillaId: undefined });
-    return this.cuadrillaRepository.remove(cuadrilla);
+    const squad = await this.findOne(id);
+    await this.technicianRepository.update({ squadId: id }, { squadId: undefined } as any);
+    return this.squadRepository.remove(squad);
   }
 
-  async addTechnicians(cuadrillaId: string, tecnicoIds: string[]) {
-    await this.findOne(cuadrillaId);
-    for (const tecnicoId of tecnicoIds) {
-      await this.tecnicoRepository.update(tecnicoId, { cuadrillaId });
+  async addTechnicians(squadId: string, technicianIds: string[]) {
+    await this.findOne(squadId);
+    for (const technicianId of technicianIds) {
+      await this.technicianRepository.update(technicianId, { squadId });
     }
-    return this.findOne(cuadrillaId);
+    return this.findOne(squadId);
   }
 
-  async removeTechnician(cuadrillaId: string, tecnicoId: string) {
-    await this.findOne(cuadrillaId);
-    const tecnico = await this.tecnicoRepository.findOneBy({ id: tecnicoId, cuadrillaId });
-    if (!tecnico) throw new NotFoundException('Técnico no pertenece a esta cuadrilla');
+  async removeTechnician(squadId: string, technicianId: string) {
+    await this.findOne(squadId);
+    const technician = await this.technicianRepository.findOneBy({ id: technicianId, squadId });
+    if (!technician) throw new NotFoundException('Technician does not belong to this squad');
     
-    await this.tecnicoRepository.update(tecnicoId, { cuadrillaId: undefined });
-    return this.findOne(cuadrillaId);
+    await this.technicianRepository.update(technicianId, { squadId: undefined } as any);
+    return this.findOne(squadId);
   }
 }

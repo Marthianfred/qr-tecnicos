@@ -12,9 +12,9 @@ import { PricingModule } from './modules/pricing/pricing.module';
 import { RedisModule } from './common/redis/redis.module';
 import { SeedModule } from './modules/seed/seed.module';
 import { EtlModule } from './modules/etl/etl.module';
-import { CountryesModule } from './modules/paises/paises.module';
+import { CountriesModule } from './modules/paises/paises.module';
+import { CompaniesModule } from './modules/companies/companies.module';
 import { DepartmentsModule } from './modules/departamentos/departamentos.module';
-import { KeycloakIAMService } from './services/iam.service';
 import { Technician } from './entities/technician.entity';
 import { Squad } from './entities/squad.entity';
 import { Department } from './entities/department.entity';
@@ -47,7 +47,7 @@ import { Country } from './entities/country.entity';
       password: process.env.DB_PASSWORD || 'postgres',
       database: process.env.DB_NAME || 'fibex_qr',
       entities: [Technician, Squad, Department, Certification, InconsistencyReport, Product, User, Company, Country],
-      synchronize: true, // Solo para desarrollo
+      synchronize: true, 
       extra: {
         max: 20,
         idleTimeoutMillis: 30000,
@@ -63,7 +63,8 @@ import { Country } from './entities/country.entity';
     ProductsModule,
     InventoryModule,
     PricingModule,
-    CountryesModule,
+    CountriesModule,
+    CompaniesModule,
     DepartmentsModule,
   ],
 })

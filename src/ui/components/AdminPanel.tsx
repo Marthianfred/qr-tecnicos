@@ -251,8 +251,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                      </div>
                      <div className="space-y-4">
                         {[1, 2, 3, 4, 5, 6, 7, 8].map(i => {
-                          const countries = ['VE', 'PE', 'RD'];
-                          const currentTechCountry = countries[i % 3];
+                          const countriesList = ['VE', 'PE', 'RD'];
+                          const currentTechCountry = countriesList[i % 3];
                           if (selectedCountry !== 'ALL' && selectedCountry !== currentTechCountry) return null;
                           return (
                             <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-slate-100 transition-colors">
@@ -370,7 +370,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                     </div>
                                     <div>
                                        <p className="text-[12px] font-black text-slate-800 uppercase whitespace-nowrap">{tech.name}</p>
-                                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
+                                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
                                           {tech.role || 'Especialista'} • {tech.department?.name || 'General'}
                                        </p>
                                     </div>
@@ -437,6 +437,118 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
             </div>
           )}
 
+          {activeModule === 'companies' && (
+            <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {companies.length > 0 ? companies.slice(0, 3).map(emp => (
+                    <div key={emp.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative group overflow-hidden">
+                       <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full opacity-50 transition-transform group-hover:scale-110"></div>
+                       <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Empresa en {emp.country}</h4>
+                       <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter mb-4">{emp.name}</h3>
+                       <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Contratista Activo</span>
+                          <span className="text-blue-600 font-black text-xs">→</span>
+                       </div>
+                    </div>
+                  )) : (
+                    <div className="col-span-3 p-12 bg-white rounded-3xl border border-slate-100 border-dashed text-center">
+                       <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">No hay aliados comerciales registrados en esta región</p>
+                    </div>
+                  )}
+               </div>
+               
+               <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                  <div className="p-8 border-b border-slate-100 flex justify-between items-center">
+                     <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Aliados Globales y Contratistas</h3>
+                     <button className="bg-slate-900 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all">Nueva Empresa</button>
+                  </div>
+                  <table className="w-full text-left">
+                     <thead>
+                        <tr className="bg-slate-50 border-b border-slate-100">
+                           <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nombre de Entidad</th>
+                           <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Territorio</th>
+                           <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Personal Asignado</th>
+                           <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Estatus Auditoría</th>
+                        </tr>
+                     </thead>
+                     <tbody className="divide-y divide-slate-50">
+                        {companies.map(emp => (
+                           <tr key={emp.id} className="hover:bg-slate-50 transition-colors">
+                              <td className="px-10 py-5 font-black text-slate-800 uppercase tracking-tight text-xs">{emp.name}</td>
+                              <td className="px-10 py-5">
+                                 <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[9px] font-black border border-blue-100">{emp.country}</span>
+                              </td>
+                              <td className="px-10 py-5 text-xs font-bold text-slate-500">24 Técnicos</td>
+                              <td className="px-10 py-5">
+                                 <span className="text-[10px] font-black text-green-600 uppercase">Verificado</span>
+                              </td>
+                           </tr>
+                        ))}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+          )}
+
+          {activeModule === 'departments' && (
+            <div className="max-w-7xl mx-auto space-y-8">
+               <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter italic">Nodos Organizativos</h2>
+                  <button 
+                    onClick={() => setShowDeptModal(true)}
+                    className="bg-blue-600 text-white px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-200"
+                  >
+                    Crear Departamento
+                  </button>
+               </div>
+               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  {departments.map(dept => (
+                    <div key={dept.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center hover:shadow-xl transition-all group">
+                       <span className="text-4xl block mb-4 group-hover:scale-110 transition-transform">🏢</span>
+                       <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2">{dept.name}</h3>
+                       <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nodo Fibex 00{dept.id}</p>
+                    </div>
+                  ))}
+               </div>
+            </div>
+          )}
+
+          {activeModule === 'countries' && (
+            <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-700">
+               <div className="bg-slate-900 rounded-[3rem] p-16 text-white relative overflow-hidden shadow-2xl">
+                  <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none">
+                     <span className="text-[20rem] absolute -top-20 -right-20">🌍</span>
+                  </div>
+                  <div className="relative z-10 space-y-6">
+                     <h2 className="text-5xl font-black tracking-tighter uppercase italic leading-none">Gestión de <span className="text-blue-500">Territorios</span></h2>
+                     <p className="text-sm font-bold opacity-40 uppercase tracking-[0.4em]">Control Global de Operaciones Transnacionales Fibex</p>
+                     <button className="bg-white text-slate-900 px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl hover:bg-blue-500 hover:text-white transition-all active:scale-95">
+                        Añadir Nueva Región
+                     </button>
+                  </div>
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                  {countries.map(country => (
+                    <div key={country.id} className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 p-10 hover:shadow-2xl transition-all group">
+                       <div className="flex justify-between items-start mb-8">
+                          <span className="text-6xl filter grayscale group-hover:grayscale-0 transition-all">{country.flag}</span>
+                          <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${country.active ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                             {country.active ? 'Operativo' : 'Mantenimiento'}
+                          </span>
+                       </div>
+                       <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-1">{country.name}</h3>
+                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8">Protocolo de Región: {country.code}-FIB</p>
+                       <div className="grid grid-cols-2 gap-4">
+                          <button className="bg-slate-50 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest opacity-60 hover:opacity-100 hover:bg-slate-100 transition-all">Editar</button>
+                          <button className="bg-slate-50 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest opacity-60 hover:opacity-100 hover:bg-blue-50 text-blue-600 transition-all">Reportes</button>
+                       </div>
+                    </div>
+                  ))}
+               </div>
+            </div>
+          )}
+
           {activeModule === 'operations' && (
             <div className="max-w-7xl mx-auto space-y-8 animate-in slide-in-from-right-10 duration-500">
                <div className="bg-blue-600 p-10 rounded-3xl text-white shadow-xl relative overflow-hidden">
@@ -445,7 +557,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                      <h2 className="text-3xl font-black uppercase tracking-tighter">Despliegue Operativo</h2>
                      <p className="text-xs font-bold opacity-70 uppercase tracking-widest">Control logístico nacional de Cuadrillas en Campo.</p>
                   </div>
-                  <div className="flex space-x-4">
+                  <div className="mt-8 flex space-x-4">
                      <div className="bg-white/10 px-6 py-3 rounded-2xl border border-white/20 text-center">
                         <p className="text-[9px] font-black uppercase">En Ruta</p>
                         <p className="text-2xl font-black">{dashboardStats.squads}</p>

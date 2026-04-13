@@ -30,6 +30,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const [dashboardStats, setDashboardStats] = useState({ technicians: 0, activeQrs: 0, alerts: 0, recentReports: [] as any[], squads: 0 });
   const [previewData, setPreviewData] = useState<any[] | null>(null);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [showDeptModal, setShowDeptModal] = useState(false);
+  const [newDeptName, setNewDeptName] = useState('');
 
   useEffect(() => {
     // Si el usuario tiene scope, forzamos el país
@@ -510,14 +512,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                      <p className="text-xs text-slate-400 uppercase tracking-widest font-bold">Gestión de Departamentos y Áreas Operativas</p>
                   </div>
                   <button 
-                     onClick={async () => {
-                        const nombre = prompt('Nombre del nuevo departamento:');
-                        if (!nombre) return;
-                        try {
-                           await apiService.createDepartamento({ nombre });
-                           fetchModuleData();
-                        } catch (e) { alert('Error al crear departamento'); }
-                     }}
+                     onClick={() => setShowDeptModal(true)}
                      className="px-8 py-4 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-200 hover:scale-105 transition-all"
                   >
                      + Crear Nueva Área
@@ -890,7 +885,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
             </div>
           )}
 
-          {activeModule !== 'dashboard' && activeModule !== 'personnel' && activeModule !== 'companies' && activeModule !== 'alerts' && activeModule !== 'qr-security' && activeModule !== 'certifications' && activeModule !== 'operations' && activeModule !== 'countries' && (
+          {activeModule !== 'dashboard' && activeModule !== 'personnel' && activeModule !== 'companies' && activeModule !== 'departamentos' && activeModule !== 'alerts' && activeModule !== 'qr-security' && activeModule !== 'certifications' && activeModule !== 'operations' && activeModule !== 'countries' && (
             <div className="h-full flex items-center justify-center">
                <div className="bg-white rounded-3xl shadow-sm p-24 text-center border border-slate-100 animate-in fade-in zoom-in max-w-2xl">
                 <span className="text-6xl mb-6 block">🚧</span>
@@ -981,6 +976,75 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
               </div>
            </div>
         )}
+
+         {/* Modal Premium para Departamentos */}
+         {showDeptModal && (
+            <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[110] flex items-center justify-center p-6 animate-in zoom-in-95 duration-200">
+               <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 space-y-8 border border-white/20">
+                  <div className="text-center space-y-2">
+                     <span className="text-4xl">🏢</span>
+                     <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter italic">Nueva Área Fibex</h3>
+                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Define el nombre del nuevo departamento operativo</p>
+                  </div>
+
+                  <div className="space-y-4">
+                     <div className="space-y-1">
+                        <label className="text-[9px] font-black text-slate-400 uppercase ml-1">Nombre Oficial</label>
+                        <input 
+                           value={newDeptName}
+                           onChange={(e) => setNewDeptName(e.target.value)}
+                           onKeyPress={async (e) => {
+                             if (e.key === 'Enter' && newDeptName) {
+                               try {
+                                 setLoading(true);
+                                 await apiService.createDepartamento({ nombre: newDeptName });
+                                 setShowDeptModal(false);
+                                 setNewDeptName('');
+                                 fetchModuleData();
+                               } catch (e) {
+                                 alert('Error al registrar departamento');
+                               } finally {
+                                 setLoading(false);
+                               }
+                             }
+                           }}
+                           placeholder="Ej: CDR, O&M, Mantenimiento..."
+                           className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-500 transition-all outline-none"
+                           autoFocus
+                        />
+                     </div>
+                  </div>
+
+                  <div className="flex flex-col space-y-3 pt-4">
+                     <button 
+                        onClick={async () => {
+                           if (!newDeptName) return;
+                           try {
+                              setLoading(true);
+                              await apiService.createDepartamento({ nombre: newDeptName });
+                              setShowDeptModal(false);
+                              setNewDeptName('');
+                              fetchModuleData();
+                           } catch (e) {
+                              alert('Error al registrar departamento');
+                           } finally {
+                              setLoading(false);
+                           }
+                        }}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] uppercase tracking-widest py-5 rounded-2xl shadow-xl shadow-blue-200 transition-all active:scale-95"
+                     >
+                        Confirmar Registro
+                     </button>
+                     <button 
+                        onClick={() => { setShowDeptModal(false); setNewDeptName(''); }}
+                        className="w-full text-[10px] font-black text-slate-400 uppercase tracking-widest py-2 hover:text-slate-600 transition-all"
+                     >
+                        Cancelar
+                     </button>
+                  </div>
+               </div>
+            </div>
+         )}
       </main>
     </div>
   );

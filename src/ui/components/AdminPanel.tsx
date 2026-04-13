@@ -31,6 +31,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const [previewData, setPreviewData] = useState<any[] | null>(null);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [showDeptModal, setShowDeptModal] = useState(false);
+  const [editingDept, setEditingDept] = useState<any>(null);
+  const [deptViewMode, setDeptViewMode] = useState<'grid' | 'list'>('grid');
   const [showCompanyModal, setShowCompanyModal] = useState(false);
   const [showCountryModal, setShowCountryModal] = useState(false);
   const [showNotificationsMenu, setShowNotificationsMenu] = useState(false);
@@ -559,26 +561,105 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           )}
 
           {activeModule === 'departments' && (
-            <div className="max-w-7xl mx-auto space-y-8">
+            <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
                <div className="flex justify-between items-center">
                   <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter italic">Nodos Organizativos</h2>
-                  <button 
-                    onClick={() => setShowDeptModal(true)}
-                    className="bg-blue-600 text-white px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-200"
-                  >
-                    Crear Departamento
-                  </button>
+                  <div className="flex space-x-4 items-center">
+                     <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-1 flex space-x-1">
+                        <button 
+                           onClick={() => setDeptViewMode('grid')}
+                           className={`px-4 py-2 text-[10px] rounded-lg font-black uppercase tracking-widest transition-all ${deptViewMode === 'grid' ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+                        >
+                           Mosaico
+                        </button>
+                        <button 
+                           onClick={() => setDeptViewMode('list')}
+                           className={`px-4 py-2 text-[10px] rounded-lg font-black uppercase tracking-widest transition-all ${deptViewMode === 'list' ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+                        >
+                           Lista CRUD
+                        </button>
+                     </div>
+                     <button 
+                       onClick={() => {
+                          setEditingDept(null);
+                          setNewDeptName('');
+                          setShowDeptModal(true);
+                       }}
+                       className="bg-blue-600 text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-200 active:scale-95 transition-transform"
+                     >
+                       Crear Departamento
+                     </button>
+                  </div>
                </div>
                {departments.length > 0 ? (
-                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    {departments.map(dept => (
-                      <div key={dept.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center hover:shadow-xl transition-all group">
-                         <span className="text-4xl block mb-4 group-hover:scale-110 transition-transform">🏢</span>
-                         <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2">{dept.name}</h3>
-                         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nodo Fibex 00{dept.id}</p>
-                      </div>
-                    ))}
-                 </div>
+                 <>
+                    {deptViewMode === 'grid' ? (
+                       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                          {departments.map(dept => (
+                            <div key={dept.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center hover:shadow-xl transition-all group">
+                               <span className="text-4xl block mb-4 group-hover:scale-110 transition-transform">🏢</span>
+                               <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2">{dept.name}</h3>
+                               <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nodo-{String(dept.id).substring(0, 8).toUpperCase()}</p>
+                            </div>
+                          ))}
+                       </div>
+                    ) : (
+                       <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                          <table className="w-full text-left">
+                             <thead>
+                                <tr className="bg-slate-50 border-b border-slate-100">
+                                   <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Identificador de Nodo</th>
+                                   <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Estructura Organizativa</th>
+                                   <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Controles Root</th>
+                                </tr>
+                             </thead>
+                             <tbody className="divide-y divide-slate-50">
+                                {departments.map(dept => (
+                                   <tr key={dept.id} className="hover:bg-slate-50 transition-colors">
+                                      <td className="px-10 py-5">
+                                         <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-lg text-[9px] font-mono font-black border border-slate-200">
+                                            {String(dept.id).substring(0, 8).toUpperCase()}...
+                                         </span>
+                                      </td>
+                                      <td className="px-10 py-5 font-black text-slate-800 uppercase tracking-tight text-xs">{dept.name}</td>
+                                      <td className="px-10 py-5 text-right space-x-3">
+                                         <button 
+                                            onClick={() => {
+                                               setEditingDept(dept);
+                                               setNewDeptName(dept.name);
+                                               setShowDeptModal(true);
+                                            }}
+                                            className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline"
+                                         >
+                                            Editar
+                                         </button>
+                                         <button 
+                                            onClick={async () => {
+                                               if(window.confirm(`¿Purgar permanentemente el nodo ${dept.name}?`)) {
+                                                  try {
+                                                     setLoading(true);
+                                                     await apiService.deleteDepartment(dept.id);
+                                                     setNotification({ type: 'success', message: 'Nodo purgado del ecosistema' });
+                                                     fetchModuleData();
+                                                  } catch (err) {
+                                                     setNotification({ type: 'error', message: 'Fallo al purgar registro' });
+                                                  } finally {
+                                                     setLoading(false);
+                                                  }
+                                               }
+                                            }}
+                                            className="text-[10px] font-black text-red-500 uppercase tracking-widest hover:underline"
+                                         >
+                                            Eliminar
+                                         </button>
+                                      </td>
+                                   </tr>
+                                ))}
+                             </tbody>
+                          </table>
+                       </div>
+                    )}
+                 </>
                ) : (
                  <div className="w-full py-32 rounded-3xl border border-slate-100 border-dashed bg-white text-center flex flex-col items-center justify-center shadow-sm">
                     <span className="text-6xl mb-6 opacity-20">🏗️</span>
@@ -711,7 +792,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                  <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
                     <div className="flex items-center space-x-3 text-blue-700">
                        <span className="text-sm">ℹ️</span>
-                       <p className="text-[9px] font-black uppercase tracking-widest">Esta unidad organizativa será visible para el despacho de cuadrillas de {selectedCountry === 'ALL' ? 'todas las zonas' : selectedCountry}.</p>
+                       <p className="text-[9px] font-black uppercase tracking-widest">Este nodo afectará la jerarquía operativa a nivel nacional e internacional.</p>
                     </div>
                  </div>
 
@@ -727,20 +808,26 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                        onClick={async () => {
                           try {
                              setLoading(true);
-                             await apiService.createDepartment({ name: newDeptName.toUpperCase() });
-                             setNotification({ type: 'success', message: 'Departamento creado exitosamente' });
+                             if (editingDept) {
+                                await apiService.updateDepartment(editingDept.id, { name: newDeptName.toUpperCase() });
+                                setNotification({ type: 'success', message: 'Nodo actualizado exitosamente' });
+                             } else {
+                                await apiService.createDepartment({ name: newDeptName.toUpperCase() });
+                                setNotification({ type: 'success', message: 'Departamento creado exitosamente' });
+                             }
                              setShowDeptModal(false);
                              setNewDeptName('');
+                             setEditingDept(null);
                              fetchModuleData();
                           } catch (err: any) {
-                             setNotification({ type: 'error', message: err.message || 'Error al crear' });
+                             setNotification({ type: 'error', message: err.message || 'Error en operación' });
                           } finally {
                              setLoading(false);
                           }
                        }}
                        className="flex-grow py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-xl shadow-blue-200 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 disabled:opacity-30"
                     >
-                       {loading ? 'Procesando...' : 'Guardar Nodo'}
+                       {loading ? 'Procesando...' : editingDept ? 'Actualizar Nodo' : 'Guardar Nodo'}
                     </button>
                  </div>
               </div>

@@ -847,8 +847,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                           </tr>
                        </thead>
                        <tbody className="divide-y divide-slate-50">
-                          {previewData.slice(0, 50).map((row, i) => (
-                             <tr key={i} className="group">
+                          {previewData.map((row, i) => (
+                             <tr key={i} className="group hover:bg-slate-50 transition-colors">
                                 <td className="py-4 text-xs font-black text-slate-800 uppercase">{row.nombre}</td>
                                 <td className="py-4 text-xs font-mono font-bold text-slate-400">{row.documento}</td>
                                 <td className="py-4 text-[10px] font-black text-blue-600 uppercase italic">{row.cargo}</td>
@@ -857,9 +857,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                           ))}
                        </tbody>
                     </table>
-                    {previewData.length > 50 && (
-                       <p className="mt-6 text-center text-[9px] font-black text-slate-400 uppercase tracking-widest italic">... y {previewData.length - 50} técnicos adicionales ocultos en esta vista previa ...</p>
-                    )}
                  </div>
 
                  <div className="p-10 bg-slate-50 border-t border-slate-100 flex justify-end space-x-4">

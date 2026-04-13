@@ -13,7 +13,8 @@ RUN npm install
 COPY . .
 
 # Build the application
-# build:client handles frontend, build:server handles backend (tsc)
+# build:client handles frontend (Vite), build:server handles backend (tsc)
+# Note: src/ui is now excluded from tsc in tsconfig.json
 RUN npm run build
 
 # Stage 2: Production
@@ -37,7 +38,5 @@ EXPOSE 3000
 # Set environment variables
 ENV NODE_ENV=production
 
-# We use a shell command to find the correct main.js file
-# This is more robust against tsc nesting everything in dist/src/
-# We exclude 'dist/client' to avoid running the frontend main file by mistake
-CMD ["sh", "-c", "MAIN_FILE=$(find dist -name main.js | grep -v client | head -n 1) && node $MAIN_FILE"]
+# We find main.js specifically in the root of dist to avoid running any UI artifacts
+CMD ["sh", "-c", "MAIN_FILE=$(find dist -maxdepth 1 -name main.js | head -n 1) && node $MAIN_FILE"]

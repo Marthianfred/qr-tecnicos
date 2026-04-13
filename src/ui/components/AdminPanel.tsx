@@ -31,7 +31,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const [previewData, setPreviewData] = useState<any[] | null>(null);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [showDeptModal, setShowDeptModal] = useState(false);
+  const [showCompanyModal, setShowCompanyModal] = useState(false);
+  const [showCountryModal, setShowCountryModal] = useState(false);
   const [newDeptName, setNewDeptName] = useState('');
+  const [newCompany, setNewCompany] = useState({ name: '', country: 'VE' });
+  const [newCountry, setNewCountry] = useState({ name: '', code: '', flag: '🚩' });
   const [notification, setNotification] = useState<{ type: 'success' | 'error' | 'warning', message: string } | null>(null);
 
   useEffect(() => {
@@ -247,7 +251,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                            <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter">Auditoría de Validación en Vivo</h3>
                            <p className="text-xs text-slate-400">Historial global de escaneos autorizados por Protocolo Fibex</p>
                         </div>
-                        <button className="text-[10px] font-black text-blue-600 hover:underline uppercase tracking-widest">Descargar Reporte</button>
+                        <button 
+                          onClick={() => setNotification({ type: 'warning', message: 'Generando reporte de auditoría de red...' })}
+                          className="text-[10px] font-black text-blue-600 hover:underline uppercase tracking-widest"
+                        >
+                          Descargar Reporte
+                        </button>
                      </div>
                      <div className="space-y-4">
                         {[1, 2, 3, 4, 5, 6, 7, 8].map(i => {
@@ -341,7 +350,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                            }}
                          />
                       </label>
-                     <button className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all">Exportar Reporte</button>
+                     <button 
+                        onClick={() => setNotification({ type: 'warning', message: 'Compilando base de datos de personal...' })}
+                        className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all"
+                      >
+                        Exportar Reporte
+                      </button>
                   </div>
                </div>
 
@@ -460,7 +474,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
                   <div className="p-8 border-b border-slate-100 flex justify-between items-center">
                      <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Aliados Globales y Contratistas</h3>
-                     <button className="bg-slate-900 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all">Nueva Empresa</button>
+                     <button 
+                        onClick={() => setShowCompanyModal(true)}
+                        className="bg-slate-900 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all"
+                      >
+                        Nueva Empresa
+                      </button>
                   </div>
                   <table className="w-full text-left">
                      <thead>
@@ -522,7 +541,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                   <div className="relative z-10 space-y-6">
                      <h2 className="text-5xl font-black tracking-tighter uppercase italic leading-none">Gestión de <span className="text-blue-500">Territorios</span></h2>
                      <p className="text-sm font-bold opacity-40 uppercase tracking-[0.4em]">Control Global de Operaciones Transnacionales Fibex</p>
-                     <button className="bg-white text-slate-900 px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl hover:bg-blue-500 hover:text-white transition-all active:scale-95">
+                     <button 
+                        onClick={() => setShowCountryModal(true)}
+                        className="bg-white text-slate-900 px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl hover:bg-blue-500 hover:text-white transition-all active:scale-95"
+                      >
                         Añadir Nueva Región
                      </button>
                   </div>
@@ -652,6 +674,119 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                        className="flex-grow py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-xl shadow-blue-200 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 disabled:opacity-30"
                     >
                        {loading ? 'Procesando...' : 'Guardar Nodo'}
+                    </button>
+                 </div>
+              </div>
+           </div>
+        </div>
+      )}
+
+      {/* MODAL SISTEMA: CREACIÓN DE EMPRESA */}
+      {showCompanyModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
+           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-md" onClick={() => setShowCompanyModal(false)}></div>
+           <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden border border-white/20 animate-in zoom-in-95 duration-300">
+              <header className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                 <div>
+                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic">Nuevo Aliado Comercial</h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Registro de Entidad Contratista</p>
+                 </div>
+                 <button onClick={() => setShowCompanyModal(false)} className="text-2xl opacity-30 hover:opacity-100 transition-opacity">✕</button>
+              </header>
+              <div className="p-10 space-y-6">
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Nombre de Empresa</label>
+                    <input 
+                       autoFocus
+                       value={newCompany.name}
+                       onChange={(e) => setNewCompany({...newCompany, name: e.target.value})}
+                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none"
+                    />
+                 </div>
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">País de Operación</label>
+                    <select 
+                       value={newCompany.country}
+                       onChange={(e) => setNewCompany({...newCompany, country: e.target.value})}
+                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none appearance-none"
+                    >
+                       <option value="VE">Venezuela</option>
+                       <option value="PE">Perú</option>
+                       <option value="RD">Rep. Dominicana</option>
+                    </select>
+                 </div>
+                 <div className="flex space-x-4 pt-6">
+                    <button onClick={() => setShowCompanyModal(false)} className="flex-grow py-4 bg-slate-100 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest">Cancelar</button>
+                    <button 
+                       disabled={!newCompany.name || loading}
+                       onClick={async () => {
+                          try {
+                             setLoading(true);
+                             await apiService.createCompany(newCompany);
+                             setNotification({ type: 'success', message: 'Empresa registrada correctamente' });
+                             setShowCompanyModal(false);
+                             setNewCompany({ name: '', country: 'VE' });
+                             fetchModuleData();
+                          } catch (err: any) {
+                             setNotification({ type: 'error', message: err.message || 'Error al registrar' });
+                          } finally {
+                             setLoading(false);
+                          }
+                       }}
+                       className="flex-grow py-4 bg-slate-900 text-white rounded-2xl shadow-xl text-[10px] font-black uppercase tracking-widest active:scale-95 disabled:opacity-30"
+                    >
+                       Registrar Aliado
+                    </button>
+                 </div>
+              </div>
+           </div>
+        </div>
+      )}
+
+      {/* MODAL SISTEMA: CREACIÓN DE REGIÓN */}
+      {showCountryModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
+           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-md" onClick={() => setShowCountryModal(false)}></div>
+           <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden border border-white/20 animate-in zoom-in-95 duration-300">
+              <header className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                 <div>
+                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic">Aumentar Cobertura</h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Expansión de Territorio Fibex</p>
+                 </div>
+                 <button onClick={() => setShowCountryModal(false)} className="text-2xl opacity-30 hover:opacity-100 transition-opacity">✕</button>
+              </header>
+              <div className="p-10 space-y-6">
+                 <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Nombre País</label>
+                       <input value={newCountry.name} onChange={(e) => setNewCountry({...newCountry, name: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Código (ISO)</label>
+                       <input maxLength={2} value={newCountry.code} onChange={(e) => setNewCountry({...newCountry, code: e.target.value.toUpperCase()})} placeholder="EJ: CO" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
+                    </div>
+                 </div>
+                 <div className="flex space-x-4 pt-6">
+                    <button onClick={() => setShowCountryModal(false)} className="flex-grow py-4 bg-slate-100 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest">Cancelar</button>
+                    <button 
+                       disabled={!newCountry.name || !newCountry.code || loading}
+                       onClick={async () => {
+                          try {
+                             setLoading(true);
+                             await apiService.createCountry({...newCountry, active: true});
+                             setNotification({ type: 'success', message: 'Nueva región activada' });
+                             setShowCountryModal(false);
+                             setNewCountry({ name: '', code: '', flag: '🚩' });
+                             fetchModuleData();
+                          } catch (err: any) {
+                             setNotification({ type: 'error', message: err.message || 'Error al activar región' });
+                          } finally {
+                             setLoading(false);
+                          }
+                       }}
+                       className="flex-grow py-4 bg-blue-600 text-white rounded-2xl shadow-xl text-[10px] font-black uppercase tracking-widest active:scale-95 disabled:opacity-30"
+                    >
+                       Activar Región
                     </button>
                  </div>
               </div>

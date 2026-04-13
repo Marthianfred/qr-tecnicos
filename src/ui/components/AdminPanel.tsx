@@ -490,66 +490,71 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
 
           {activeModule === 'companies' && (
             <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {companies.length > 0 ? companies.slice(0, 3).map(emp => (
-                    <div key={emp.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative group overflow-hidden">
-                       <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full opacity-50 transition-transform group-hover:scale-110"></div>
-                       <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Empresa en {emp.country}</h4>
-                       <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter mb-4">{emp.name}</h3>
-                       <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Contratista Activo</span>
-                          <span className="text-blue-600 font-black text-xs">→</span>
-                       </div>
-                    </div>
-                  )) : (
-                    <div className="col-span-3 p-12 bg-white rounded-3xl border border-slate-100 border-dashed text-center">
-                       <p className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">No hay aliados comerciales registrados en esta región</p>
-                    </div>
-                  )}
-               </div>
-               
-               <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-                  <div className="p-8 border-b border-slate-100 flex justify-between items-center">
-                     <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Aliados Globales y Contratistas</h3>
-                     <button 
-                        onClick={() => setShowCompanyModal(true)}
-                        className="bg-slate-900 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all"
-                      >
-                        Nueva Empresa
-                      </button>
-                  </div>
-                  <table className="w-full text-left">
-                     <thead>
-                        <tr className="bg-slate-50 border-b border-slate-100">
-                           <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nombre de Entidad</th>
-                           <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Territorio</th>
-                           <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Personal Asignado</th>
-                           <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Estatus Auditoría</th>
-                        </tr>
-                     </thead>
-                     <tbody className="divide-y divide-slate-50">
-                        {companies.length > 0 ? companies.map(emp => (
-                           <tr key={emp.id} className="hover:bg-slate-50 transition-colors">
-                              <td className="px-10 py-5 font-black text-slate-800 uppercase tracking-tight text-xs">{emp.name}</td>
-                              <td className="px-10 py-5">
-                                 <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[9px] font-black border border-blue-100">{emp.country}</span>
-                              </td>
-                              <td className="px-10 py-5 text-xs font-bold text-slate-500">24 Técnicos</td>
-                              <td className="px-10 py-5">
-                                 <span className="text-[10px] font-black text-green-600 uppercase">Verificado</span>
-                              </td>
-                           </tr>
-                        )) : (
-                           <tr>
-                              <td colSpan={4} className="px-10 py-32 text-center bg-slate-50/30">
-                                 <span className="text-4xl block mb-4 opacity-20">🏢</span>
-                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] italic">La tabla de aliados se encuentra vacía para la región seleccionada</p>
-                              </td>
-                           </tr>
-                        )}
-                     </tbody>
-                  </table>
-               </div>
+               {companies.length > 0 ? (
+                 <>
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {companies.slice(0, 3).map(emp => (
+                        <div key={emp.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative group overflow-hidden">
+                           <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full opacity-50 transition-transform group-hover:scale-110"></div>
+                           <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Empresa en {emp.country}</h4>
+                           <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter mb-4">{emp.name}</h3>
+                           <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Contratista Activo</span>
+                              <span className="text-blue-600 font-black text-xs">→</span>
+                           </div>
+                        </div>
+                      ))}
+                   </div>
+                   
+                   <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                      <div className="p-8 border-b border-slate-100 flex justify-between items-center">
+                         <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Aliados Globales y Contratistas</h3>
+                         <button 
+                            onClick={() => setShowCompanyModal(true)}
+                            className="bg-slate-900 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all"
+                          >
+                            Nueva Empresa
+                          </button>
+                      </div>
+                      <table className="w-full text-left">
+                         <thead>
+                            <tr className="bg-slate-50 border-b border-slate-100">
+                               <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nombre de Entidad</th>
+                               <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Territorio</th>
+                               <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Personal Asignado</th>
+                               <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Estatus Auditoría</th>
+                            </tr>
+                         </thead>
+                         <tbody className="divide-y divide-slate-50">
+                            {companies.map(emp => (
+                               <tr key={emp.id} className="hover:bg-slate-50 transition-colors">
+                                  <td className="px-10 py-5 font-black text-slate-800 uppercase tracking-tight text-xs">{emp.name}</td>
+                                  <td className="px-10 py-5">
+                                     <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[9px] font-black border border-blue-100">{emp.country}</span>
+                                  </td>
+                                  <td className="px-10 py-5 text-xs font-bold text-slate-500">24 Técnicos</td>
+                                  <td className="px-10 py-5">
+                                     <span className="text-[10px] font-black text-green-600 uppercase">Verificado</span>
+                                  </td>
+                               </tr>
+                            ))}
+                         </tbody>
+                      </table>
+                   </div>
+                 </>
+               ) : (
+                 <div className="w-full py-32 rounded-3xl border border-slate-100 border-dashed bg-white text-center flex flex-col items-center justify-center shadow-sm">
+                    <span className="text-6xl mb-6 opacity-20">🏢</span>
+                    <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest mb-2">Sin Aliados Comerciales</h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mb-8">No hay contratistas registrados en esta jurisdicción.</p>
+                    <button 
+                       onClick={() => setShowCompanyModal(true)}
+                       className="bg-slate-900 text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all"
+                    >
+                       Nueva Empresa
+                    </button>
+                 </div>
+               )}
             </div>
           )}
 

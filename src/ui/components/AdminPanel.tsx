@@ -301,7 +301,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                              </div>
                            ))}
                        </div>
-                       <button className="w-full mt-10 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all">
+                       <button 
+                         onClick={() => setNotification({ type: 'warning', message: 'Gestionando registros desde la matriz...' })}
+                         className="w-full mt-10 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all"
+                       >
                            Gestionar Certificaciones
                        </button>
                     </div>
@@ -562,8 +565,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                        <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-1">{country.name}</h3>
                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8">Protocolo de Región: {country.code}-FIB</p>
                        <div className="grid grid-cols-2 gap-4">
-                          <button className="bg-slate-50 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest opacity-60 hover:opacity-100 hover:bg-slate-100 transition-all">Editar</button>
-                          <button className="bg-slate-50 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest opacity-60 hover:opacity-100 hover:bg-blue-50 text-blue-600 transition-all">Reportes</button>
+                          <button 
+                             onClick={() => setNotification({ type: 'warning', message: 'Abriendo parámetros de configuración...' })}
+                             className="bg-slate-50 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest opacity-60 hover:opacity-100 hover:bg-slate-100 transition-all"
+                          >
+                             Editar
+                          </button>
+                          <button 
+                             onClick={() => setNotification({ type: 'warning', message: 'Compilando inteligencia geopolítica...' })}
+                             className="bg-slate-50 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest opacity-60 hover:opacity-100 hover:bg-blue-50 text-blue-600 transition-all"
+                          >
+                             Reportes
+                          </button>
                        </div>
                     </div>
                   ))}

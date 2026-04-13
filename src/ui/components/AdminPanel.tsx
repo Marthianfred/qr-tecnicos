@@ -828,12 +828,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
       {/* NOTIFICACIONES DE SISTEMA */}
       {notification && (
         <div className={`fixed bottom-10 right-10 z-[110] px-8 py-4 rounded-2xl shadow-2xl border-l-[6px] animate-in slide-in-from-right-10 duration-500 ${
-           notification.type === 'success' ? 'bg-white border-green-500 text-slate-900' : 'bg-white border-red-500 text-slate-900'
+           notification.type === 'success' ? 'bg-white border-green-500 text-slate-900' : 
+           notification.type === 'warning' ? 'bg-white border-amber-500 text-slate-900' : 
+           'bg-white border-red-500 text-slate-900'
         }`}>
            <div className="flex items-center space-x-4">
-              <span className="text-xl">{notification.type === 'success' ? '✅' : '❌'}</span>
+              <span className="text-xl">
+                 {notification.type === 'success' ? '✅' : notification.type === 'warning' ? '⚠️' : '❌'}
+              </span>
               <div>
-                 <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">{notification.type === 'success' ? 'Operación Exitosa' : 'Fallo de Sistema'}</p>
+                 <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">
+                    {notification.type === 'success' ? 'Operación Exitosa' : notification.type === 'warning' ? 'Aviso del Sistema' : 'Fallo de Sistema'}
+                 </p>
                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">{notification.message}</p>
               </div>
            </div>

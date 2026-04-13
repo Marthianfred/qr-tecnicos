@@ -691,7 +691,43 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                        </span>
                                     </td>
                                     <td className="px-8 py-5 text-right">
-                                       <button className="text-[10px] font-black text-blue-600 hover:text-blue-800 uppercase tracking-widest">Configurar</button>
+                                       <div className="flex justify-end space-x-4">
+                                           <button 
+                                              onClick={async () => {
+                                                 try {
+                                                    setLoading(true);
+                                                    await apiService.updatePais(p.id, { activo: !p.activo });
+                                                    fetchModuleData();
+                                                 } catch (err) {
+                                                    alert('Error al actualizar estado');
+                                                 } finally {
+                                                    setLoading(false);
+                                                 }
+                                              }}
+                                              className={`text-[9px] font-black px-3 py-1 rounded-sm uppercase tracking-widest transition-all ${p.activo ? 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white' : 'bg-green-50 text-green-600 hover:bg-green-600 hover:text-white'}`}
+                                           >
+                                              {p.activo ? 'Pausar' : 'Activar'}
+                                           </button>
+                                           <button 
+                                              onClick={async () => {
+                                                 const nuevoNombre = prompt('Nuevo nombre de la nación:', p.nombre);
+                                                 if (nuevoNombre && nuevoNombre !== p.nombre) {
+                                                    try {
+                                                       setLoading(true);
+                                                       await apiService.updatePais(p.id, { nombre: nuevoNombre });
+                                                       fetchModuleData();
+                                                    } catch (err) {
+                                                       alert('Error al editar nombre');
+                                                    } finally {
+                                                       setLoading(false);
+                                                    }
+                                                 }
+                                              }}
+                                              className="text-[9px] font-black text-blue-600 hover:text-blue-800 uppercase tracking-widest"
+                                           >
+                                              Editar
+                                           </button>
+                                        </div>
                                     </td>
                                  </tr>
                               ))}

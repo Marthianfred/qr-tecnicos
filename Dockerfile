@@ -7,6 +7,8 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat
 
 COPY package*.json ./
+# Force install the specific rollup binary for Linux musl
+RUN npm install @rollup/rollup-linux-x64-musl
 RUN npm install
 
 # Copy source code

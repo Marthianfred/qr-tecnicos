@@ -497,7 +497,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         </tr>
                      </thead>
                      <tbody className="divide-y divide-slate-50">
-                        {companies.map(emp => (
+                        {companies.length > 0 ? companies.map(emp => (
                            <tr key={emp.id} className="hover:bg-slate-50 transition-colors">
                               <td className="px-10 py-5 font-black text-slate-800 uppercase tracking-tight text-xs">{emp.name}</td>
                               <td className="px-10 py-5">
@@ -508,7 +508,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                  <span className="text-[10px] font-black text-green-600 uppercase">Verificado</span>
                               </td>
                            </tr>
-                        ))}
+                        )) : (
+                           <tr>
+                              <td colSpan={4} className="px-10 py-32 text-center bg-slate-50/30">
+                                 <span className="text-4xl block mb-4 opacity-20">🏢</span>
+                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] italic">La tabla de aliados se encuentra vacía para la región seleccionada</p>
+                              </td>
+                           </tr>
+                        )}
                      </tbody>
                   </table>
                </div>

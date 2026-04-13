@@ -3,7 +3,7 @@ import { DepartamentosService } from './departamentos.service';
 import { CreateDepartamentoDto } from './dto/create-departamento.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
-@Controller('api/departamentos')
+@Controller('departamentos')
 @UseGuards(JwtAuthGuard)
 export class DepartamentosController {
   constructor(private readonly departamentosService: DepartamentosService) {}

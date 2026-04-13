@@ -6,7 +6,7 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../../entities/user.entity';
 
-@Controller('api/cuadrillas')
+@Controller('cuadrillas')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class CuadrillasController {
   constructor(private readonly cuadrillasService: CuadrillasService) {}

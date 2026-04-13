@@ -74,7 +74,9 @@ describe('Admin Business Flow (E2E)', () => {
       .send({
         nombre: 'Pedro E2E',
         documento: 'V12345678',
+        cargo: 'Supervisor de Cuadrilla',
         pais: 'VE',
+        zona: 'CCS-01',
         status: TecnicoStatus.ACTIVO,
       })
       .expect(201);

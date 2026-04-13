@@ -65,7 +65,9 @@ describe('Fibex Qr Tecnicos (E2E Flow)', () => {
       .send({
         nombre: 'Carlos GDA',
         documento: 'V11223344',
+        cargo: 'Técnico de Campo Senior',
         pais: 'VE',
+        zona: 'Caracas - El Hatillo',
         status: TecnicoStatus.ACTIVO,
       })
       .expect(201);

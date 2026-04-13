@@ -289,7 +289,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                           <td className="px-8 py-6">
                             <div className="flex items-center space-x-4">
                               <div className="w-10 h-10 rounded-full bg-surface_container_highest overflow-hidden border-2 border-primary/5">
-                                {tech.foto && <img src={tech.foto} alt="" className="w-full h-full object-cover" />}
+                                {tech.fotoUrl && <img src={tech.fotoUrl} alt="" className="w-full h-full object-cover" />}
                               </div>
                               <span className="font-display font-extrabold text-on_surface tracking-tight uppercase text-xs">{tech.nombre}</span>
                             </div>

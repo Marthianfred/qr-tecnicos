@@ -27,7 +27,6 @@ export class Tecnico {
   cargo!: string; // Ej: Técnico III, Coordinador de Ops
 
   @Column({
-    type: 'enum',
     enum: TipoPersonal,
     default: TipoPersonal.CORPORATIVO
   })

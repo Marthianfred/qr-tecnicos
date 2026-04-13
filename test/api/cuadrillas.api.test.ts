@@ -63,7 +63,9 @@ describe('Cuadrillas API (Integration)', () => {
     const tecnico = await tecnicoRepository.save({
       nombre: 'Tecnico Prueba',
       documento: 'TEST-123',
+      cargo: 'Técnico de Cuadrilla',
       pais: 'VE',
+      zona: 'Base Central',
     });
     tecnicoId = tecnico.id;
   }, 10000);

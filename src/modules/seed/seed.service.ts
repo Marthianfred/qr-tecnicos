@@ -49,8 +49,8 @@ export class SeedService implements OnModuleInit {
 
   private async seedTecnicos() {
     const tecnicosData = [
-      { nombre: 'Juan Perez', documento: '12345678', pais: 'VE', status: TecnicoStatus.ACTIVO },
-      { nombre: 'Maria Garcia', documento: '87654321', pais: 'VE', status: TecnicoStatus.ACTIVO },
+      { nombre: 'Juan Perez', documento: '12345678', cargo: 'Técnico Especialista III', pais: 'VE', zona: 'Caracas - Capitolio', status: TecnicoStatus.ACTIVO },
+      { nombre: 'Maria Garcia', documento: '87654321', cargo: 'Coordinadora de Cuadrilla', pais: 'VE', zona: 'Caracas - Chacao', status: TecnicoStatus.ACTIVO },
     ];
 
     for (const tData of tecnicosData) {

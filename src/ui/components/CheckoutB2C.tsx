@@ -35,7 +35,7 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
     e.preventDefault();
     
     if (!formData.email || !formData.fullName || !formData.address || !formData.cardNumber) {
-      setError('Required protocol fields are missing.');
+      setError('Faltan campos de protocolo requeridos para la autorización.');
       return;
     }
 

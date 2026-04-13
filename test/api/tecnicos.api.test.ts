@@ -81,7 +81,9 @@ describe('Tecnicos API (Integration)', () => {
       .send({
         nombre: 'Juan Perez',
         documento: 'V12345678',
+        cargo: 'Técnico de Redes',
         pais: 'VE',
+        zona: 'Caracas - El Rosal',
       });
     
     expect(response.status).toBe(201);

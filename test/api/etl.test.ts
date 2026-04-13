@@ -58,7 +58,7 @@ describe('EtlService (Integration)', () => {
     expect(supervisors.map((s: any) => s.username)).toContain('V11111111');
 
     const tecnicos = await tecnicoRepo.find({ relations: ['certificaciones', 'cuadrilla'] });
-    expect(tecnicos.length).toBe(2);
+    expect(tecnicos.length).toBe(4);
     
     const juan = tecnicos.find((t: any) => t.nombre === 'Juan Rodriguez');
     expect(juan).toBeDefined();

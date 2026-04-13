@@ -1,8 +1,8 @@
-Cabecera redundante 1
-Cabecera redundante 2
-Cabecera redundante 3
-Empresa,NIL,Nombre,Rol,Cédula/DNI,Inicial,Básico,Integral,Premium,Supervisor
-Fibex Services,J-12345678,Carlos Perez,Supervisor,V11111111,Certificado,Certificado,Certificado,Certificado,
-Fibex Services,J-12345678,Juan Rodriguez,Tecnico,V22222222,Certificado,Por Certificar,No Cursado,No Cursado,Carlos Perez
-GDA Tech,J-87654321,Maria Garcia,Supervisor,V33333333,Certificado,Certificado,Certificado,No Cursado,
-GDA Tech,J-87654321,Pedro Lopez,Tecnico,V44444444,Certificado,Certificado,Por Certificar,No Cursado,Maria Garcia
+Empresa,NIL,Nombre,Rol,Documento,Inicial,Básico,Integral,Premium,Supervisor,Zona
+# Skip Row 1
+# Skip Row 2
+# Skip Row 3
+Fibex Services,J-12345678,Carlos Perez,Supervisor,V11111111,Certificado,Certificado,Certificado,Certificado,,Caracas
+Fibex Services,J-12345678,Juan Rodriguez,Tecnico,V22222222,Certificado,No,No,No,Carlos Perez,Chacao
+GDA Tech,J-87654321,Pedro Lopez,Tecnico,V33333333,Certificado,Certificado,No,No,Carlos Perez,Miraflores
+GDA Tech,J-87654321,Maria Supervisor,Supervisor,V44444444,Certificado,Certificado,Certificado,Certificado,,Santo Domingo

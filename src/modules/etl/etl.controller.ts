@@ -20,7 +20,7 @@ export class EtlController {
       },
     }),
   }))
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @Req() req: any) {
+  async uploadFile(@UploadedFile() file: any, @Req() req: any) {
     if (!file) throw new BadRequestException('Se requiere un archivo CSV para la importación');
     
     // El ETL service procesa el archivo recién subido con el scope del usuario

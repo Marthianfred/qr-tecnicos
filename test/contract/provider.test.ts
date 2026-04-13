@@ -80,7 +80,9 @@ describe('Pact Provider Verification', () => {
       id: '1',
       nombre: 'John Doe',
       documento: 'V12345678',
+      cargo: 'Especialista de Enlaces',
       pais: 'VE',
+      zona: 'Caracas - Zona Rental',
       status: TecnicoStatus.ACTIVO,
     });
     await tecnicoRepository.save(tecnico);
@@ -111,7 +113,9 @@ describe('Pact Provider Verification', () => {
               id: '1',
               nombre: 'John Doe',
               documento: 'V12345678',
+              cargo: 'Especialista de Enlaces',
               pais: 'VE',
+              zona: 'Caracas - Zona Rental',
               status: TecnicoStatus.ACTIVO,
             });
             await tecnicoRepository.save(tecnico);

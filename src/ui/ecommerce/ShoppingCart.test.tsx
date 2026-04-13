@@ -41,7 +41,7 @@ describe('ShoppingCart', () => {
         onOrderComplete={mockOnOrderComplete}
       />
     );
-    expect(screen.getByText(/Vault is currently empty/i)).toBeInTheDocument();
+    expect(screen.getByText(/La bóveda está vacía actualmente/i)).toBeInTheDocument();
   });
 
   it('renders items in the cart', () => {
@@ -97,10 +97,10 @@ describe('ShoppingCart', () => {
         onOrderComplete={mockOnOrderComplete}
       />
     );
-    const checkoutButton = screen.getByText(/Authorize & Clear/i);
+    const checkoutButton = screen.getByText(/Autorizar y Aprobar/i);
     fireEvent.click(checkoutButton);
     
-    const processingText = await screen.findByText(/Transmitting.../i);
+    const processingText = await screen.findByText(/Transmitiendo.../i);
     expect(processingText).toBeInTheDocument();
     
     await waitFor(() => {
@@ -122,10 +122,10 @@ describe('ShoppingCart', () => {
       />
     );
     
-    const checkoutButton = screen.getByText(/Authorize & Clear/i);
+    const checkoutButton = screen.getByText(/Autorizar y Aprobar/i);
     fireEvent.click(checkoutButton);
     
-    const errorMessage = await screen.findByText(/A transmission error occurred. Please re-authenticate your request./i);
+    const errorMessage = await screen.findByText(/Ocurrió un error de transmisión. Por favor, vuelva a autenticar su solicitud./i);
     expect(errorMessage).toBeInTheDocument();
   });
 });

@@ -31,7 +31,7 @@ describe('ClientVerification Component', () => {
   test('renders loading state initially', () => {
     (apiService.validateQR as jest.Mock).mockReturnValue(new Promise(() => {}));
     render(<ClientVerification onReport={mockOnReport} />);
-    expect(screen.getByText(/Authenticating Personnel.../i)).toBeInTheDocument();
+    expect(screen.getByText(/Validando Identidad Digital.../i)).toBeInTheDocument();
   });
 
   test('renders success state with technician data', async () => {
@@ -40,6 +40,8 @@ describe('ClientVerification Component', () => {
       nombre: 'Juan Perez',
       documento: 'V-12345678',
       pais: 'Venezuela',
+      cargo: 'Técnico Especialista III',
+      empresa: 'Fibex Services',
       nivel: 'Senior',
       foto: 'https://example.com/foto.jpg'
     };
@@ -47,15 +49,14 @@ describe('ClientVerification Component', () => {
 
     render(<ClientVerification onReport={mockOnReport} />);
 
-    expect(await screen.findByText(/Personnel Verified/i)).toBeInTheDocument();
+    expect(await screen.findByText(/VALIDACIÓN EXITOSA/i)).toBeInTheDocument();
     expect(screen.getByText('Juan Perez')).toBeInTheDocument();
-    expect(screen.getByText(/Field Specialist/i)).toBeInTheDocument();
+    expect(screen.getByText('Técnico Especialista III')).toBeInTheDocument();
     expect(screen.getByText('V-12345678')).toBeInTheDocument();
-    expect(screen.getByText('TECH-123')).toBeInTheDocument();
     
-    // Check for the new trust elements
-    expect(screen.getByText(/Validation Date/i)).toBeInTheDocument();
-    expect(screen.getByText(/Report Anomaly/i)).toBeInTheDocument();
+    // Check for Spanish trust elements
+    expect(screen.getByText(/Jurisdicción/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reportar Incidente de Seguridad/i)).toBeInTheDocument();
   });
 
   test('renders error state when token is missing', async () => {
@@ -66,8 +67,8 @@ describe('ClientVerification Component', () => {
 
     render(<ClientVerification onReport={mockOnReport} />);
 
-    expect(await screen.findByText(/Security Alert/i)).toBeInTheDocument();
-    expect(screen.getByText(/No valid verification token was provided./i)).toBeInTheDocument();
+    expect(await screen.findByText(/ALERTA DE SEGURIDAD/i)).toBeInTheDocument();
+    expect(screen.getByText(/DOCUMENTO NO VÁLIDO/i)).toBeInTheDocument();
   });
 
   test('renders error state when token is invalid', async () => {
@@ -75,9 +76,9 @@ describe('ClientVerification Component', () => {
 
     render(<ClientVerification onReport={mockOnReport} />);
 
-    expect(await screen.findByText(/Security Alert/i)).toBeInTheDocument();
-    expect(screen.getByText(/The QR code has expired or is invalid./i)).toBeInTheDocument();
-    expect(screen.getByText(/CALL EMERGENCY/i)).toBeInTheDocument();
+    expect(await screen.findByText(/ALERTA DE SEGURIDAD/i)).toBeInTheDocument();
+    expect(screen.getByText(/Este código QR ha expirado o no pertenece al personal autorizado/i)).toBeInTheDocument();
+    expect(screen.getByText(/LLAMAR AUTORIDADES/i)).toBeInTheDocument();
   });
 
   test('calls onReport when the report button is clicked', async () => {
@@ -86,13 +87,15 @@ describe('ClientVerification Component', () => {
       nombre: 'Juan Perez',
       documento: 'V-12345678',
       pais: 'Venezuela',
+      cargo: 'Técnico Especialista III',
+      empresa: 'Fibex Services',
       nivel: 'Senior'
     };
     (apiService.validateQR as jest.Mock).mockResolvedValue(mockTechData);
 
     render(<ClientVerification onReport={mockOnReport} />);
 
-    const reportButton = await screen.findByRole('button', { name: /Report Anomaly/i });
+    const reportButton = await screen.findByRole('button', { name: /Reportar Incidente de Seguridad/i });
     fireEvent.click(reportButton);
 
     expect(mockOnReport).toHaveBeenCalledTimes(1);

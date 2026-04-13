@@ -55,7 +55,7 @@ export class EtlService {
       this.logger.log(`Processing ${dataLines.length} CSV rows`);
       return await this.ingestData(dataLines, tipoPersonalAutomatico, paisScope);
     } finally {
-      if (fs.existsSync(filePath)) {
+      if (fs.existsSync(filePath) && filePath.includes('uploads')) {
         fs.unlinkSync(filePath);
         this.logger.log(`Deleted temporary file: ${filePath}`);
       }

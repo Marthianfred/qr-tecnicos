@@ -68,18 +68,21 @@ describe('TecnicosService', () => {
       mockTecnicoRepository.find.mockResolvedValue([]);
       const result = await service.findAll();
       expect(result).toEqual([]);
-      expect(mockTecnicoRepository.find).toHaveBeenCalledWith({ relations: ['certificaciones'] });
+      expect(mockTecnicoRepository.find).toHaveBeenCalledWith({ 
+        where: {},
+        relations: ['certificaciones'] 
+      });
     });
   });
 
   describe('findOne', () => {
     it('should return one tecnico', async () => {
-      const tecnico = { id: '123' };
+      const tecnico = { id: '1' };
       mockTecnicoRepository.findOne.mockResolvedValue(tecnico);
-      const result = await service.findOne('123');
+      const result = await service.findOne('1');
       expect(result).toEqual(tecnico);
       expect(mockTecnicoRepository.findOne).toHaveBeenCalledWith({
-        where: { id: '123' },
+        where: { id: '1' },
         relations: ['certificaciones'],
       });
     });
@@ -89,9 +92,9 @@ describe('TecnicosService', () => {
     it('should create and save a tecnico with valid VE document', async () => {
       const dto = { nombre: 'Test', documento: 'V12345678', pais: 'VE' };
       mockTecnicoRepository.create.mockReturnValue(dto);
-      mockTecnicoRepository.save.mockResolvedValue({ id: '123', ...dto });
+      mockTecnicoRepository.save.mockResolvedValue({ id: '1', ...dto });
       const result = await service.create(dto);
-      expect(result.id).toBe('123');
+      expect(result.id).toBe('1');
     });
 
     it('should throw BadRequestException for missing documento in VE', async () => {
@@ -102,9 +105,9 @@ describe('TecnicosService', () => {
     it('should create and save a tecnico with valid PE document', async () => {
       const dto = { nombre: 'Test', documento: '12345678', pais: 'PE' };
       mockTecnicoRepository.create.mockReturnValue(dto);
-      mockTecnicoRepository.save.mockResolvedValue({ id: '123', ...dto });
+      mockTecnicoRepository.save.mockResolvedValue({ id: '1', ...dto });
       const result = await service.create(dto);
-      expect(result.id).toBe('123');
+      expect(result.id).toBe('1');
     });
 
     it('should throw BadRequestException for invalid PE document', async () => {
@@ -120,9 +123,9 @@ describe('TecnicosService', () => {
     it('should create and save a tecnico with valid RD document', async () => {
       const dto = { nombre: 'Test', documento: '12345678901', pais: 'RD' };
       mockTecnicoRepository.create.mockReturnValue(dto);
-      mockTecnicoRepository.save.mockResolvedValue({ id: '123', ...dto });
+      mockTecnicoRepository.save.mockResolvedValue({ id: '1', ...dto });
       const result = await service.create(dto);
-      expect(result.id).toBe('123');
+      expect(result.id).toBe('1');
     });
 
     it('should throw BadRequestException for invalid RD document', async () => {
@@ -138,27 +141,27 @@ describe('TecnicosService', () => {
     it('should create a tecnico if country is not VE, PE or RD without validation', async () => {
       const dto = { nombre: 'Test', documento: 'ABC', pais: 'OTHER' };
       mockTecnicoRepository.create.mockReturnValue(dto);
-      mockTecnicoRepository.save.mockResolvedValue({ id: '123', ...dto });
+      mockTecnicoRepository.save.mockResolvedValue({ id: '1', ...dto });
       const result = await service.create(dto);
-      expect(result.id).toBe('123');
+      expect(result.id).toBe('1');
     });
   });
 
   describe('addCertificacion', () => {
     it('should return null if tecnico not found', async () => {
       mockTecnicoRepository.findOne.mockResolvedValue(null);
-      const result = await service.addCertificacion('123', {});
+      const result = await service.addCertificacion('1', {});
       expect(result).toBeNull();
     });
 
     it('should create and save a certificacion', async () => {
-      const tecnico = { id: '123' } as Tecnico;
+      const tecnico = { id: '1' } as Tecnico;
       const certDto = { nivel: NivelCertificacion.INTEGRAL };
       mockTecnicoRepository.findOne.mockResolvedValue(tecnico);
       mockCertificacionRepository.create.mockReturnValue({ ...certDto, tecnico });
       mockCertificacionRepository.save.mockResolvedValue({ id: 'cert1', ...certDto });
       
-      const result = await service.addCertificacion('123', certDto);
+      const result = await service.addCertificacion('1', certDto);
       expect(result).toBeDefined();
       expect(result?.id).toBe('cert1');
       expect(mockCertificacionRepository.save).toHaveBeenCalled();
@@ -168,20 +171,20 @@ describe('TecnicosService', () => {
   describe('reportInconsistency', () => {
     it('should throw NotFoundException if tecnico not found', async () => {
       mockTecnicoRepository.findOneBy.mockResolvedValue(null);
-      await expect(service.reportInconsistency('123', { descripcion: 'test' }))
+      await expect(service.reportInconsistency('1', { descripcion: 'test' }))
         .rejects.toThrow(NotFoundException);
     });
 
     it('should create and save a report', async () => {
-      const tecnico = { id: '123' };
+      const tecnico = { id: '1' };
       mockTecnicoRepository.findOneBy.mockResolvedValue(tecnico);
       mockReporteRepository.findOne.mockResolvedValue(null);
-      mockReporteRepository.create.mockReturnValue({ id: 'rep1', tecnicoId: '123' });
-      mockReporteRepository.save.mockResolvedValue({ id: 'rep1', tecnicoId: '123' });
+      mockReporteRepository.create.mockReturnValue({ id: 'rep1', tecnicoId: '1' });
+      mockReporteRepository.save.mockResolvedValue({ id: 'rep1', tecnicoId: '1' });
 
-      const result = await service.reportInconsistency('123', { descripcion: 'test' });
+      const result = await service.reportInconsistency('1', { descripcion: 'test' });
       expect(result).toBeDefined();
-      expect(result.tecnicoId).toBe('123');
+      expect(result.tecnicoId).toBe('1');
       expect(mockReporteRepository.save).toHaveBeenCalled();
     });
   });
@@ -198,16 +201,16 @@ describe('TecnicosService', () => {
   describe('updateStatus', () => {
     it('should throw NotFoundException if tecnico not found', async () => {
       mockTecnicoRepository.findOneBy.mockResolvedValue(null);
-      await expect(service.updateStatus('123', TecnicoStatus.INACTIVO))
+      await expect(service.updateStatus('1', TecnicoStatus.INACTIVO))
         .rejects.toThrow(NotFoundException);
     });
 
     it('should update and save tecnico status', async () => {
-      const tecnico = { id: '123', status: TecnicoStatus.ACTIVO };
+      const tecnico = { id: '1', status: TecnicoStatus.ACTIVO };
       mockTecnicoRepository.findOneBy.mockResolvedValue(tecnico);
       mockTecnicoRepository.save.mockResolvedValue({ ...tecnico, status: TecnicoStatus.INACTIVO });
 
-      const result = await service.updateStatus('123', TecnicoStatus.INACTIVO);
+      const result = await service.updateStatus('1', TecnicoStatus.INACTIVO);
       expect(result.status).toBe(TecnicoStatus.INACTIVO);
       expect(mockTecnicoRepository.save).toHaveBeenCalledWith(expect.objectContaining({
         status: TecnicoStatus.INACTIVO

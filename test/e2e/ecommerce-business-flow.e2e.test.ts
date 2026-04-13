@@ -90,7 +90,9 @@ describe('Ecommerce & TrustLayer (Business Flow E2E)', () => {
       .send({
         nombre: 'Carlos Gomez',
         documento: '20202020',
+        cargo: 'Técnico Especialista III',
         pais: 'PE',
+        zona: 'Lima Norte',
         status: TecnicoStatus.ACTIVO,
       })
       .expect(201);
@@ -140,7 +142,9 @@ describe('Ecommerce & TrustLayer (Business Flow E2E)', () => {
       .send({
         nombre: 'Inactive Tech',
         documento: '20202021',
+        cargo: 'Auxiliar Técnico',
         pais: 'PE',
+        zona: 'Lima Centro',
         status: TecnicoStatus.INACTIVO,
       })
       .expect(201);

@@ -123,7 +123,9 @@ describe('Security and Edge Cases (FIB-31)', () => {
       const tecnico = await tecnicoRepository.save({
         nombre: 'Tech Expired Cert',
         documento: 'V99999991',
+        cargo: 'Técnico de Seguridad',
         pais: 'VE',
+        zona: 'Area Auditoría',
         status: TecnicoStatus.ACTIVO
       });
 
@@ -153,7 +155,9 @@ describe('Security and Edge Cases (FIB-31)', () => {
        const tecnico = await tecnicoRepository.save({
         nombre: 'Tech Duplicate Report',
         documento: 'V99999992',
+        cargo: 'Analista de Riesgos',
         pais: 'VE',
+        zona: 'Centro de Control',
         status: TecnicoStatus.ACTIVO
       });
 
@@ -182,7 +186,9 @@ describe('Security and Edge Cases (FIB-31)', () => {
       const tecnico = await tecnicoRepository.save({
         nombre: 'Tech Single Use',
         documento: 'V99999993',
+        cargo: 'Técnico de Soporte',
         pais: 'VE',
+        zona: 'Punto de Acceso',
         status: TecnicoStatus.ACTIVO
       });
 
@@ -218,7 +224,9 @@ describe('Security and Edge Cases (FIB-31)', () => {
       const tecnico = await tecnicoRepository.save({
         nombre: 'Tech Tamper',
         documento: 'V99999994',
+        cargo: 'Estratega de Ciberseguridad',
         pais: 'VE',
+        zona: 'Nivel 4 Security',
         status: TecnicoStatus.ACTIVO
       });
 

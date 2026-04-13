@@ -77,7 +77,9 @@ describe('Fibex Qr Tecnicos (Security Scenarios E2E)', () => {
       .send({
         nombre: 'Tech No Certs',
         documento: 'V10101010',
+        cargo: 'Técnico de Instalaciones',
         pais: 'VE',
+        zona: 'Guarenas - Casco Central',
         status: TecnicoStatus.ACTIVO,
       })
       .expect(201);

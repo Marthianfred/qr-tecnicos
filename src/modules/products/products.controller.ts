@@ -28,12 +28,12 @@ export class ProductsController {
 
   @Get(':id/precio-dinamico')
   getPrecio(@Param('id') id: string) {
-    return this.productsService.getPrecioDinamico(id);
+    return this.productsService.getPriceDynamic(id);
   }
 
   @Post(':id/reservar')
   async reservar(@Param('id') id: string, @Body('cantidad') cantidad: number) {
-    const success = await this.productsService.reservarStock(id, cantidad || 1);
+    const success = await this.productsService.reserveStock(id, cantidad || 1);
     return { success };
   }
 

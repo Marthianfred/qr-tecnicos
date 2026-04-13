@@ -35,9 +35,9 @@ export class SeedService implements OnModuleInit {
   private async seedUsers() {
     const saltRounds = 10;
     const users = [
-      { username: 'admin', password: 'password', role: UserRole.ADMIN },
-      { username: 'coordinator', password: 'password', role: UserRole.COORDINATOR },
-      { username: 'tech_user', password: 'password', role: UserRole.TECHNICIAN },
+      { username: 'admin', password: 'Fibex#Admin.2026!', role: UserRole.ADMIN },
+      { username: 'coordinator', password: 'Fibex#Coord.2026!', role: UserRole.COORDINATOR },
+      { username: 'tech_user', password: 'Fibex#Tech.2026!', role: UserRole.TECHNICIAN },
     ];
 
     for (const u of users) {
@@ -46,11 +46,14 @@ export class SeedService implements OnModuleInit {
         const hashedPassword = await bcrypt.hash(u.password, saltRounds);
         const user = this.userRepository.create({ ...u, password: hashedPassword });
         await this.userRepository.save(user);
-      } else if (!exists.password.startsWith('$2b$')) {
-        // Migración automática: Si la clave no parece un hash de bcrypt, cifrarla
-        console.log(`Migrando contraseña de usuario: ${u.username}`);
-        exists.password = await bcrypt.hash(exists.password, saltRounds);
-        await this.userRepository.save(exists);
+      } else {
+        // Fuerza la actualización si detecta que es el admin y queremos cambiarle la clave
+        const isOldPassword = !exists.password.startsWith('$2b$') || (u.username === 'admin' && !(await bcrypt.compare(u.password, exists.password)));
+        if (isOldPassword) {
+          console.log(`Actualizando seguridad para usuario: ${u.username}`);
+          exists.password = await bcrypt.hash(u.password, saltRounds);
+          await this.userRepository.save(exists);
+        }
       }
     }
   }

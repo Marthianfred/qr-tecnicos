@@ -120,6 +120,45 @@ export const apiService = {
     return request(`${API_BASE_URL}/tecnicos/reports`);
   },
 
+  async resolveReport(id: string): Promise<any> {
+    return request(`${API_BASE_URL}/tecnicos/reports/${id}/resolve`, {
+      method: 'PATCH'
+    });
+  },
+
+  // Company Methods
+  async getCompanies(): Promise<any[]> {
+    return request(`${API_BASE_URL}/empresas`);
+  },
+
+  async createCompany(data: any): Promise<any> {
+    return request(`${API_BASE_URL}/empresas`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  },
+
+  // Personnel Photo
+  async uploadPhoto(id: string, file: File): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return fetch(`${API_BASE_URL}/tecnicos/upload-photo/${id}`, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then(res => {
+      if (!res.ok) throw new Error('Error al subir foto');
+      return res.json();
+    });
+  },
+
+  // Security & Config
+  async getDashboardStats(): Promise<any> {
+    return request(`${API_BASE_URL}/tecnicos/stats/dashboard`);
+  },
+
   // Cuadrilla Methods
   async getCuadrillas(): Promise<Cuadrilla[]> {
     return request(`${API_BASE_URL}/cuadrillas`);

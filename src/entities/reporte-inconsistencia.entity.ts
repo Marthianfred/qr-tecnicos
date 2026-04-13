@@ -20,4 +20,7 @@ export class ReporteInconsistencia {
 
   @Column()
   tecnicoId!: string;
+
+  @Column({ default: false })
+  resuelto!: boolean;
 }

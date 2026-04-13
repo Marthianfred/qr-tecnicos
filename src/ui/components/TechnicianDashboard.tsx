@@ -52,7 +52,7 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
       <header className="bg-surface_container_lowest p-6 flex justify-between items-center shadow-ambient no-border">
         <div className="flex items-center space-x-3">
           <img src="/favicon.svg" alt="Logo" className="w-10 h-10" />
-          <h1 className="text-xl font-display font-extrabold tracking-tight text-on_surface uppercase">TrustLayer <span className="text-primary">Ops</span></h1>
+          <h1 className="text-xl font-display font-extrabold tracking-tight text-on_surface uppercase">Fibex <span className="text-primary">Operaciones</span></h1>
         </div>
         <div className="text-right flex flex-col items-end">
           <p className="text-sm font-display font-bold text-on_surface tracking-tight">{technician.nombre}</p>
@@ -89,6 +89,7 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
       {/* Footer */}
       <footer className="bg-surface_container_lowest p-8 no-border">
         <div className="max-w-md mx-auto">
+          <p className="text-[8px] font-black text-slate-900 uppercase tracking-[0.4em]">Protocolo Fibex Seguridad v5.0</p>
           <h3 className="text-[10px] font-bold text-on_surface opacity-40 uppercase tracking-[0.2em] mb-4">Certificaciones Oficiales</h3>
           <div className="flex flex-wrap gap-3">
             {technician.certificaciones && technician.certificaciones.map((cert: any, idx: number) => (
@@ -97,7 +98,7 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
               </span>
             ))}
             {(!technician.certificaciones || technician.certificaciones.length === 0) && (
-              <span className="text-xs text-on_surface opacity-30 italic">No certifications found in registry</span>
+              <span className="text-xs text-on_surface opacity-30 italic">No se encontraron certificaciones en el registro</span>
             )}
           </div>
         </div>

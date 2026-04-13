@@ -5,7 +5,7 @@
 export const MOCK_TECHNICIAN = {
   id: 'TECH-001',
   name: 'Juan Pérez',
-  status: 'Online',
+  status: 'En Línea',
   certification: 'Integral',
   photo: 'https://i.pravatar.cc/150?u=TECH-001',
   idDocument: '12.345.678',
@@ -23,13 +23,13 @@ export const INCONSISTENCY_REASONS = [
 ];
 
 export const MOCK_COORDINATOR_ALERTS = [
-  { id: 'alert-1', techName: 'Pedro Rodríguez', reason: 'Foto no coincide', status: 'Pending' },
+  { id: 'alert-1', techName: 'Pedro Rodríguez', reason: 'Foto no coincide', status: 'Pendiente' },
 ];
 
 export const MOCK_SQUAD_DATA = [
-  { id: '1', name: 'Juan Pérez', country: 'Venezuela', status: 'Active', certification: 'Integral' },
-  { id: '2', name: 'Maria Garcia', country: 'Perú', status: 'Active', certification: 'Premium' },
-  { id: '3', name: 'Jose Luis', country: 'RD', status: 'Suspended', certification: 'Basic' },
+  { id: '1', name: 'Juan Pérez', country: 'Venezuela', status: 'Activo', certification: 'Integral' },
+  { id: '2', name: 'Maria Garcia', country: 'Perú', status: 'Activo', certification: 'Premium' },
+  { id: '3', name: 'Jose Luis', country: 'RD', status: 'Suspendido', certification: 'Básico' },
 ];
 
 export interface Product {

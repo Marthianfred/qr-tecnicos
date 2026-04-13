@@ -21,6 +21,8 @@ services:
         condition: service_started
     networks:
       - fibex-net
+    volumes:
+      - ./uploads:/app/uploads
 
   db:
     image: postgres:15-alpine

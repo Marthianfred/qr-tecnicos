@@ -17,9 +17,41 @@ interface AdminPanelProps {
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const [activeModule, setActiveModule] = useState<AdminModule>('dashboard');
-  const [selectedCountry, setSelectedCountry] = useState<'ALL' | 'VE' | 'PE' | 'RD'>('ALL');
+  const [selectedCountry, setSelectedCountry] = useState<'TODOS' | 'VE' | 'PE' | 'RD'>('TODOS');
   const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState({ technicians: 0, activeQrs: 0, alerts: 0, squads: 0 });
+  const [technicians, setTechnicians] = useState<Technician[]>([]);
+  const [squads, setSquads] = useState<Cuadrilla[]>([]);
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [dashboardStats, setDashboardStats] = useState({ technicians: 0, activeQrs: 0, alerts: 0, recentReports: [] as any[], squads: 0 });
+
+  useEffect(() => {
+    fetchData();
+  }, [activeModule, selectedCountry]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const [techs, stats, squadsData, companiesData] = await Promise.all([
+        apiService.getTechnicians(),
+        apiService.getDashboardStats(),
+        apiService.getCuadrillas(),
+        apiService.getCompanies()
+      ]);
+      
+      const filteredTechs = selectedCountry === 'TODOS' ? techs : techs.filter(t => t.pais === selectedCountry);
+      const filteredSquads = selectedCountry === 'TODOS' ? squadsData : squadsData.filter(s => s.nombre.includes(selectedCountry));
+      const filteredCompanies = selectedCountry === 'TODOS' ? companiesData : companiesData.filter(c => c.pais === selectedCountry);
+        
+      setTechnicians(filteredTechs);
+      setDashboardStats(stats);
+      setSquads(filteredSquads);
+      setCompanies(filteredCompanies);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Sidebar Menu Definition
   const menuItems = [
@@ -134,7 +166,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
              <div className="h-6 w-px bg-slate-200"></div>
 
              <div className="flex items-center bg-slate-100 rounded-lg p-1">
-                {(['ALL', 'VE', 'PE', 'RD'] as const).map(country => (
+                {(['TODOS', 'VE', 'PE', 'RD'] as const).map(country => (
                   <button
                     key={country}
                     onClick={() => setSelectedCountry(country)}
@@ -144,7 +176,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         : 'text-slate-400 hover:text-slate-600'
                     }`}
                   >
-                    {country}
+                    {country === 'TODOS' ? '🌎' : country === 'VE' ? '🇻🇪' : country === 'PE' ? '🇵🇪' : '🇩🇴'}
                   </button>
                 ))}
              </div>
@@ -171,16 +203,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                {/* Metrics Row */}
                <div className="grid grid-cols-4 gap-8">
                   {[
-                    { label: 'Técnicos Totales', value: selectedCountry === 'ALL' ? '1,250' : selectedCountry === 'VE' ? '850' : '200', delta: '+12%', color: 'border-blue-500' },
-                    { label: 'Cuadrillas Vivas', value: selectedCountry === 'ALL' ? '84' : selectedCountry === 'VE' ? '52' : '16', delta: 'OPERATIVO', color: 'border-green-500' },
-                    { label: 'QRs Generados (Hoy)', value: selectedCountry === 'ALL' ? '3,412' : '1,120', delta: 'ALTA DEMANDA', color: 'border-amber-500' },
-                    { label: 'Alertas Críticas', value: selectedCountry === 'ALL' ? '12' : '4', delta: 'ATENCIÓN', color: 'border-red-500' },
+                    { label: 'Técnicos Totales', value: dashboardStats.technicians.toLocaleString(), delta: 'BASE REAL', color: 'border-blue-500' },
+                    { label: 'Cuadrillas Vivas', value: dashboardStats.squads.toString(), delta: 'OPERATIVO', color: 'border-green-500' },
+                    { label: 'Validaciones Activas', value: dashboardStats.activeQrs.toLocaleString(), delta: 'PROTOCOLO', color: 'border-amber-500' },
+                    { label: 'Alertas Críticas', value: dashboardStats.alerts.toString(), delta: 'ATENCIÓN', color: 'border-red-500' },
                   ].map((stat, i) => (
                     <div key={i} className={`bg-white p-6 rounded-2xl shadow-sm border-l-4 ${stat.color} hover:translate-y-[-4px] transition-all cursor-pointer`}>
                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">{stat.label}</p>
                        <div className="flex items-end justify-between">
                           <h3 className="text-3xl font-black text-slate-800 tracking-tighter">{stat.value}</h3>
-                          <span className={`text-[9px] font-black px-2 py-1 rounded-full ${stat.label.includes('Alertas') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
+                          <span className={`text-[9px] font-black px-2 py-1 rounded-full ${stat.label.includes('Alertas') && dashboardStats.alerts > 0 ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
                              {stat.delta}
                           </span>
                        </div>
@@ -204,14 +236,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                           const currentTechCountry = countries[i % 3];
                           
                           // Filter logic simulation
-                          if (selectedCountry !== 'ALL' && selectedCountry !== currentTechCountry) return null;
+                          if (selectedCountry !== 'TODOS' && selectedCountry !== currentTechCountry) return null;
 
                           return (
                             <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-slate-100 transition-colors">
                                <div className="flex items-center space-x-4">
                                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
                                   <div>
-                                     <p className="text-[11px] font-black text-slate-800 uppercase">Técnico V-{3450 + i} ({currentTechCountry})</p>
+                                     <p className="text-[11px] font-black text-slate-800 uppercase">Técnico V-{3450 + i} ({currentTechCountry === 'VE' ? '🇻🇪 ' : currentTechCountry === 'PE' ? '🇵🇪 ' : '🇩🇴 '}{currentTechCountry})</p>
                                      <p className="text-[9px] text-slate-400 uppercase tracking-widest">Validación en Sector Residencial • {10 + i}:45 AM</p>
                                   </div>
                                </div>
@@ -263,9 +295,316 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
             </div>
           )}
 
-          {activeModule !== 'dashboard' && (
+          {activeModule === 'personnel' && (
+            <div className="max-w-7xl mx-auto space-y-6">
+               <div className="flex justify-between items-center bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                  <div className="space-y-1">
+                     <h2 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Gestión de Perfiles Técnicos</h2>
+                     <p className="text-xs text-slate-400">Control de identidad, cargos y fotos oficiales de alta resolución.</p>
+                  </div>
+                  <div className="flex space-x-3">
+                     <button className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all">Exportar Reporte</button>
+                  </div>
+               </div>
+
+               <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                  <table className="w-full text-left border-collapse">
+                     <thead>
+                        <tr className="bg-slate-50 border-b border-slate-100">
+                           <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Personal</th>
+                           <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Documento</th>
+                           <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Empresa / Tipo</th>
+                           <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Estatus</th>
+                           <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Acciones</th>
+                        </tr>
+                     </thead>
+                     <tbody className="divide-y divide-slate-50">
+                        {/* Simulación de datos cargados del backend */}
+                        {technicians.length > 0 ? technicians.map(tech => (
+                           <tr key={tech.id} className="hover:bg-slate-50 transition-colors group">
+                              <td className="px-8 py-5">
+                                 <div className="flex items-center space-x-4">
+                                    <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative group-hover:shadow-md transition-all">
+                                       <img src={tech.foto || `https://i.pravatar.cc/100?u=${tech.id}`} alt="Tech" className="w-full h-full object-cover" />
+                                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
+                                          <span className="text-xs">📸</span>
+                                       </div>
+                                    </div>
+                                    <div>
+                                       <p className="text-[12px] font-black text-slate-800 uppercase whitespace-nowrap">{tech.nombre}</p>
+                                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Especialista III • Fibex</p>
+                                    </div>
+                                 </div>
+                              </td>
+                              <td className="px-8 py-5 text-[11px] font-bold text-slate-500 font-mono tracking-tighter">{tech.documento}</td>
+                              <td className="px-8 py-5">
+                                 <div className="flex flex-col">
+                                    <span className="text-[10px] font-black text-slate-700 uppercase">Fibex Services</span>
+                                    <span className={`text-[8px] font-black w-fit px-2 py-0.5 rounded-full mt-1 ${tech.pais === 'VE' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
+                                       {tech.pais}
+                                    </span>
+                                 </div>
+                              </td>
+                              <td className="px-8 py-5">
+                                 <div className="flex items-center space-x-2">
+                                    <div className={`w-2 h-2 rounded-full ${tech.status === 'ACTIVO' ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                    <span className="text-[10px] font-black text-slate-600 uppercase">{tech.status}</span>
+                                 </div>
+                              </td>
+                              <td className="px-8 py-5">
+                                 <div className="flex items-center space-x-4">
+                                    <label className="bg-slate-100 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm">
+                                       Actualizar Foto
+                                       <input 
+                                          type="file" 
+                                          className="hidden" 
+                                          accept="image/*"
+                                          onChange={async (e) => {
+                                             const file = e.target.files?.[0];
+                                             if (!file) return;
+                                             try {
+                                                setLoading(true);
+                                                await apiService.uploadPhoto(tech.id, file);
+                                                alert('✅ Imagen guardada en almacenamiento persistente');
+                                                fetchData();
+                                             } catch (err) {
+                                                alert('❌ Error al subir la foto oficial');
+                                             } finally {
+                                                setLoading(false);
+                                             }
+                                          }} 
+                                       />
+                                    </label>
+                                 </div>
+                              </td>
+                           </tr>
+                        )) : (
+                           <tr>
+                              <td colSpan={5} className="px-8 py-20 text-center">
+                                 <p className="text-xs font-black text-slate-400 uppercase tracking-widest italic">No se encontraron registros en el sector {selectedCountry}</p>
+                              </td>
+                           </tr>
+                        )}
+                     </tbody>
+                  </table>
+                  <div className="p-8 bg-slate-50 border-t border-slate-100 text-center">
+                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Cargando registros adicionales de la base de datos nacional...</p>
+                  </div>
+               </div>
+            </div>
+          )}
+          {activeModule === 'companies' && (
+            <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-5">
+               <div className="grid grid-cols-3 gap-6">
+                  {companies.slice(0, 3).map(emp => (
+                    <div key={emp.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative group overflow-hidden">
+                       <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full opacity-50 transition-transform group-hover:scale-110"></div>
+                       <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Empresa en {emp.pais}</h4>
+                       <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter mb-4">{emp.nombre}</h3>
+                       <div className="flex items-center space-x-6">
+                          <div>
+                             <p className="text-[9px] font-black text-slate-400 uppercase">Técnicos</p>
+                             <p className="text-lg font-black text-slate-800">{emp.tecnicosCount || 0}</p>
+                          </div>
+                       </div>
+                    </div>
+                  ))}
+               </div>
+               
+               <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                  <div className="p-8 border-b border-slate-100 flex justify-between items-center">
+                     <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Listado de Empresas Aliadas / Contratistas</h3>
+                     <button className="bg-slate-900 text-white px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-md">Añadir Aliado</button>
+                  </div>
+                  <table className="w-full text-left">
+                     <thead>
+                        <tr className="bg-slate-50 text-[9px] font-black text-slate-400 uppercase tracking-widest italic">
+                           <th className="px-8 py-4">Empresa</th>
+                           <th className="px-8 py-4">Documento / RIF</th>
+                           <th className="px-8 py-4">País</th>
+                           <th className="px-8 py-4">Suscripción</th>
+                           <th className="px-8 py-4">Contrato</th>
+                        </tr>
+                     </thead>
+                     <tbody className="divide-y divide-slate-100">
+                        {companies.length > 0 ? companies.map(aliado => (
+                          <tr key={aliado.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-8 py-4 font-black text-[11px] text-slate-800 uppercase">{aliado.nombre}</td>
+                            <td className="px-8 py-4 font-mono text-[10px] text-slate-400">{aliado.rif || 'J-0000000-0'}</td>
+                            <td className="px-8 py-4 text-[11px] font-bold text-slate-600">{aliado.pais}</td>
+                            <td className="px-8 py-4">
+                               <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-tighter">Activo</span>
+                            </td>
+                            <td className="px-8 py-4 text-[10px] font-black text-blue-600 underline cursor-pointer italic">Ver PDF</td>
+                          </tr>
+                        )) : (
+                           <tr>
+                              <td colSpan={5} className="px-8 py-20 text-center opacity-30 italic uppercase text-[10px] font-black tracking-widest">No hay aliados comerciales registrados en esta región</td>
+                           </tr>
+                        )}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+          )}
+
+          {activeModule === 'alerts' && (
+            <div className="max-w-7xl mx-auto space-y-6 animate-in zoom-in-95 duration-300">
+               <div className="bg-red-600 rounded-3xl p-10 text-white flex items-center justify-between shadow-2xl relative overflow-hidden">
+                  <div className="absolute -right-10 -bottom-10 text-white/10 text-9xl">🚨</div>
+                  <div>
+                    <h2 className="text-3xl font-black uppercase tracking-tighter mb-2 italic">Centro de Incidentes</h2>
+                    <p className="text-sm font-bold opacity-80 uppercase tracking-widest">Monitoreo de inconsistencias reportadas en campo.</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center">
+                    <p className="text-[10px] font-black uppercase mb-1">Alertas Activas</p>
+                    <p className="text-4xl font-black">{dashboardStats.alerts}</p>
+                  </div>
+               </div>
+
+               <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                  <div className="space-y-1 p-4 border-b border-slate-50">
+                     {dashboardStats.recentReports.length > 0 ? dashboardStats.recentReports.map((report: any) => (
+                       <div key={report.id} className="flex items-center space-x-6 p-6 hover:bg-red-50/30 transition-all rounded-2xl group border border-transparent hover:border-red-100">
+                          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl shadow-sm ${!report.resuelto ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-slate-100 text-slate-400'}`}>
+                             {!report.resuelto ? '⚠️' : '✅'}
+                          </div>
+                          <div className="flex-grow">
+                             <div className="flex items-center space-x-3 mb-1">
+                                <span className={`text-[9px] font-black px-2 py-0.5 rounded-sm uppercase tracking-tighter ${!report.resuelto ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                                   {!report.resuelto ? 'URGENTE' : 'RESUELTO'}
+                                </span>
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">INC-{report.id.substring(0,6)}</span>
+                                <span className="text-[10px] text-slate-300 font-bold">• {new Date(report.fechaReporte).toLocaleDateString()}</span>
+                             </div>
+                             <h4 className="text-[13px] font-black text-slate-800 uppercase tracking-tight">{report.descripcion}</h4>
+                             <p className="text-[11px] text-slate-400 font-medium">Técnico involucrado: {report.tecnico?.nombre || 'Desconocido'}</p>
+                          </div>
+                          {!report.resuelto && (
+                             <button 
+                                onClick={async () => {
+                                   try {
+                                      await apiService.resolveReport(report.id);
+                                      fetchData();
+                                   } catch (e) { alert('Error al resolver'); }
+                                }}
+                                className="px-6 py-3 bg-slate-900 group-hover:bg-red-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shadow-md"
+                             >
+                                Resolver
+                             </button>
+                          )}
+                       </div>
+                     )) : (
+                        <div className="p-20 text-center opacity-30 italic uppercase text-[11px] font-black tracking-widest">Sin incidentes críticos reportados en este sector</div>
+                     )}
+                  </div>
+               </div>
+            </div>
+          )}
+
+          {activeModule === 'qr-security' && (
+            <div className="max-w-4xl mx-auto space-y-10 py-10">
+               <div className="bg-white p-10 rounded-3xl shadow-sm border border-slate-100 space-y-8">
+                  <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter italic">Protocolo TrustLayer Security</h3>
+                  <div className="grid grid-cols-2 gap-8">
+                     <div className="space-y-4">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Expiración de QR (TTL)</label>
+                        <select className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-xs font-black uppercase">
+                           <option>15 Minutos</option>
+                           <option>30 Minutos</option>
+                        </select>
+                     </div>
+                  </div>
+               </div>
+            </div>
+          )}
+
+          {/* Módulo: Historial Académico */}
+          {activeModule === 'certifications' && (
+            <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+               <div className="flex justify-between items-center">
+                  <div className="space-y-1">
+                     <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Ranking de Certificación Técnica</h2>
+                     <p className="text-xs text-slate-400 uppercase tracking-widest font-bold">Niveles de Capacitación Fibex 2026</p>
+                  </div>
+               </div>
+
+               <div className="grid grid-cols-4 gap-6">
+                  {[
+                    { lvl: 'PREMIUM', count: 120, color: 'bg-amber-400', icon: '💎' },
+                    { lvl: 'INTEGRAL', count: 450, color: 'bg-blue-500', icon: '📖' },
+                    { lvl: 'BÁSICO', count: 580, color: 'bg-slate-400', icon: '🛠️' },
+                    { lvl: 'INICIAL', count: 100, color: 'bg-green-400', icon: '🌱' }
+                  ].map(item => (
+                    <div key={item.lvl} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm text-center">
+                       <span className="text-4xl mb-3 block">{item.icon}</span>
+                       <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{item.lvl}</h4>
+                       <p className="text-2xl font-black text-slate-800">{item.count}</p>
+                       <div className={`h-1 w-12 mx-auto mt-4 rounded-full ${item.color}`}></div>
+                    </div>
+                  ))}
+               </div>
+
+               <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8">
+                  <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Próximas Recertificaciones</h3>
+                  <div className="space-y-4">
+                     {[1,2,3].map(i => (
+                        <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                           <div className="flex items-center space-x-4">
+                              <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-bold">⚠️</div>
+                              <p className="text-[11px] font-black text-slate-800 uppercase">Técnico A-{120+i} (Cédula: 18.52{i}.332)</p>
+                           </div>
+                           <span className="text-[9px] font-black text-amber-600 uppercase tracking-widest italic">Expira en 12 días</span>
+                        </div>
+                     ))}
+                  </div>
+               </div>
+            </div>
+          )}
+
+          {/* Módulo: Cuadrillas y Campo */}
+          {activeModule === 'operations' && (
+            <div className="max-w-7xl mx-auto space-y-8 animate-in slide-in-from-right-10 duration-500">
+               <div className="flex justify-between items-center bg-blue-600 p-10 rounded-3xl text-white shadow-xl relative overflow-hidden">
+                  <div className="absolute right-0 bottom-0 text-white/5 text-9xl">🚙</div>
+                  <div className="space-y-2">
+                     <h2 className="text-3xl font-black uppercase tracking-tighter">Despliegue Operativo</h2>
+                     <p className="text-xs font-bold opacity-70 uppercase tracking-widest">Control logístico nacional de Cuadrillas en Campo.</p>
+                  </div>
+                  <div className="flex space-x-4">
+                     <div className="bg-white/10 px-6 py-3 rounded-2xl border border-white/20 text-center">
+                        <p className="text-[9px] font-black uppercase">En Ruta</p>
+                        <p className="text-2xl font-black">{dashboardStats.squads}</p>
+                     </div>
+                  </div>
+               </div>
+
+               <div className="grid grid-cols-3 gap-6">
+                  {squads.length > 0 ? squads.map(squad => (
+                    <div key={squad.id} className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 group hover:border-blue-200 transition-all">
+                       <div className="flex justify-between items-start mb-4">
+                          <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">🚙</div>
+                          <span className="text-[10px] font-black text-green-500 uppercase tracking-widest">Operativa</span>
+                       </div>
+                       <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter mb-1">{squad.nombre}</h3>
+                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-6">Sector: {squad.zona || 'Nacional'}</p>
+                       <div className="flex -space-x-3 overflow-hidden">
+                          {squad.tecnicos?.map((t: any) => (
+                            <img key={t.id} className="inline-block h-8 w-8 rounded-full ring-4 ring-white" src={t.foto || `https://i.pravatar.cc/100?u=${t.id}`} alt="Staff" />
+                          ))}
+                          <div className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-50 ring-4 ring-white text-[9px] font-black text-slate-400">+{(squad.tecnicos?.length || 0) > 3 ? (squad.tecnicos?.length || 0) - 3 : 0}</div>
+                       </div>
+                    </div>
+                  )) : (
+                     <div className="col-span-3 py-20 text-center opacity-30 italic uppercase text-[11px] font-black tracking-widest">Sin cuadrillas activas asignadas a este territorio</div>
+                  )}
+               </div>
+            </div>
+          )}
+
+          {activeModule !== 'dashboard' && activeModule !== 'personnel' && activeModule !== 'companies' && activeModule !== 'alerts' && activeModule !== 'qr-security' && activeModule !== 'certifications' && activeModule !== 'operations' && (
             <div className="h-full flex items-center justify-center">
-              <div className="bg-white rounded-3xl shadow-sm p-24 text-center border border-slate-100 animate-in fade-in zoom-in max-w-2xl">
+               <div className="bg-white rounded-3xl shadow-sm p-24 text-center border border-slate-100 animate-in fade-in zoom-in max-w-2xl">
                 <span className="text-6xl mb-6 block">🚧</span>
                 <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter mb-4">Módulo en Construcción</h3>
                 <p className="text-slate-400 mb-10">La sección <b>{menuItems.find(m => m.id === activeModule)?.label}</b> está siendo optimizada por el equipo de IT para el despliegue del MVP Fibex.</p>

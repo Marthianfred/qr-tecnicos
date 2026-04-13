@@ -10,7 +10,7 @@ interface CoordinatorMonitorProps {
  * Pantalla 4.1: Monitor de Cuadrillas (Interfaz del Coordinador)
  */
 export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout }) => {
-  const [filterCountry, setFilterCountry] = useState('All');
+  const [filterCountry, setFilterCountry] = useState('Total');
   const [activeTab, setActiveTab] = useState<'tecnicos' | 'cuadrillas'>('tecnicos');
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [cuadrillas, setCuadrillas] = useState<Cuadrilla[]>([]);
@@ -66,7 +66,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
     };
   }, []);
 
-  const filteredSquad = filterCountry === 'All' 
+  const filteredSquad = filterCountry === 'Total' 
     ? technicians 
     : technicians.filter(tech => tech.pais === filterCountry);
 
@@ -256,7 +256,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                     <p className="text-sm font-medium text-on_surface opacity-40">Distribución de personal y monitoreo de estado</p>
                   </div>
                   <div className="flex bg-surface_container_highest p-1 rounded-sm no-border">
-                    {['All', 'Venezuela', 'Perú', 'RD'].map(country => (
+                    {['Total', 'Venezuela', 'Perú', 'RD'].map(country => (
                       <button
                         key={country}
                         onClick={() => setFilterCountry(country)}
@@ -266,7 +266,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                             : 'text-on_surface opacity-40 hover:opacity-100'
                         }`}
                       >
-                        {country === 'All' ? 'Alcance Total' : country}
+                        {country === 'Total' ? '🌎' : country === 'Venezuela' ? '🇻🇪' : country === 'Perú' ? '🇵🇪' : '🇩🇴'}
                       </button>
                     ))}
                   </div>
@@ -296,7 +296,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                           </td>
                           <td className="px-8 py-6">
                              <div className="bg-surface_container_highest px-3 py-1 rounded-sm inline-block">
-                                <span className="text-[10px] font-display font-extrabold text-primary uppercase tracking-widest">{tech.pais}</span>
+                                <span className="text-[10px] font-display font-extrabold text-primary uppercase tracking-widest">{tech.pais === 'Venezuela' ? '🇻🇪 ' : tech.pais === 'Perú' ? '🇵🇪 ' : '🇩🇴 '}{tech.pais}</span>
                              </div>
                           </td>
                           <td className="px-8 py-6">
@@ -353,7 +353,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                         </div>
                         <div className="bg-primary/5 px-3 py-1 rounded-sm">
                            <span className="text-[10px] font-display font-extrabold text-primary uppercase">
-                            {cuadrilla.tecnicos?.length || 0} Units
+                            {cuadrilla.tecnicos?.length || 0} Unidades
                            </span>
                         </div>
                       </div>
@@ -382,8 +382,8 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                   
                   <button 
                     onClick={() => {
-                      const nombre = prompt('Squad Name:');
-                      const zona = prompt('Zone Designation:');
+                      const nombre = prompt('Nombre de la Cuadrilla:');
+                      const zona = prompt('Designación de Zona:');
                       if (nombre && zona) apiService.createCuadrilla({ nombre, zona }).then(() => fetchData());
                     }}
                     className="bg-surface_container_highest/20 border-2 border-dashed border-primary/10 rounded-lg flex flex-col items-center justify-center p-10 text-primary/40 hover:border-primary/40 hover:text-primary transition-all group min-h-[220px]"

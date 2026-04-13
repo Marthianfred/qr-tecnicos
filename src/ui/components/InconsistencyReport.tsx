@@ -58,7 +58,7 @@ export const InconsistencyReport: React.FC<InconsistencyReportProps> = ({ onCanc
         <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-12">
           <div className="space-y-6">
             <div className="space-y-1">
-               <h2 className="text-[10px] font-bold text-primary uppercase tracking-[0.3em]">Guardian Protocol 7</h2>
+               <h2 className="text-[10px] font-bold text-primary uppercase tracking-[0.3em]">Protocolo Guardián 7</h2>
                <p className="text-sm font-medium text-on_surface opacity-50 uppercase tracking-tight">Seleccione la naturaleza de la inconsistencia para investigación inmediata.</p>
             </div>
             

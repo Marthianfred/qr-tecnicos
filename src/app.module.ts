@@ -31,6 +31,10 @@ import { Empresa } from './entities/empresa.entity';
       rootPath: join(__dirname, 'client'),
       exclude: ['/api*'],
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'localhost',

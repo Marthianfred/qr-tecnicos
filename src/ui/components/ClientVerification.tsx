@@ -9,26 +9,27 @@ interface TechnicianFromToken {
   sub: string;
   nombre: string;
   documento: string;
+  cargo: string;
+  empresa: string;
+  tipoPersonal: string;
   pais: string;
   nivel: string;
   foto?: string;
 }
 
-/**
- * Pantalla 3.1: Verificación de Identidad (Flujo del Cliente)
- */
 export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport }) => {
   const [techData, setTechData] = useState<TechnicianFromToken | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [time, setTime] = useState(new Date().toLocaleTimeString());
 
   useEffect(() => {
-    // En un escenario real, el token viene en la URL: ?token=...
+    const timer = setInterval(() => setTime(new Date().toLocaleTimeString()), 1000);
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
 
     if (!token) {
-      setError('No se proporcionó un token de verificación válido.');
+      setError('Token no proporcionado');
       setLoading(false);
       return;
     }
@@ -38,157 +39,144 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
         setTechData(data);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error('Error validating token:', err);
-        setError('El código QR ha caducado o no es válido.');
+      .catch(() => {
+        setError('QR expirado o inválido');
         setLoading(false);
       });
+      
+    return () => clearInterval(timer);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-surface p-6 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-        <p className="text-on_surface opacity-50 font-display font-bold uppercase tracking-widest text-xs">Autenticando Personal...</p>
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
+      <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p className="text-slate-400 font-black text-[10px] tracking-widest uppercase">Validando Identidad Digital...</p>
+    </div>
+  );
 
-  if (error || !techData) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-surface p-6 text-center">
-        <div className="bg-error/10 p-8 rounded-full text-error mb-8 shadow-ambient glow-pulse">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-        </div>
-        <h2 className="text-4xl font-display font-extrabold text-on_surface tracking-tighter mb-2 uppercase">Alerta de Seguridad</h2>
-        <p className="text-error font-display font-bold text-xl mb-6 tracking-tight uppercase">Identidad No Verificada</p>
-        <div className="text-on_surface opacity-70 font-medium mb-10 max-w-md bg-surface_container_low p-6 rounded-lg shadow-ambient no-border">
-          {error || 'Personal no encontrado en el registro oficial. NO permita la entrada y contacte con los protocolos de seguridad inmediatamente.'}
-        </div>
-        <div className="flex flex-col w-full max-w-xs space-y-4">
-          <button
-            onClick={() => window.location.href = 'tel:911'}
-            className="bg-error text-white px-8 py-4 rounded-lg font-display font-extrabold shadow-ambient hover:opacity-90 transition-all active:scale-95 flex items-center justify-center space-x-2 tracking-tight"
-          >
-            <span>LLAMAR A EMERGENCIAS (911)</span>
-          </button>
-          <button
-            onClick={() => window.location.href = 'https://www.fibextelecom.com/soporte'}
-            className="bg-surface_container_highest text-on_surface px-8 py-3 rounded-lg font-display font-extrabold hover:bg-surface_container_high transition-all uppercase text-xs tracking-widest"
-          >
-            Contactar Soporte
-          </button>
-        </div>
+  if (error || !techData) return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-red-50 p-8 text-center">
+      <div className="bg-red-100 p-6 rounded-full text-red-600 mb-6 animate-pulse">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
       </div>
-    );
-  }
-
-  const now = new Date();
-  const timestamp = `${now.toLocaleDateString()} ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+      <h1 className="text-3xl font-black text-red-800 mb-2 uppercase tracking-tighter">ALERTA DE SEGURIDAD</h1>
+      <p className="text-red-600 font-bold text-lg mb-8 uppercase">DOCUMENTO NO VÁLIDO</p>
+      <div className="bg-white p-6 rounded-xl shadow-lg border border-red-200 max-w-sm mb-10">
+        <p className="text-slate-600 font-medium">Este código QR ha expirado o no pertenece al personal autorizado de Fibex Telecom. Favor de contactar a seguridad.</p>
+      </div>
+      <button onClick={() => window.location.href = 'tel:911'} className="bg-red-600 text-white w-full max-w-xs py-4 rounded-xl font-black shadow-xl active:scale-95 transition-all">LLAMAR AUTORIDADES</button>
+    </div>
+  );
 
   return (
-    <div className="flex flex-col min-h-screen bg-surface font-sans text-on_surface">
-      {/* Success Banner */}
-      <div className="glassmorphism text-primary p-5 text-center shadow-ambient flex items-center justify-center space-x-3 sticky top-0 z-10 no-border">
-        <div className="bg-primary/20 p-1 rounded-full">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center pb-12 font-sans overflow-x-hidden">
+      {/* Institutional Top Bar */}
+      <header className="w-full bg-slate-900 h-16 flex items-center justify-between px-6 shadow-xl sticky top-0 z-50">
+        <div className="flex items-center space-x-2">
+           <img src="/fibex-icon.png" alt="Fibex" className="h-8 w-8 object-contain" />
+           <div className="h-6 w-px bg-slate-700"></div>
+           <span className="text-white font-black text-[10px] tracking-wider uppercase">Personal Fibex</span>
         </div>
-        <span className="text-sm font-display font-extrabold tracking-[0.2em] uppercase italic">Personal Verificado</span>
+        <div className="bg-blue-600 px-3 py-1 rounded-full flex items-center space-x-2 border border-blue-400">
+           <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+           <span className="text-white font-black text-[9px] uppercase tracking-tighter">ID Activa</span>
+        </div>
+      </header>
+
+      {/* Official Status Badge */}
+      <div className="w-full bg-green-500 py-3 flex items-center justify-center space-x-3 shadow-inner">
+         <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">VALIDACIÓN EXITOSA • PERSONA AUTORIZADA</span>
       </div>
 
-      {/* Main Profile Card */}
-      <main className="flex-grow p-6 flex flex-col items-center bg-surface_container_low">
-        <div className="w-full max-w-sm bg-surface_container_lowest rounded-lg shadow-ambient overflow-hidden mt-4 no-border relative">
-          {/* Watermark/Seal */}
-          <div className="absolute top-8 right-8 opacity-[0.03] rotate-12">
-            <img src="/favicon.svg" alt="Seal" className="w-48 h-48" />
+      {/* Main Identity Card */}
+      <main className="w-full max-w-sm px-6 mt-8 relative">
+        {/* Anti-screenshot Timer */}
+        <div className="absolute -top-4 right-8 bg-slate-800 text-white px-3 py-1 rounded-md text-[8px] font-mono z-20 shadow-lg border border-slate-700">
+           Sincronización: {time}
+        </div>
+
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 relative">
+          {/* Identity Header */}
+          <div className="h-32 bg-slate-900 relative flex items-end justify-center">
+             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+             {/* Profile Circle Overlap */}
+             <div className="w-40 h-40 rounded-3xl border-[8px] border-white shadow-2xl bg-white overflow-hidden transform translate-y-12 z-10 transition-transform hover:scale-105 duration-500">
+                <img 
+                  src={techData.foto || `https://i.pravatar.cc/300?u=${techData.sub}`} 
+                  alt={techData.nombre} 
+                  className="w-full h-full object-cover grayscale-[0.2]" 
+                />
+             </div>
           </div>
 
-          <div className="p-10 flex flex-col items-center space-y-8 relative z-10">
-            {/* Avatar */}
-            <div className="relative">
-              <div className="w-40 h-40 rounded-full border-[6px] border-primary/10 overflow-hidden shadow-ambient bg-surface_container">
-                <img 
-                  src={techData.foto || `https://i.pravatar.cc/150?u=${techData.sub}`} 
-                  alt={techData.nombre} 
-                  className="w-full h-full object-cover" 
-                />
-              </div>
-              <div className="absolute -bottom-1 -right-1 trust-gradient text-white p-2.5 rounded-full shadow-lg border-4 border-surface_container_lowest">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              </div>
-            </div>
+          {/* Technician Info */}
+          <div className="pt-20 pb-8 px-8 text-center">
+             <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-1 uppercase">{techData.nombre}</h2>
+             <div className="flex items-center justify-center space-x-2 mb-6">
+                <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[9px] font-black uppercase border border-blue-100 italic">{techData.cargo || 'Especialista III'}</span>
+                <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                <span className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">{techData.empresa || 'Fibex Services'}</span>
+             </div>
 
-            {/* Tech Info */}
-            <div className="text-center space-y-2">
-              <h2 className="text-4xl font-display font-extrabold text-on_surface tracking-tighter leading-none">{techData.nombre}</h2>
-              <div className="flex items-center justify-center space-x-2">
-                <span className="text-[10px] font-bold text-on_surface opacity-40 uppercase tracking-widest">Especialista de Campo</span>
-                <div className="w-1 h-1 bg-primary rounded-full"></div>
-                <div className="bg-surface_container_highest px-2 py-0.5 rounded-sm flex items-center space-x-1">
-                  <span className="text-[10px] font-display font-extrabold text-primary uppercase tracking-tight">{techData.pais}</span>
+             {/* Certificate Medals */}
+             <div className="grid grid-cols-4 gap-2 mb-8 bg-slate-50 p-4 rounded-2xl border border-slate-100 shadow-inner">
+                {['INICIAL', 'BASICO', 'INTEGRAL', 'PREMIUM'].map((lvl) => {
+                  const isActive = techData.nivel?.toUpperCase() === lvl;
+                  return (
+                    <div key={lvl} className={`flex flex-col items-center space-y-1 ${isActive ? 'opacity-100' : 'opacity-20 grayscale'}`}>
+                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isActive ? 'bg-blue-600 shadow-lg' : 'bg-slate-300'}`}>
+                          <span className="text-white text-[8px] font-black">🎓</span>
+                       </div>
+                       <span className="text-[7px] font-black uppercase text-slate-900">{lvl}</span>
+                    </div>
+                  );
+                })}
+             </div>
+
+             {/* Official Records Table */}
+             <div className="space-y-3">
+                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
+                   <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Documento</span>
+                   <span className="text-xs font-black text-slate-900">{techData.documento}</span>
                 </div>
-              </div>
-            </div>
-
-            {/* Verification Info */}
-            <div className="w-full bg-surface_container_low rounded-lg p-6 space-y-4 no-border">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">Fecha de Validación</span>
-                <span className="font-display font-extrabold text-[10px] text-primary tracking-tight">{timestamp}</span>
-              </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">ID Oficial</span>
-                <span className="font-display font-extrabold text-xs text-on_surface tracking-tight">{techData.documento}</span>
-              </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">ID de Registro</span>
-                <span className="font-display font-extrabold text-xs text-on_surface tracking-tight">{techData.sub}</span>
-              </div>
-
-              <div className="pt-2 flex justify-between items-center">
-                <span className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.15em]">Autoridad</span>
-                <span className="font-display font-extrabold text-xs text-primary flex items-center">
-                  FIBEX TELECOM
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.64.304 1.24.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                </span>
-              </div>
-            </div>
+                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
+                   <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Estatus Laboral</span>
+                   <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-[10px] font-black text-green-600 uppercase">Activo</span>
+                   </div>
+                </div>
+                <div className="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
+                   <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Jurisdicción</span>
+                   <span className="text-[10px] font-black text-slate-900 italic uppercase">{techData.pais} - LATAM</span>
+                </div>
+             </div>
           </div>
         </div>
 
-        {/* Security Action */}
-        <div className="mt-12 w-full max-w-sm px-4 text-center">
-          <p className="text-[10px] text-on_surface opacity-30 uppercase font-bold tracking-[0.25em] mb-6 whitespace-nowrap">Protocolo de Seguridad de Emergencia</p>
-          
-          <button
-            onClick={onReport}
-            className="w-full flex items-center justify-center space-x-3 bg-surface_container_highest text-error font-display font-extrabold px-8 py-5 rounded-lg hover:bg-surface_container_high transition-all active:scale-95 no-border group"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 group-hover:animate-pulse" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-            <span className="uppercase tracking-tight text-lg">Reportar Anomalía</span>
-          </button>
-          
-          <p className="mt-6 text-[10px] text-on_surface opacity-40 font-bold uppercase tracking-widest">
-            Identity Guardian System v4.0.2
-          </p>
+        {/* Support & Audit Footer */}
+        <div className="mt-8 space-y-4">
+           <button 
+             onClick={onReport}
+             className="w-full bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 py-4 rounded-xl flex items-center justify-center space-x-2 transition-all border border-slate-200 active:scale-95"
+           >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <span className="text-[10px] font-black uppercase tracking-widest">Reportar Incidente de Seguridad</span>
+           </button>
+           
+           <div className="text-center opacity-30">
+              <p className="text-[8px] font-black text-slate-900 uppercase tracking-[0.4em]">Protocolo Fibex Seguridad v5.0</p>
+           </div>
         </div>
       </main>
 
-      <footer className="p-8 text-center text-on_surface opacity-20 text-[9px] font-bold tracking-[0.3em] uppercase">
-        <p>© 2026 TrustLayer Infrastructure • Arquitectura de Confianza</p>
+      {/* Footer Branding */}
+      <footer className="mt-auto px-10 text-center">
+         <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Protegiendo la infraestructura crítica de Fibex Telecom</p>
       </footer>
     </div>
   );

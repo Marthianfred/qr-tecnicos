@@ -1,4 +1,7 @@
-import { Controller, Get, Post, Body, Param, Patch, UseGuards, Sse, MessageEvent } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, UseGuards, Sse, MessageEvent, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Observable, fromEvent, map } from 'rxjs';
 import { TecnicosService } from './tecnicos.service';
@@ -65,6 +68,24 @@ export class TecnicosController {
     return this.tecnicosService.create(tecnicoData);
   }
 
+  @Post('upload-photo/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads/fotos',
+      filename: (req, file, cb) => {
+        const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
+        cb(null, `${randomName}${extname(file.originalname)}`);
+      },
+    }),
+  }))
+  async uploadPhoto(@Param('id') id: string, @UploadedFile() file: any) {
+    if (!file) throw new BadRequestException('Se requiere una imagen para el carnet');
+    const fotoUrl = `/uploads/fotos/${file.filename}`;
+    return this.tecnicosService.updatePhoto(id, fotoUrl);
+  }
+
   @Post(':id/qr')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.TECHNICIAN, UserRole.ADMIN, UserRole.COORDINATOR)
@@ -87,17 +108,20 @@ export class TecnicosController {
     @Param('id') id: string,
     @Body() reportData: Partial<ReporteInconsistencia>,
   ) {
-    // Público o accesible por clientes? Según HU-5 el Cliente reporta.
     return this.tecnicosService.reportInconsistency(id, reportData);
   }
 
   @Patch(':id/status')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
-  updateStatus(
-    @Param('id') id: string,
-    @Body('status') status: TecnicoStatus,
-  ) {
+  async updateStatus(@Param('id') id: string, @Body('status') status: TecnicoStatus) {
     return this.tecnicosService.updateStatus(id, status);
+  }
+
+  @Get('stats/dashboard')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
+  async getDashboardStats() {
+    return this.tecnicosService.getDashboardStats();
   }
 }

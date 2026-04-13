@@ -118,4 +118,26 @@ export class TecnicosService {
     this.eventEmitter.emit('tecnico.status.updated', savedTecnico);
     return savedTecnico;
   }
+
+  async updatePhoto(id: string, fotoUrl: string) {
+    const tecnico = await this.tecnicoRepository.findOneBy({ id });
+    if (!tecnico) throw new NotFoundException('Técnico no encontrado');
+    tecnico.fotoUrl = fotoUrl;
+    return this.tecnicoRepository.save(tecnico);
+  }
+
+  async getDashboardStats() {
+    const [total, alerts, reports] = await Promise.all([
+      this.tecnicoRepository.count(),
+      this.reporteRepository.count({ where: { resuelto: false } }),
+      this.reporteRepository.find({ take: 5, relations: ['tecnico'], order: { fechaReporte: 'DESC' } })
+    ]);
+
+    return {
+      technicians: total,
+      activeQrs: total * 2, // Estimación operativa
+      alerts,
+      recentReports: reports
+    };
+  }
 }

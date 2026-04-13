@@ -32,6 +32,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [showDeptModal, setShowDeptModal] = useState(false);
   const [newDeptName, setNewDeptName] = useState('');
+  const [notification, setNotification] = useState<{ type: 'success' | 'error' | 'warning', message: string } | null>(null);
+
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => setNotification(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
 
   useEffect(() => {
     // Si el usuario tiene scope, forzamos el país
@@ -277,8 +285,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                   </div>
 
                   <div className="space-y-8">
-                    <div className="bg-slate-900 rounded-3xl shadow-2xl p-10 text-white relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform">🎓</div>
+                    <div className="bg-slate-900 rounded-3xl shadow-2xl p-4 text-white relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform">🎓</div>
                       <h3 className="text-xl font-black uppercase tracking-tighter mb-4">Certificaciones de Personal</h3>
                       <p className="text-xs opacity-50 mb-8 leading-relaxed">Resumen de cumplimiento normativo y certificaciones técnicas globales.</p>
                       
@@ -342,7 +350,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                  setPendingFile(file);
                                  e.target.value = '';
                               } catch (err: any) {
-                                 alert(`❌ Error: ${err.message || 'Error en la lectura'}`);
+                                 setNotification({ type: 'error', message: err.message || 'Error en la lectura' });
                               } finally {
                                  setLoading(false);
                               }
@@ -420,10 +428,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                              try {
                                                 setLoading(true);
                                                 await apiService.uploadPhoto(tech.id, file);
-                                                alert('✅ Imagen guardada en almacenamiento persistente');
+                                                setNotification({ type: 'success', message: 'Imagen guardada en almacenamiento persistente' });
                                                 fetchModuleData();
                                              } catch (err) {
-                                                alert('❌ Error al subir la foto oficial');
+                                                setNotification({ type: 'error', message: 'Error al subir la foto oficial' });
                                              } finally {
                                                 setLoading(false);
                                              }
@@ -558,7 +566,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                                 try {
                                                    await apiService.deleteDepartamento(dept.id);
                                                    fetchModuleData();
-                                                } catch (e) { alert('No se puede eliminar (existen técnicos asociados)'); }
+                                                } catch (e) { setNotification({ type: 'error', message: 'No se puede eliminar (existen técnicos asociados)' }); }
                                              }
                                           }}
                                           className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-all border border-transparent hover:border-red-100"
@@ -618,7 +626,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                    try {
                                       await apiService.resolveReport(report.id);
                                       fetchModuleData();
-                                   } catch (e) { alert('Error al resolver'); }
+                                   } catch (e) { setNotification({ type: 'error', message: 'Error al resolver' }); }
                                 }}
                                 className="px-6 py-3 bg-slate-900 group-hover:bg-red-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shadow-md"
                              >
@@ -785,7 +793,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                                     await apiService.updatePais(p.id, { activo: !p.activo });
                                                     fetchModuleData();
                                                  } catch (err) {
-                                                    alert('Error al actualizar estado');
+                                                    setNotification({ type: 'error', message: 'Error al actualizar estado' });
                                                  } finally {
                                                     setLoading(false);
                                                  }
@@ -803,7 +811,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                                        await apiService.updatePais(p.id, { nombre: nuevoNombre });
                                                        fetchModuleData();
                                                     } catch (err) {
-                                                       alert('Error al editar nombre');
+                                                       setNotification({ type: 'error', message: 'Error al editar nombre' });
                                                     } finally {
                                                        setLoading(false);
                                                     }
@@ -838,11 +846,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                            try {
                               setLoading(true);
                               await apiService.createPais(newPais);
-                              alert('✅ Nuevo país internacional activado con éxito');
+                              setNotification({ type: 'success', message: 'Nuevo país internacional activado con éxito' });
                               fetchModuleData();
                               (e.target as HTMLFormElement).reset();
                            } catch (err) {
-                              alert('❌ Error al registrar país');
+                              setNotification({ type: 'error', message: 'Error al registrar país' });
                            } finally {
                               setLoading(false);
                            }
@@ -958,12 +966,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                           try {
                              setLoading(true);
                              await apiService.uploadExcel(pendingFile, selectedCountry);
-                             alert('✅ Ingesta Masiva Completada con Éxito');
+                             setNotification({ type: 'success', message: 'Ingesta Masiva Completada con Éxito' });
                              setPreviewData(null);
                              setPendingFile(null);
                              fetchModuleData();
                           } catch (err: any) {
-                             alert(`❌ Error Crítico: ${err.message}`);
+                             setNotification({ type: 'error', message: `Error Crítico: ${err.message}` });
                           } finally {
                              setLoading(false);
                           }
@@ -1002,7 +1010,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                  setNewDeptName('');
                                  fetchModuleData();
                                } catch (e) {
-                                 alert('Error al registrar departamento');
+                                 setNotification({ type: 'error', message: 'Error al registrar departamento' });
                                } finally {
                                  setLoading(false);
                                }
@@ -1026,7 +1034,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                               setNewDeptName('');
                               fetchModuleData();
                            } catch (e) {
-                              alert('Error al registrar departamento');
+                                 setNotification({ type: 'error', message: 'Error al registrar departamento' });
                            } finally {
                               setLoading(false);
                            }
@@ -1042,6 +1050,34 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         Cancelar
                      </button>
                   </div>
+               </div>
+            </div>
+         )}
+
+         {/* Sistema de Notificaciones Premium */}
+         {notification && (
+            <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] animate-in slide-in-from-bottom-5 fade-in duration-300">
+               <div className={`
+                  flex items-center space-x-4 px-8 py-5 rounded-3xl shadow-2xl backdrop-blur-xl border
+                  ${notification.type === 'success' ? 'bg-green-500/90 border-green-400 text-white' : ''}
+                  ${notification.type === 'error' ? 'bg-red-500/90 border-red-400 text-white' : ''}
+                  ${notification.type === 'warning' ? 'bg-amber-500/90 border-amber-400 text-white' : ''}
+               `}>
+                  <span className="text-xl">
+                     {notification.type === 'success' && '✅'}
+                     {notification.type === 'error' && '❌'}
+                     {notification.type === 'warning' && '⚠️'}
+                  </span>
+                  <div className="flex flex-col">
+                     <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 m-0 leading-none mb-1">Notificación de Sistema</p>
+                     <p className="text-xs font-black uppercase tracking-tight m-0">{notification.message}</p>
+                  </div>
+                  <button 
+                     onClick={() => setNotification(null)}
+                     className="ml-4 w-6 h-6 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 text-xs transition-all"
+                  >
+                     ✕
+                  </button>
                </div>
             </div>
          )}

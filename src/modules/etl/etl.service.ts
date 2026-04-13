@@ -27,8 +27,8 @@ export class EtlService {
     private certificacionRepository: Repository<Certificacion>,
   ) {}
 
-  async processCsv(filePath: string, skipRows: number = 3) {
-    this.logger.log(`Starting ETL process for file: ${filePath}`);
+  async processCsv(filePath: string, paisScope?: string, skipRows: number = 3) {
+    this.logger.log(`Starting ETL process for file: ${filePath} with Scope: ${paisScope || 'GLOBAL'}`);
     const isXlsx = filePath.toLowerCase().endsWith('.xlsx');
     
     // Determinar categoría por nombre de archivo
@@ -45,7 +45,7 @@ export class EtlService {
 
     try {
       if (isXlsx) {
-        return await this.processXlsx(filePath, tipoPersonalAutomatico, skipRows);
+        return await this.processXlsx(filePath, tipoPersonalAutomatico, skipRows, paisScope);
       }
 
       const content = fs.readFileSync(filePath, 'utf-8');
@@ -53,7 +53,7 @@ export class EtlService {
       const dataLines = lines.slice(skipRows + 1); 
       
       this.logger.log(`Processing ${dataLines.length} CSV rows`);
-      return await this.ingestData(dataLines, tipoPersonalAutomatico);
+      return await this.ingestData(dataLines, tipoPersonalAutomatico, paisScope);
     } finally {
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
@@ -62,7 +62,7 @@ export class EtlService {
     }
   }
 
-  private async processXlsx(filePath: string, defaultTipo: TipoPersonal, skipRows: number) {
+  private async processXlsx(filePath: string, defaultTipo: TipoPersonal, skipRows: number, paisScope?: string) {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(filePath);
     const worksheet = workbook.getWorksheet(1);
@@ -85,18 +85,16 @@ export class EtlService {
       await this.extractImages(workbook, filePath);
     }
 
-    this.logger.log(`Processing ${dataRows.length} XLSX rows`);
-    return await this.ingestData(dataRows, defaultTipo);
+    this.logger.log(`Processing ${dataRows.length} XLSX rows with Scope: ${paisScope || 'GLOBAL'}`);
+    return await this.ingestData(dataRows, defaultTipo, paisScope);
   }
 
   private async extractImages(workbook: ExcelJS.Workbook, filePath: string) {
     this.logger.log('Iniciando extracción de imágenes del Excel de COUNET...');
     // Lógica para extraer imágenes y guardarlas en /uploads/fotos
-    // vinculándolas mediante el DNI que esté en la misma fila del dibujo
-    // (Por ahora guardamos el log, implementaremos el guardado físico en la siguiente iteración)
   }
 
-  private async ingestData(dataLines: string[], tipoDefault: TipoPersonal) {
+  private async ingestData(dataLines: string[], tipoDefault: TipoPersonal, paisScope?: string) {
     // Map to store created supervisors to link them to technicians
     const supervisorsMap = new Map<string, User>();
     const cuadrillasMap = new Map<string, Cuadrilla>();
@@ -113,7 +111,7 @@ export class EtlService {
       if (rol === 'Supervisor') {
         let empresa = await this.empresaRepository.findOneBy({ nil });
         if (!empresa) {
-          empresa = this.empresaRepository.create({ nombre: empresaNombre, nil });
+          empresa = this.empresaRepository.create({ nombre: empresaNombre, nil, pais: paisScope || 'VE' });
           empresa = await this.empresaRepository.save(empresa);
         }
 
@@ -124,6 +122,7 @@ export class EtlService {
             password: 'password123', 
             role: UserRole.COORDINATOR,
             isActive: true,
+            paisScope: paisScope || null,
           });
           user = await this.userRepository.save(user);
         }
@@ -133,7 +132,7 @@ export class EtlService {
         if (!cuadrilla) {
           cuadrilla = this.cuadrillaRepository.create({
             nombre: `Cuadrilla ${nombre}`,
-            zona: 'General',
+            zona: parts[10]?.trim() || 'General',
             supervisor: user,
             empresa: empresa,
           });
@@ -173,12 +172,13 @@ export class EtlService {
             documento: documento,
             cargo: cargo,
             tipoPersonal: tipoPers,
-            pais: documento.startsWith('V') ? 'VE' : (documento.length === 11 ? 'RD' : 'PE'),
+            pais: paisScope || (documento.startsWith('V') ? 'VE' : (documento.length === 11 ? 'RD' : 'PE')),
+            zona: parts[10]?.trim() || 'General',
             status: TecnicoStatus.ACTIVO,
             cuadrilla: cuadrilla,
           });
           tecnico = await this.tecnicoRepository.save(tecnico);
-          this.logger.log(`Importado ${rol}: ${nombre} (${tipoPers})`);
+          this.logger.log(`Importado ${rol}: ${nombre} (${tipoPers}) en Zona: ${tecnico.zona}`);
         }
 
         const certsToLoad = [

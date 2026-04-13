@@ -18,8 +18,12 @@ export class TecnicosService {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  async findAll() {
-    return this.tecnicoRepository.find({ relations: ['certificaciones'] });
+  async findAll(paisScope?: string) {
+    const where = paisScope ? { pais: paisScope } : {};
+    return this.tecnicoRepository.find({ 
+      where,
+      relations: ['certificaciones'] 
+    });
   }
 
   async findOne(id: string) {
@@ -126,18 +130,28 @@ export class TecnicosService {
     return this.tecnicoRepository.save(tecnico);
   }
 
-  async getDashboardStats() {
+  async getDashboardStats(paisScope?: string) {
+    const techWhere = paisScope ? { pais: paisScope } : {};
+    const reportWhere = paisScope ? { tecnico: { pais: paisScope }, resuelto: false } : { resuelto: false };
+    const recentReportWhere = paisScope ? { tecnico: { pais: paisScope } } : {};
+
     const [total, alerts, reports] = await Promise.all([
-      this.tecnicoRepository.count(),
-      this.reporteRepository.count({ where: { resuelto: false } }),
-      this.reporteRepository.find({ take: 5, relations: ['tecnico'], order: { fechaReporte: 'DESC' } })
+      this.tecnicoRepository.count({ where: techWhere }),
+      this.reporteRepository.count({ where: reportWhere }),
+      this.reporteRepository.find({ 
+        where: recentReportWhere,
+        take: 5, 
+        relations: ['tecnico'], 
+        order: { fechaReporte: 'DESC' } 
+      })
     ]);
 
     return {
       technicians: total,
       activeQrs: total * 2, // Estimación operativa
       alerts,
-      recentReports: reports
+      recentReports: reports,
+      squads: 0 // TODO: Implementar conteo de cuadrillas real
     };
   }
 }

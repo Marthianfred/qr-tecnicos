@@ -12,6 +12,9 @@ export class Empresa {
   @Column({ unique: true })
   nil!: string; // Número de Identificación Laboral / Legal
 
+  @Column({ default: 'VE' })
+  pais!: string;
+
   @OneToMany(() => Cuadrilla, (cuadrilla) => cuadrilla.empresa)
   cuadrillas!: Cuadrilla[];
 }

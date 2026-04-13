@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, UseGuards, Sse, MessageEvent, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, UseGuards, Sse, MessageEvent, UseInterceptors, UploadedFile, BadRequestException, Req } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -37,8 +37,8 @@ export class TecnicosController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
-  findAll() {
-    return this.tecnicosService.findAll();
+  findAll(@Req() req: any) {
+    return this.tecnicosService.findAll(req.user.paisScope);
   }
 
   @Get('reports')
@@ -121,7 +121,7 @@ export class TecnicosController {
   @Get('stats/dashboard')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
-  async getDashboardStats() {
-    return this.tecnicosService.getDashboardStats();
+  async getDashboardStats(@Req() req: any) {
+    return this.tecnicosService.getDashboardStats(req.user.paisScope);
   }
 }

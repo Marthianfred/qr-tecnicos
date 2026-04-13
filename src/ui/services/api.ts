@@ -9,9 +9,12 @@ export interface Technician {
   nombre: string;
   documento: string;
   pais: string;
+  cargo?: string;
+  zona?: string;
+  tipoPersonal?: string;
   status: string;
   certificaciones?: any[];
-  foto?: string;
+  fotoUrl?: string;
   cuadrillaId?: string;
 }
 

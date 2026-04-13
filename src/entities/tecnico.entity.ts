@@ -37,6 +37,9 @@ export class Tecnico {
   pais!: string; 
 
   @Column({ nullable: true })
+  zona!: string; // Ej: Chacao, Miraflores, Santo Domingo Este
+
+  @Column({ nullable: true })
   fotoUrl!: string;
 
   @Column({

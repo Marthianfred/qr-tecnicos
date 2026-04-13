@@ -27,4 +27,7 @@ export class User {
 
   @Column({ default: true })
   isActive!: boolean;
+
+  @Column({ nullable: true })
+  paisScope?: string; // 'VE', 'PE', 'RD' o null para GLOBAL
 }

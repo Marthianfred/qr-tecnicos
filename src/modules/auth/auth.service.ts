@@ -25,7 +25,7 @@ export class AuthService {
   async login(username: string, pass: string) {
     const user = await this.userRepository.findOne({ where: { username } });
     if (user && user.password === pass) {
-      const payload = { username: user.username, sub: user.id, role: user.role };
+      const payload = { username: user.username, sub: user.id, role: user.role, paisScope: user.paisScope };
       return {
         access_token: this.jwtService.sign(payload, { expiresIn: '15m' }),
         refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
@@ -33,6 +33,7 @@ export class AuthService {
           id: user.id,
           username: user.username,
           role: user.role,
+          paisScope: user.paisScope,
         },
       };
     }
@@ -42,7 +43,7 @@ export class AuthService {
   async refreshToken(token: string) {
     try {
       const payload = this.jwtService.verify(token);
-      const newPayload = { username: payload.username, sub: payload.sub, role: payload.role };
+      const newPayload = { username: payload.username, sub: payload.sub, role: payload.role, paisScope: payload.paisScope };
       return {
         access_token: this.jwtService.sign(newPayload, { expiresIn: '15m' }),
       };

@@ -16,13 +16,21 @@ interface AdminPanelProps {
 }
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
   const [activeModule, setActiveModule] = useState<AdminModule>('dashboard');
-  const [selectedCountry, setSelectedCountry] = useState<'TODOS' | 'VE' | 'PE' | 'RD'>('TODOS');
+  const [selectedCountry, setSelectedCountry] = useState<'TODOS' | 'VE' | 'PE' | 'RD'>(user.paisScope || 'TODOS');
   const [loading, setLoading] = useState(false);
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [squads, setSquads] = useState<Cuadrilla[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
   const [dashboardStats, setDashboardStats] = useState({ technicians: 0, activeQrs: 0, alerts: 0, recentReports: [] as any[], squads: 0 });
+
+  useEffect(() => {
+    // Si el usuario tiene scope, forzamos el país
+    if (user.paisScope && selectedCountry !== user.paisScope) {
+       setSelectedCountry(user.paisScope);
+    }
+  }, [user.paisScope]);
 
   useEffect(() => {
     fetchData();
@@ -165,21 +173,28 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
              
              <div className="h-6 w-px bg-slate-200"></div>
 
-             <div className="flex items-center bg-slate-100 rounded-lg p-1">
-                {(['TODOS', 'VE', 'PE', 'RD'] as const).map(country => (
-                  <button
-                    key={country}
-                    onClick={() => setSelectedCountry(country)}
-                    className={`px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${
-                      selectedCountry === country 
-                        ? 'bg-white text-blue-600 shadow-sm' 
-                        : 'text-slate-400 hover:text-slate-600'
-                    }`}
-                  >
-                    {country === 'TODOS' ? '🌎' : country === 'VE' ? '🇻🇪' : country === 'PE' ? '🇵🇪' : '🇩🇴'}
-                  </button>
-                ))}
-             </div>
+             {user.paisScope ? (
+                <div className="flex items-center space-x-2 bg-blue-50 px-4 py-1.5 rounded-lg border border-blue-100">
+                   <span className="text-sm">{user.paisScope === 'VE' ? '🇻🇪' : user.paisScope === 'PE' ? '🇵🇪' : '🇩🇴'}</span>
+                   <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Sede: {user.paisScope === 'VE' ? 'Venezuela' : user.paisScope === 'PE' ? 'Perú' : 'Rep. Dominicana'}</span>
+                </div>
+              ) : (
+                <div className="flex items-center bg-slate-100 rounded-lg p-1">
+                   {(['TODOS', 'VE', 'PE', 'RD'] as const).map(country => (
+                     <button
+                       key={country}
+                       onClick={() => setSelectedCountry(country)}
+                       className={`px-4 py-1.5 rounded-md text-[9px] font-black uppercase tracking-widest transition-all ${
+                         selectedCountry === country 
+                           ? 'bg-white text-blue-600 shadow-sm' 
+                           : 'text-slate-400 hover:text-slate-600'
+                       }`}
+                     >
+                       {country === 'TODOS' ? '🌎' : country === 'VE' ? '🇻🇪' : country === 'PE' ? '🇵🇪' : '🇩🇴'}
+                     </button>
+                   ))}
+                </div>
+              )}
           </div>
 
           <div className="flex items-center space-x-6">
@@ -311,11 +326,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                   <table className="w-full text-left border-collapse">
                      <thead>
                         <tr className="bg-slate-50 border-b border-slate-100">
-                           <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Personal</th>
-                           <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Documento</th>
-                           <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Empresa / Tipo</th>
-                           <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Estatus</th>
-                           <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Acciones</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Personal</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Documento</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Empresa / Tipo</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Zona Ops</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Estatus</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Acciones</th>
                         </tr>
                      </thead>
                      <tbody className="divide-y divide-slate-50">
@@ -325,7 +341,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                               <td className="px-8 py-5">
                                  <div className="flex items-center space-x-4">
                                     <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative group-hover:shadow-md transition-all">
-                                       <img src={tech.foto || `https://i.pravatar.cc/100?u=${tech.id}`} alt="Tech" className="w-full h-full object-cover" />
+                                       <img src={tech.fotoUrl || `https://i.pravatar.cc/100?u=${tech.id}`} alt="Tech" className="w-full h-full object-cover" />
                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
                                           <span className="text-xs">📸</span>
                                        </div>
@@ -339,10 +355,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                               <td className="px-8 py-5 text-[11px] font-bold text-slate-500 font-mono tracking-tighter">{tech.documento}</td>
                               <td className="px-8 py-5">
                                  <div className="flex flex-col">
-                                    <span className="text-[10px] font-black text-slate-700 uppercase">Fibex Services</span>
+                                    <span className="text-[10px] font-black text-slate-700 uppercase">{tech.tipoPersonal === 'corporativo' ? 'FIBEX GLOBAL' : 'ALIADO TERCERO'}</span>
                                     <span className={`text-[8px] font-black w-fit px-2 py-0.5 rounded-full mt-1 ${tech.pais === 'VE' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
                                        {tech.pais}
                                     </span>
+                                 </div>
+                              </td>
+                              <td className="px-8 py-5">
+                                 <div className="flex flex-col">
+                                    <span className="text-[10px] font-black text-slate-800 uppercase italic tracking-tighter">{tech.zona || 'Nacional'}</span>
+                                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-[0.2em]">Sector Activado</span>
                                  </div>
                               </td>
                               <td className="px-8 py-5">

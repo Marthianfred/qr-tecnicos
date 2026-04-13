@@ -33,6 +33,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const [showDeptModal, setShowDeptModal] = useState(false);
   const [showCompanyModal, setShowCompanyModal] = useState(false);
   const [showCountryModal, setShowCountryModal] = useState(false);
+  const [showNotificationsMenu, setShowNotificationsMenu] = useState(false);
   const [newDeptName, setNewDeptName] = useState('');
   const [newCompany, setNewCompany] = useState({ name: '', country: 'VE' });
   const [newCountry, setNewCountry] = useState({ name: '', code: '', flag: '🚩' });
@@ -210,11 +211,41 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
 
           <div className="flex items-center space-x-6">
              <div 
-                className="relative cursor-pointer hover:scale-110 transition-transform"
-                onClick={() => setNotification({ type: 'warning', message: 'Desplegando centro de alertas...' })}
+                className="relative cursor-pointer transition-transform"
+                onClick={() => setShowNotificationsMenu(!showNotificationsMenu)}
              >
-                <span className="absolute -top-1 -right-1 z-10 shadow-sm bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">3</span>
-                <span className="text-2xl drop-shadow-sm">🔔</span>
+                <div className="hover:scale-110 transition-transform flex items-center justify-center">
+                   <span className="absolute -top-1 -right-1 z-10 shadow-sm bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">3</span>
+                   <span className="text-2xl drop-shadow-sm">🔔</span>
+                </div>
+                
+                {showNotificationsMenu && (
+                  <div className="absolute top-12 right-0 w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden z-50 animate-in slide-in-from-top-5 fade-in duration-200 cursor-default" onClick={(e) => e.stopPropagation()}>
+                    <div className="p-5 border-b border-slate-50 flex justify-between items-center bg-slate-50">
+                       <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-800">Centro de Alertas</h4>
+                       <span className="bg-red-50 text-red-600 border border-red-100 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">3 Críticas</span>
+                    </div>
+                    <div className="max-h-96 overflow-y-auto divide-y divide-slate-50 custom-scrollbar">
+                       {[
+                         { id: 1, title: 'Inconsistencia Detectada', desc: 'Verificación fallida en Nodo VE-01. Protocolo de seguridad activado.', time: 'Hace 2m', type: 'error' },
+                         { id: 2, title: 'Pérdida de Conexión', desc: 'Cuadrilla Fibex-004 sin señal GPS en zona residencial.', time: 'Hace 15m', type: 'warning' },
+                         { id: 3, title: 'Auditoría Requerida', desc: 'Documentación técnica expirada para 5 ingenieros de campo.', time: 'Hace 1h', type: 'warning' }
+                       ].map(alert => (
+                         <div key={alert.id} className="p-5 hover:bg-slate-50 transition-colors flex space-x-4 items-start cursor-pointer">
+                            <div className={`w-2.5 h-2.5 mt-1 rounded-full flex-shrink-0 animate-pulse ${alert.type === 'error' ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'}`}></div>
+                            <div>
+                               <p className="text-[10px] font-black uppercase tracking-tight text-slate-800 leading-none mb-1.5">{alert.title}</p>
+                               <p className="text-[9px] font-bold text-slate-500 leading-relaxed">{alert.desc}</p>
+                               <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest mt-3">{alert.time}</p>
+                            </div>
+                         </div>
+                       ))}
+                    </div>
+                    <div className="p-4 bg-slate-900 border-t border-slate-800 text-center hover:bg-slate-800 transition-colors cursor-pointer">
+                       <p className="text-[9px] font-black text-white uppercase tracking-[0.3em]">Auditar Todo el Historial</p>
+                    </div>
+                  </div>
+                )}
              </div>
              <button 
                onClick={onLogout}

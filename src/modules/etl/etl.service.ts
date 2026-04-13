@@ -120,8 +120,8 @@ export class EtlService {
     for (const line of dataLines) {
       const parts = line.split(',');
       const zonaExcel = parts[2]?.trim();
-      const empresaNombre = zonaExcel;
-      const nil = zonaExcel; 
+      const empresaNombre = parts[4]?.trim();
+      const nil = parts[5]?.trim(); 
       const nombre = parts[6]?.trim();
       const rol = parts[8]?.trim(); 
       const documento = parts[7]?.trim();
@@ -175,7 +175,7 @@ export class EtlService {
           cargo,
           pais: paisFinal,
           zona: zonaExcel,
-          empresa: parts[0]?.trim() || 'Fibex',
+          empresa: parts[4]?.trim() || 'Fibex',
           departamento: departamentoNombre
         });
         continue;

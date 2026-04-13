@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { SquadsService } from './cuadrillas.service';
+import { SquadsService } from './squads.service';
 import { Squad } from '../../entities/squad.entity';
 import { Technician } from '../../entities/technician.entity';
 import { NotFoundException } from '@nestjs/common';

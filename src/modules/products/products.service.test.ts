@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ProductsService } from './productos.service';
+import { ProductsService } from './products.service';
 import { Product } from '../../entities/product.entity';
 import { NotFoundException } from '@nestjs/common';
 import { InventoryService } from '../inventory/inventory.service';

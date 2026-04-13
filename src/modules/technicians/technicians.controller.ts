@@ -4,7 +4,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Observable, fromEvent, map } from 'rxjs';
-import { TechniciansService } from './tecnicos.service';
+import { TechniciansService } from './technicians.service';
 import { AuthService } from '../auth/auth.service';
 import { Technician, TechnicianStatus } from '../../entities/technician.entity';
 import { Certification } from '../../entities/certification.entity';
@@ -17,7 +17,7 @@ import { UserRole } from '../../entities/user.entity';
 @Controller('technicians')
 export class TechniciansController {
   constructor(
-    private readonly tecnicosService: TechniciansService,
+    private readonly techniciansService: TechniciansService,
     private readonly authService: AuthService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
@@ -38,21 +38,21 @@ export class TechniciansController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
   findAll(@Req() req: any) {
-    return this.tecnicosService.findAll(req.user.countryScope);
+    return this.techniciansService.findAll(req.user.countryScope);
   }
 
   @Get('inconsistency-reports')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
   findAllReports() {
-    return this.tecnicosService.findAllReports();
+    return this.techniciansService.findAllReports();
   }
 
   @Get('statistics')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
   async getDashboardStats(@Req() req: any) {
-    return this.tecnicosService.getDashboardStats(req.user.countryScope);
+    return this.techniciansService.getDashboardStats(req.user.countryScope);
   }
 
   @Get('validations/:token')
@@ -64,14 +64,14 @@ export class TechniciansController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR, UserRole.TECHNICIAN)
   findOne(@Param('id') id: string) {
-    return this.tecnicosService.findOne(id);
+    return this.techniciansService.findOne(id);
   }
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
-  create(@Body() tecnicoData: Partial<Technician>) {
-    return this.tecnicosService.create(tecnicoData);
+  create(@Body() technicianData: Partial<Technician>) {
+    return this.techniciansService.create(technicianData);
   }
 
   @Patch(':id/foto')
@@ -89,7 +89,7 @@ export class TechniciansController {
   async uploadPhoto(@Param('id') id: string, @UploadedFile() file: any) {
     if (!file) throw new BadRequestException('Se requiere una imagen para el carnet');
     const fotoUrl = `/uploads/fotos/${file.filename}`;
-    return this.tecnicosService.updatePhoto(id, fotoUrl);
+    return this.techniciansService.updatePhoto(id, fotoUrl);
   }
 
   @Post(':id/qr-codes')
@@ -104,9 +104,9 @@ export class TechniciansController {
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
   addCertification(
     @Param('id') id: string,
-    @Body() certificacionData: Partial<Certification>,
+    @Body() certificationData: Partial<Certification>,
   ) {
-    return this.tecnicosService.addCertification(id, certificacionData);
+    return this.techniciansService.addCertification(id, certificationData);
   }
 
   @Post(':id/inconsistency-reports')
@@ -114,20 +114,20 @@ export class TechniciansController {
     @Param('id') id: string,
     @Body() reportData: Partial<InconsistencyReport>,
   ) {
-    return this.tecnicosService.reportInconsistency(id, reportData);
+    return this.techniciansService.reportInconsistency(id, reportData);
   }
 
   @Patch('inconsistency-reports/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
   resolveReport(@Param('id') id: string) {
-    return this.tecnicosService.resolveReport(id);
+    return this.techniciansService.resolveReport(id);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.COORDINATOR)
   async updateStatus(@Param('id') id: string, @Body('status') status: TechnicianStatus) {
-    return this.tecnicosService.updateStatus(id, status);
+    return this.techniciansService.updateStatus(id, status);
   }
 }

@@ -9,7 +9,7 @@ import { User, UserRole } from '../../entities/user.entity';
 import { Squad } from '../../entities/squad.entity';
 import { Technician, TechnicianStatus, StaffType } from '../../entities/technician.entity';
 import { Certification, CertificationLevel } from '../../entities/certification.entity';
-import { DepartmentsService } from '../departamentos/departamentos.service';
+import { DepartmentsService } from '../departments/departments.service';
 import { Department } from '../../entities/department.entity';
 
 @Injectable()
@@ -30,8 +30,8 @@ export class EtlService {
     private departmentsService: DepartmentsService,
   ) {}
 
-  async processCsv(filePath: string, paisScope?: string, skipRows: number = 3, dryRun: boolean = false) {
-    this.logger.log(`${dryRun ? '[PREVIEW]' : '[INGEST]'} ETL process for file: ${filePath} with Scope: ${paisScope || 'GLOBAL'}`);
+  async processCsv(filePath: string, countryScope?: string, skipRows: number = 3, dryRun: boolean = false) {
+    this.logger.log(`${dryRun ? '[PREVIEW]' : '[INGEST]'} ETL process for file: ${filePath} with Scope: ${countryScope || 'GLOBAL'}`);
     const isXlsx = filePath.toLowerCase().endsWith('.xlsx');
     
     
@@ -54,7 +54,7 @@ export class EtlService {
         dataRows = lines.slice(skipRows + 1);
       }
 
-      return await this.ingestData(dataRows, staffType, paisScope, dryRun);
+      return await this.ingestData(dataRows, staffType, countryScope, dryRun);
     } finally {
       if (fs.existsSync(filePath) && filePath.includes('uploads')) {
         fs.unlinkSync(filePath);
@@ -78,7 +78,7 @@ export class EtlService {
     return dataRows;
   }
 
-  private async ingestData(dataLines: string[], defaultStaffType: StaffType, paisScope?: string, dryRun: boolean = false) {
+  private async ingestData(dataLines: string[], defaultStaffType: StaffType, countryScope?: string, dryRun: boolean = false) {
     const supervisorsMap = new Map<string, User>();
     const previewData = [];
 
@@ -94,7 +94,7 @@ export class EtlService {
       if (role === 'Supervisor' && !dryRun) {
         let company = await this.companyRepository.findOneBy({ taxId });
         if (!company) {
-          company = this.companyRepository.create({ name: companyName, taxId, country: paisScope || 'VE' });
+          company = this.companyRepository.create({ name: companyName, taxId, country: countryScope || 'VE' });
           company = await this.companyRepository.save(company);
         }
 
@@ -105,7 +105,7 @@ export class EtlService {
             password: 'password123', 
             role: UserRole.COORDINATOR,
             isActive: true,
-            paisScope: paisScope || null,
+            countryScope: countryScope || null,
           });
           user = await this.userRepository.save(user);
         }
@@ -126,7 +126,7 @@ export class EtlService {
       const role = parts[8]?.trim() || 'Field Technician';
       const departmentName = parts[9]?.trim() || 'General';
       const statusExcel = parts[22]?.trim(); 
-      const countryFinal = paisScope || (documentId?.startsWith('V') ? 'VE' : (documentId?.length === 11 ? 'RD' : 'PE'));
+      const countryFinal = countryScope || (documentId?.startsWith('V') ? 'VE' : (documentId?.length === 11 ? 'RD' : 'PE'));
       const statusFinal = statusExcel === 'INACTIVO' ? TechnicianStatus.INACTIVE : TechnicianStatus.ACTIVE;
 
       if (dryRun) {

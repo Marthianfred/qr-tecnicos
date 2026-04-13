@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { TechniciansService } from './tecnicos.service';
+import { TechniciansService } from './technicians.service';
 import { Technician, TechnicianStatus } from '../../entities/technician.entity';
 import { Certification, NivelCertification } from '../../entities/certification.entity';
 import { InconsistencyReport } from '../../entities/inconsistency-report.entity';

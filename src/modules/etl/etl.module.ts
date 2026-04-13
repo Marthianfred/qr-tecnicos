@@ -9,7 +9,7 @@ import { Technician } from '../../entities/technician.entity';
 import { Certification } from '../../entities/certification.entity';
 
 import { AuthModule } from '../auth/auth.module';
-import { DepartmentsModule } from '../departamentos/departamentos.module';
+import { DepartmentsModule } from '../departments/departments.module';
 
 @Module({
   imports: [

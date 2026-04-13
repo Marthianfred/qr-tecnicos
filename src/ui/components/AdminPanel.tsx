@@ -209,9 +209,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           </div>
 
           <div className="flex items-center space-x-6">
-             <div className="relative cursor-pointer hover:scale-110 transition-transform">
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center">3</span>
-                <span className="text-xl">🔔</span>
+             <div 
+                className="relative cursor-pointer hover:scale-110 transition-transform"
+                onClick={() => setNotification({ type: 'warning', message: 'Desplegando centro de alertas...' })}
+             >
+                <span className="absolute -top-1 -right-1 z-10 shadow-sm bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">3</span>
+                <span className="text-2xl drop-shadow-sm">🔔</span>
              </div>
              <button 
                onClick={onLogout}

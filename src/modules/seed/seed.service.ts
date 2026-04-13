@@ -5,6 +5,7 @@ import { User, UserRole } from '../../entities/user.entity';
 import { Tecnico, TecnicoStatus } from '../../entities/tecnico.entity';
 import { Certificacion, NivelCertificacion } from '../../entities/certificacion.entity';
 import { Producto } from '../../entities/producto.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -32,6 +33,7 @@ export class SeedService implements OnModuleInit {
   }
 
   private async seedUsers() {
+    const saltRounds = 10;
     const users = [
       { username: 'admin', password: 'password', role: UserRole.ADMIN },
       { username: 'coordinator', password: 'password', role: UserRole.COORDINATOR },
@@ -41,8 +43,14 @@ export class SeedService implements OnModuleInit {
     for (const u of users) {
       const exists = await this.userRepository.findOneBy({ username: u.username });
       if (!exists) {
-        const user = this.userRepository.create(u);
+        const hashedPassword = await bcrypt.hash(u.password, saltRounds);
+        const user = this.userRepository.create({ ...u, password: hashedPassword });
         await this.userRepository.save(user);
+      } else if (!exists.password.startsWith('$2b$')) {
+        // Migración automática: Si la clave no parece un hash de bcrypt, cifrarla
+        console.log(`Migrando contraseña de usuario: ${u.username}`);
+        exists.password = await bcrypt.hash(exists.password, saltRounds);
+        await this.userRepository.save(exists);
       }
     }
   }

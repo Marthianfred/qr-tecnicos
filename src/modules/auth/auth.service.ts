@@ -7,6 +7,7 @@ import { Tecnico } from '../../entities/tecnico.entity';
 import { Certificacion } from '../../entities/certificacion.entity';
 import { User } from '../../entities/user.entity';
 import { TrustLayerService } from './trust-layer.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -24,11 +25,11 @@ export class AuthService {
 
   async login(username: string, pass: string) {
     const user = await this.userRepository.findOne({ where: { username } });
-    if (user && user.password === pass) {
+    if (user && await bcrypt.compare(pass, user.password)) {
       const payload = { username: user.username, sub: user.id, role: user.role, paisScope: user.paisScope };
       return {
-        access_token: this.jwtService.sign(payload, { expiresIn: '15m' }),
-        refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
+        access_token: this.jwtService.sign(payload, { expiresIn: '8h' }),
+        refresh_token: this.jwtService.sign(payload, { expiresIn: '24h' }),
         user: {
           id: user.id,
           username: user.username,
@@ -45,7 +46,7 @@ export class AuthService {
       const payload = this.jwtService.verify(token);
       const newPayload = { username: payload.username, sub: payload.sub, role: payload.role, paisScope: payload.paisScope };
       return {
-        access_token: this.jwtService.sign(newPayload, { expiresIn: '15m' }),
+        access_token: this.jwtService.sign(newPayload, { expiresIn: '8h' }),
       };
     } catch (e) {
       throw new UnauthorizedException('Sesión expirada. Por favor, inicie sesión de nuevo.');

@@ -13,6 +13,7 @@ RUN npm install
 COPY . .
 
 # Build the application
+# build:client handles frontend, build:server handles backend (tsc)
 RUN npm run build
 
 # Stage 2: Production
@@ -36,5 +37,7 @@ EXPOSE 3000
 # Set environment variables
 ENV NODE_ENV=production
 
-# Final verification of build integrity during container startup
-CMD ["node", "dist/main.js"]
+# We use a shell command to find the correct main.js file
+# This is more robust against tsc nesting everything in dist/src/
+# We exclude 'dist/client' to avoid running the frontend main file by mistake
+CMD ["sh", "-c", "MAIN_FILE=$(find dist -name main.js | grep -v client | head -n 1) && node $MAIN_FILE"]

@@ -23,7 +23,7 @@ export class Tecnico {
   @Column({ unique: true })
   documento!: string; 
 
-  @Column()
+  @Column({ default: 'Técnico General' })
   cargo!: string; // Ej: Técnico III, Coordinador de Ops
 
   @Column({
@@ -35,7 +35,7 @@ export class Tecnico {
   @Column()
   pais!: string; 
 
-  @Column({ nullable: true })
+  @Column({ default: 'Sede Central' })
   zona!: string; // Ej: Chacao, Miraflores, Santo Domingo Este
 
   @Column({ nullable: true })

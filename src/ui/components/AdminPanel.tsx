@@ -173,7 +173,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                          {user.paisScope ? (
                 <div className="flex items-center space-x-2 bg-blue-50 px-4 py-1.5 rounded-lg border border-blue-100">
                    <span className="text-sm">{user.paisScope === 'VE' ? '🇻🇪' : user.paisScope === 'PE' ? '🇵🇪' : '🇩🇴'}</span>
-                   <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Sede: {countries.find(p => p.codigo === user.paisScope)?.nombre || user.paisScope}</span>
+                   <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">País: {countries.find(p => p.codigo === user.paisScope)?.nombre || user.paisScope}</span>
                 </div>
               ) : (
                 <div className="flex items-center bg-slate-100 rounded-lg p-1">
@@ -746,7 +746,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                   <div className="relative z-10 space-y-4">
                      <h2 className="text-4xl font-black uppercase tracking-tighter">Expansión Global Fibex</h2>
                      <p className="text-sm font-bold opacity-70 uppercase tracking-widest max-w-xl">
-                        Centro de gobernanza para la activación de nuevas naciones y sedes internacionales de la red Fibex.
+                        Centro de gobernanza para la activación de nuevas naciones y operaciones internacionales de la red Fibex.
                      </p>
                   </div>
                </div>
@@ -758,7 +758,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         <table className="w-full text-left">
                            <thead>
                               <tr className="bg-slate-50 border-b border-slate-100">
-                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nación / Sede</th>
+                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nación / País</th>
                                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Código ISO</th>
                                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Estado</th>
                                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Acciones</th>
@@ -830,7 +830,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                   {/* Add New Country Form */}
                   <div className="space-y-6">
                      <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                        <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter mb-6">Activar Nueva Sede</h3>
+                        <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter mb-6">Activar Nuevo País</h3>
                         <form className="space-y-4" onSubmit={async (e) => {
                            e.preventDefault();
                            const formData = new FormData(e.currentTarget);
@@ -843,7 +843,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                            try {
                               setLoading(true);
                               await apiService.createPais(newPais);
-                              alert('✅ Nueva sede internacional activada con éxito');
+                              alert('✅ Nuevo país internacional activado con éxito');
                               fetchModuleData();
                               (e.target as HTMLFormElement).reset();
                            } catch (err) {
@@ -919,7 +919,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                  <div className="p-10 bg-slate-900 text-white flex justify-between items-center">
                     <div className="space-y-1">
                        <h3 className="text-2xl font-black uppercase tracking-tighter">Previsualización de Ingesta</h3>
-                       <p className="text-[10px] font-bold opacity-50 uppercase tracking-widest italic">Scope de Destino: {selectedCountry === 'TODOS' ? 'NACIONAL (GLOBAL)' : `SEDE ${selectedCountry}`}</p>
+                       <p className="text-[10px] font-bold opacity-50 uppercase tracking-widest italic">Ámbito de Destino: {selectedCountry === 'TODOS' ? 'NACIONAL (GLOBAL)' : `${countries.find(p => p.codigo === selectedCountry)?.nombre || selectedCountry}`}</p>
                     </div>
                     <div className="bg-blue-600 px-6 py-2 rounded-xl">
                        <span className="text-xl font-black">{previewData.length}</span>

@@ -119,12 +119,12 @@ export class EtlService {
     // Pass 1: Identificar Empresas y Supervisores
     for (const line of dataLines) {
       const parts = line.split(',');
-      const zonaExcel = parts[0]?.trim();
+      const zonaExcel = parts[2]?.trim();
       const empresaNombre = zonaExcel;
-      const nil = zonaExcel; // Placeholder si no hay NIL explícito
-      const nombre = parts[2]?.trim();
-      const rol = parts[4]?.trim(); 
-      const documento = parts[3]?.trim();
+      const nil = zonaExcel; 
+      const nombre = parts[6]?.trim();
+      const rol = parts[8]?.trim(); 
+      const documento = parts[7]?.trim();
 
       if (rol === 'Supervisor') {
         let empresa = null;
@@ -159,15 +159,13 @@ export class EtlService {
       const parts = line.split(',');
       if (parts.length < 5) continue;
 
-      const zonaExcel = parts[0]?.trim() || 'General';
-      const nombre = parts[2]?.trim();
-      const documento = parts[3]?.trim();
-      const cargo = parts[4]?.trim() || 'Técnico de Campo';
-      const supervisorNombre = parts[6]?.trim();
-      const statusExcel = parts[18]?.trim(); // Columna "PERSONAL" (ACTIVO/INACTIVO)
-      
+      const zonaExcel = parts[2]?.trim() || 'General';
+      const nombre = parts[6]?.trim();
+      const documento = parts[7]?.trim();
+      const cargo = parts[8]?.trim() || 'Técnico de Campo';
+      const departamentoNombre = parts[9]?.trim() || 'General';
+      const statusExcel = parts[18]?.trim(); // Columna "PERSONAL" (S)
       const paisFinal = paisScope || (documento?.startsWith('V') ? 'VE' : (documento?.length === 11 ? 'RD' : 'PE'));
-      const departamentoNombre = parts[5]?.trim() || 'General';
       const statusFinal = statusExcel === 'INACTIVO' ? TecnicoStatus.INACTIVO : TecnicoStatus.ACTIVO;
 
       if (dryRun) {

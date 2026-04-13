@@ -5,10 +5,11 @@ import { User } from '../../entities/user.entity';
 import { Tecnico } from '../../entities/tecnico.entity';
 import { Certificacion } from '../../entities/certificacion.entity';
 import { Producto } from '../../entities/producto.entity';
+import { Pais } from '../../entities/pais.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Tecnico, Certificacion, Producto]),
+    TypeOrmModule.forFeature([User, Tecnico, Certificacion, Producto, Pais]),
   ],
   providers: [SeedService],
   exports: [SeedService],

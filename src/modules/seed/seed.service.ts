@@ -5,6 +5,7 @@ import { User, UserRole } from '../../entities/user.entity';
 import { Tecnico, TecnicoStatus } from '../../entities/tecnico.entity';
 import { Certificacion, NivelCertificacion } from '../../entities/certificacion.entity';
 import { Producto } from '../../entities/producto.entity';
+import { Pais } from '../../entities/pais.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -18,6 +19,8 @@ export class SeedService implements OnModuleInit {
     private certificacionRepository: Repository<Certificacion>,
     @InjectRepository(Producto)
     private productoRepository: Repository<Producto>,
+    @InjectRepository(Pais)
+    private paisRepository: Repository<Pais>,
   ) {}
 
   async onModuleInit() {
@@ -29,7 +32,24 @@ export class SeedService implements OnModuleInit {
     await this.seedUsers();
     await this.seedTecnicos();
     await this.seedProductos();
+    await this.seedPaises();
     return { message: 'Seed completed successfully' };
+  }
+
+  private async seedPaises() {
+    const paisesData = [
+      { codigo: 'VE', nombre: 'Venezuela', bandera: '🇻🇪' },
+      { codigo: 'PE', nombre: 'Perú', bandera: '🇵🇪' },
+      { codigo: 'RD', nombre: 'República Dominicana', bandera: '🇩🇴' },
+    ];
+
+    for (const p of paisesData) {
+      const exists = await this.paisRepository.findOneBy({ codigo: p.codigo });
+      if (!exists) {
+        const pais = this.paisRepository.create(p);
+        await this.paisRepository.save(pais);
+      }
+    }
   }
 
   private async seedUsers() {

@@ -34,32 +34,57 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
     }
   }, [user.paisScope]);
 
+  // Carga de datos globales una sola vez al montar el componente
   useEffect(() => {
-    fetchData();
+    const loadGlobalData = async () => {
+      try {
+        const countriesData = await apiService.getPaises();
+        setCountries(countriesData);
+      } catch (err) {
+        console.error('Error al cargar datos globales:', err);
+      }
+    };
+    loadGlobalData();
+  }, []);
+
+  useEffect(() => {
+    fetchModuleData();
   }, [activeModule, selectedCountry]);
 
-  const fetchData = async () => {
+  const fetchModuleData = async () => {
     try {
       setLoading(true);
-      const [techs, stats, squadsData, companiesData, countriesData] = await Promise.all([
-        apiService.getTechnicians(),
-        apiService.getDashboardStats(),
-        apiService.getCuadrillas(),
-        apiService.getCompanies(),
-        apiService.getPaises()
-      ]);
       
-      const filteredTechs = selectedCountry === 'TODOS' ? techs : techs.filter(t => t.pais === selectedCountry);
-      const filteredSquads = selectedCountry === 'TODOS' ? squadsData : squadsData.filter(s => s.nombre.includes(selectedCountry));
-      const filteredCompanies = selectedCountry === 'TODOS' ? companiesData : companiesData.filter(c => c.pais === selectedCountry);
-        
-      setTechnicians(filteredTechs);
-      setDashboardStats(stats);
-      setSquads(filteredSquads);
-      setCompanies(filteredCompanies);
-      setCountries(countriesData);
+      // Ejecutamos solo la petición necesaria para el módulo actual
+      switch (activeModule) {
+        case 'dashboard':
+          const stats = await apiService.getDashboardStats();
+          setDashboardStats(stats);
+          break;
+        case 'personnel':
+          const techs = await apiService.getTechnicians();
+          const filteredTechs = selectedCountry === 'TODOS' ? techs : techs.filter(t => t.pais === selectedCountry);
+          setTechnicians(filteredTechs);
+          break;
+        case 'companies':
+          const companiesData = await apiService.getCompanies();
+          const filteredCompanies = selectedCountry === 'TODOS' ? companiesData : companiesData.filter(c => c.pais === selectedCountry);
+          setCompanies(filteredCompanies);
+          break;
+        case 'operations':
+          const squadsData = await apiService.getCuadrillas();
+          const filteredSquads = selectedCountry === 'TODOS' ? squadsData : squadsData.filter(s => s.nombre.includes(selectedCountry));
+          setSquads(filteredSquads);
+          break;
+        case 'countries':
+          const freshCountries = await apiService.getPaises();
+          setCountries(freshCountries);
+          break;
+        default:
+          break;
+      }
     } catch (err) {
-      console.error('Error fetching data:', err);
+      console.error(`Error cargando módulo ${activeModule}:`, err);
     } finally {
       setLoading(false);
     }
@@ -151,7 +176,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                            setLoading(true);
                            await apiService.uploadExcel(file);
                            alert('✅ Ingesta Masiva Completada con Éxito');
-                           fetchData();
+                           fetchModuleData();
                         } catch (err: any) {
                            alert(`❌ Error: ${err.message || 'Error en el procesamiento del archivo'}`);
                         } finally {
@@ -385,7 +410,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                                 setLoading(true);
                                                 await apiService.uploadPhoto(tech.id, file);
                                                 alert('✅ Imagen guardada en almacenamiento persistente');
-                                                fetchData();
+                                                fetchModuleData();
                                              } catch (err) {
                                                 alert('❌ Error al subir la foto oficial');
                                              } finally {
@@ -506,7 +531,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                 onClick={async () => {
                                    try {
                                       await apiService.resolveReport(report.id);
-                                      fetchData();
+                                      fetchModuleData();
                                    } catch (e) { alert('Error al resolver'); }
                                 }}
                                 className="px-6 py-3 bg-slate-900 group-hover:bg-red-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shadow-md"
@@ -692,7 +717,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                               setLoading(true);
                               await apiService.createPais(newPais);
                               alert('✅ Nueva sede internacional activada con éxito');
-                              fetchData();
+                              fetchModuleData();
                               (e.target as HTMLFormElement).reset();
                            } catch (err) {
                               alert('❌ Error al registrar país');

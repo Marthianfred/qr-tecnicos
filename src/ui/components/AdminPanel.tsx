@@ -567,13 +567,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                        <div className="grid grid-cols-2 gap-4">
                           <button 
                              onClick={() => setNotification({ type: 'warning', message: 'Abriendo parámetros de configuración...' })}
-                             className="bg-slate-50 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest opacity-60 hover:opacity-100 hover:bg-slate-100 transition-all"
+                             className="border-2 border-blue-600 bg-white text-slate-900 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 transition-all"
                           >
                              Editar
                           </button>
                           <button 
                              onClick={() => setNotification({ type: 'warning', message: 'Compilando inteligencia geopolítica...' })}
-                             className="bg-slate-50 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest opacity-60 hover:opacity-100 hover:bg-blue-50 text-blue-600 transition-all"
+                             className="bg-slate-50 text-blue-500 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-100 transition-all"
                           >
                              Reportes
                           </button>

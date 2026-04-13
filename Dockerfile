@@ -1,46 +1,40 @@
 # Stage 1: Build
-FROM node:20-alpine AS build
+FROM node:20 AS build
 
 WORKDIR /app
 
-# Install dependencies and build tools for native modules
-RUN apk add --no-cache libc6-compat
-
+# Install dependencies
 COPY package*.json ./
-# Force install the specific rollup binary for Linux musl
-RUN npm install @rollup/rollup-linux-x64-musl
 RUN npm install
 
 # Copy source code
 COPY . .
 
 # Build the application
+# build:client handles frontend, build:server handles backend (tsc)
 RUN npm run build
 
 # Stage 2: Production
-FROM node:20-alpine
+FROM node:20-slim
 
 WORKDIR /app
 
-# Copy package files and install production dependencies
+# Install only production dependencies
 COPY package*.json ./
 RUN npm install --omit=dev --ignore-scripts
 
 # Copy built files from build stage
+# We copy the entire dist folder to ensure all assets (client, common, modules) are present
 COPY --from=build /app/dist ./dist
+
+# Create uploads directory
+RUN mkdir -p /app/uploads
 
 # Expose the application port
 EXPOSE 3000
 
-# Set environment variables (defaults, can be overridden)
+# Set environment variables
 ENV NODE_ENV=production
-ENV DB_HOST=localhost
-ENV DB_PORT=5432
-ENV DB_USER=postgres
-ENV DB_PASSWORD=postgres
-ENV DB_NAME=fibex_qr
-ENV REDIS_HOST=localhost
-ENV REDIS_PORT=6379
 
-# Use the fixed start script (we will update package.json to point to dist/main.js)
-CMD ["npm", "run", "start"]
+# Final verification of build integrity during container startup
+CMD ["node", "dist/main.js"]

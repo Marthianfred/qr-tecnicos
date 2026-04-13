@@ -3,7 +3,9 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies and build tools for native modules
+RUN apk add --no-cache libc6-compat
+
 COPY package*.json ./
 RUN npm install
 

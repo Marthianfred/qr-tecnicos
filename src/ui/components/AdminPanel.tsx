@@ -638,36 +638,40 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                          </span>
                                       </td>
                                       <td className="px-10 py-5 font-black text-slate-800 uppercase tracking-tight text-xs">{dept.name}</td>
-                                      <td className="px-10 py-5 text-right space-x-3">
-                                         <button 
-                                            onClick={() => {
-                                               setEditingDept(dept);
-                                               setNewDeptName(dept.name);
-                                               setShowDeptModal(true);
-                                            }}
-                                            className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline"
-                                         >
-                                            Editar
-                                         </button>
-                                         <button 
-                                            onClick={async () => {
-                                               if(window.confirm(`¿Purgar permanentemente el nodo ${dept.name}?`)) {
-                                                  try {
-                                                     setLoading(true);
-                                                     await apiService.deleteDepartment(dept.id);
-                                                     setNotification({ type: 'success', message: 'Nodo purgado del ecosistema' });
-                                                     fetchModuleData();
-                                                  } catch (err) {
-                                                     setNotification({ type: 'error', message: 'Fallo al purgar registro' });
-                                                  } finally {
-                                                     setLoading(false);
+                                      <td className="px-10 py-5 text-right">
+                                         <div className="flex justify-end space-x-2">
+                                            <button 
+                                               onClick={() => {
+                                                  setEditingDept(dept);
+                                                  setNewDeptName(dept.name);
+                                                  setShowDeptModal(true);
+                                               }}
+                                               className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors"
+                                               title="Editar"
+                                            >
+                                               ✏️
+                                            </button>
+                                            <button 
+                                               onClick={async () => {
+                                                  if(window.confirm(`¿Purgar permanentemente el nodo ${dept.name}?`)) {
+                                                     try {
+                                                        setLoading(true);
+                                                        await apiService.deleteDepartment(dept.id);
+                                                        setNotification({ type: 'success', message: 'Nodo purgado del ecosistema' });
+                                                        fetchModuleData();
+                                                     } catch (err) {
+                                                        setNotification({ type: 'error', message: 'Fallo al purgar registro' });
+                                                     } finally {
+                                                        setLoading(false);
+                                                     }
                                                   }
-                                               }
-                                            }}
-                                            className="text-[10px] font-black text-red-500 uppercase tracking-widest hover:underline"
-                                         >
-                                            Eliminar
-                                         </button>
+                                               }}
+                                               className="w-8 h-8 rounded-lg bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors"
+                                               title="Eliminar"
+                                            >
+                                               🗑️
+                                            </button>
+                                         </div>
                                       </td>
                                    </tr>
                                 ))}

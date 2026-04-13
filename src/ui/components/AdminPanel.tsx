@@ -576,7 +576,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                            onClick={() => setDeptViewMode('list')}
                            className={`px-4 py-2 text-[10px] rounded-lg font-black uppercase tracking-widest transition-all ${deptViewMode === 'list' ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
                         >
-                           Lista CRUD
+                           Lista
                         </button>
                      </div>
                      <button 
@@ -596,10 +596,26 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                     {deptViewMode === 'grid' ? (
                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                           {departments.map(dept => (
-                            <div key={dept.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center hover:shadow-xl transition-all group">
-                               <span className="text-4xl block mb-4 group-hover:scale-110 transition-transform">🏢</span>
-                               <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2">{dept.name}</h3>
-                               <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nodo-{String(dept.id).substring(0, 8).toUpperCase()}</p>
+                            <div key={dept.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center hover:shadow-xl transition-all group relative overflow-hidden">
+                               <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <button onClick={() => { setEditingDept(dept); setNewDeptName(dept.name); setShowDeptModal(true); }} className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors" title="Editar">✏️</button>
+                                  <button onClick={async () => {
+                                     if(window.confirm(`¿Purgar permanentemente el nodo ${dept.name}?`)) {
+                                        try {
+                                           setLoading(true);
+                                           await apiService.deleteDepartment(dept.id);
+                                           setNotification({ type: 'success', message: 'Nodo purgado del ecosistema' });
+                                           fetchModuleData();
+                                        } catch (err) {
+                                           setNotification({ type: 'error', message: 'Fallo al purgar registro' });
+                                        } finally {
+                                           setLoading(false);
+                                        }
+                                     }
+                                  }} className="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors" title="Eliminar">🗑️</button>
+                               </div>
+                               <span className="text-4xl block my-2 opacity-50 group-hover:opacity-100 transition-all group-hover:scale-110">🏢</span>
+                               <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mt-4">{dept.name}</h3>
                             </div>
                           ))}
                        </div>

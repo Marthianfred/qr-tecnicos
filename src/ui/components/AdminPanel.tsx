@@ -162,7 +162,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
         </div>
       </aside>
 
-      <main className="flex-grow flex flex-col h-full overflow-hidden">
+      <main className="flex-grow main-layout flex flex-col h-full overflow-hidden">
         <header className="h-20 flex-shrink-0 bg-white border-b border-slate-200 flex items-center justify-between px-10 shadow-sm z-20">
           <div className="flex items-center space-x-4">
              <div className="flex items-center space-x-3">
@@ -363,7 +363,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                               <td className="px-8 py-5">
                                  <div className="flex items-center space-x-4">
                                     <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative group-hover:shadow-md transition-all">
-                                       <img src={tech.photoUrl || `https:
+                                       <img src={tech.photoUrl || `https://i.pravatar.cc/300?u=${tech.documentId}`} alt="Tech" className="w-full h-full object-cover" />
                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
                                           <span className="text-xs">📸</span>
                                        </div>
@@ -379,7 +379,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                               <td className="px-8 py-5 text-[11px] font-bold text-slate-500 font-mono tracking-tighter">{tech.documentId}</td>
                               <td className="px-8 py-5">
                                  <div className="flex flex-col">
-                                    <span className="text-[10px] font-black text-slate-700 uppercase">{tech.staffType === 'corporativo' ? 'FIBEX GLOBAL' : 'THIRD PARTY ALLY'}</span>
+                                    <span className="text-[10px] font-black text-slate-700 uppercase">{tech.staffType === 'CORPORATE' ? 'FIBEX GLOBAL' : 'THIRD PARTY ALLY'}</span>
                                     <span className={`text-[8px] font-black w-fit px-2 py-0.5 rounded-full mt-1 ${tech.country === 'VE' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
                                        {tech.country}
                                     </span>
@@ -404,3 +404,512 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                        <input 
                                           type="file" 
                                           className="hidden" 
+                                          accept="image/*"
+                                          onChange={async (e) => {
+                                             const file = e.target.files?.[0];
+                                             if (!file) return;
+                                             try {
+                                                setLoading(true);
+                                                await apiService.uploadPhoto(tech.id, file);
+                                                setNotification({ type: 'success', message: 'Official photo updated' });
+                                                fetchModuleData();
+                                             } catch (err) {
+                                                setNotification({ type: 'error', message: 'Update failed' });
+                                             } finally {
+                                                setLoading(false);
+                                             }
+                                          }} 
+                                       />
+                                    </label>
+                                 </div>
+                              </td>
+                           </tr>
+                        )) : (
+                           <tr>
+                              <td colSpan={6} className="px-8 py-20 text-center">
+                                 <p className="text-xs font-black text-slate-400 uppercase tracking-widest italic">No records found for {selectedCountry} sector</p>
+                              </td>
+                           </tr>
+                        )}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+          )}
+
+          {activeModule === 'companies' && (
+            <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-5">
+               <div className="grid grid-cols-3 gap-6">
+                  {companies.slice(0, 3).map(emp => (
+                    <div key={emp.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative group overflow-hidden">
+                       <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full opacity-50 transition-transform group-hover:scale-110"></div>
+                       <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Company in {emp.country}</h4>
+                       <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter mb-4">{emp.name}</h3>
+                       <div className="flex items-center space-x-6">
+                          <div>
+                             <p className="text-[9px] font-black text-slate-400 uppercase">Technicians</p>
+                             <p className="text-lg font-black text-slate-800">{emp.techniciansCount || 0}</p>
+                          </div>
+                       </div>
+                    </div>
+                  ))}
+               </div>
+               
+               <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                  <div className="p-8 border-b border-slate-100 flex justify-between items-center">
+                     <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Global Partners & Contractors</h3>
+                     <button className="bg-slate-900 text-white px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-md">Add Ally</button>
+                  </div>
+                  <table className="w-full text-left">
+                     <thead>
+                        <tr className="bg-slate-50 text-[9px] font-black text-slate-400 uppercase tracking-widest italic">
+                           <th className="px-8 py-4">Company</th>
+                           <th className="px-8 py-4">Tax ID / RIF</th>
+                           <th className="px-8 py-4">Country</th>
+                           <th className="px-8 py-4">Subscription</th>
+                           <th className="px-8 py-4">Agreement</th>
+                        </tr>
+                     </thead>
+                     <tbody className="divide-y divide-slate-100">
+                        {companies.length > 0 ? companies.map(aliado => (
+                           <tr key={aliado.id} className="hover:bg-slate-50 transition-colors">
+                             <td className="px-8 py-4 font-black text-[11px] text-slate-800 uppercase">{aliado.name}</td>
+                             <td className="px-8 py-4 font-mono text-[10px] text-slate-400">{aliado.taxId || 'N/A'}</td>
+                             <td className="px-8 py-4 text-[11px] font-bold text-slate-600">{aliado.country}</td>
+                             <td className="px-8 py-4">
+                                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-tighter">Active</span>
+                             </td>
+                             <td className="px-8 py-4 text-[10px] font-black text-blue-600 underline cursor-pointer italic">View PDF</td>
+                           </tr>
+                        )) : (
+                           <tr>
+                              <td colSpan={5} className="px-8 py-20 text-center opacity-30 italic uppercase text-[10px] font-black tracking-widest">No commercial allies registered in this region</td>
+                           </tr>
+                        )}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+          )}
+
+          {activeModule === 'departments' && (
+            <div className="max-w-7xl mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+               <div className="flex justify-between items-center bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                  <div className="space-y-1">
+                     <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter italic">Organizational Structure</h2>
+                     <p className="text-xs text-slate-400 uppercase tracking-widest font-bold">Departmental Management & Operative Areas</p>
+                  </div>
+                  <button 
+                     onClick={() => setShowDeptModal(true)}
+                     className="px-8 py-4 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-200 hover:scale-105 transition-all"
+                  >
+                     + Add New Department
+                  </button>
+               </div>
+
+               <div className="grid grid-cols-1 gap-4">
+                  <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                     <table className="w-full text-left border-collapse">
+                        <thead>
+                           <tr className="bg-slate-50 border-b border-slate-100">
+                               <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Department Name</th>
+                               <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Assigned Staff</th>
+                               <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Status</th>
+                               <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                           </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                           {departments.length > 0 ? departments.map(dept => (
+                              <tr key={dept.id} className="hover:bg-slate-50 transition-colors group">
+                                 <td className="px-8 py-6">
+                                    <div className="flex items-center space-x-4">
+                                       <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-xs uppercase">
+                                          {dept.name.substring(0,2)}
+                                       </div>
+                                       <div>
+                                          <p className="text-[13px] font-black text-slate-800 uppercase tracking-tight">{dept.name}</p>
+                                          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Fibex Global Operations</p>
+                                       </div>
+                                    </div>
+                                 </td>
+                                 <td className="px-8 py-6">
+                                    <span className="text-[11px] font-black text-slate-600 bg-slate-100 px-3 py-1 rounded-full">{dept.technicians?.length || 0} Specialists</span>
+                                 </td>
+                                 <td className="px-8 py-6">
+                                    <span className="text-[9px] font-black text-green-600 uppercase tracking-widest">Active</span>
+                                 </td>
+                                 <td className="px-8 py-6 text-right">
+                                    <button 
+                                       onClick={async () => {
+                                          if (window.confirm(`Delete department ${dept.name}?`)) {
+                                             try {
+                                                await apiService.deleteDepartment(dept.id);
+                                                fetchModuleData();
+                                             } catch (e) { 
+                                                setNotification({ type: 'error', message: 'Unable to delete (active technicians associated)' }); 
+                                             }
+                                          }
+                                       }}
+                                       className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-all border border-transparent hover:border-red-100"
+                                    >
+                                       🗑️
+                                    </button>
+                                 </td>
+                              </tr>
+                           )) : (
+                              <tr>
+                                 <td colSpan={4} className="px-8 py-20 text-center opacity-30 italic uppercase text-[11px] font-black tracking-widest">No departments configured</td>
+                              </tr>
+                           )}
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+          )}
+
+          {activeModule === 'alerts' && (
+            <div className="max-w-7xl mx-auto space-y-6 animate-in zoom-in-95 duration-300">
+               <div className="bg-red-600 rounded-3xl p-10 text-white flex items-center justify-between shadow-2xl relative overflow-hidden">
+                  <div className="absolute -right-10 -bottom-10 text-white/10 text-9xl">🚨</div>
+                  <div>
+                    <h2 className="text-3xl font-black uppercase tracking-tighter mb-2 italic">Incident Center</h2>
+                    <p className="text-sm font-bold opacity-80 uppercase tracking-widest">Monitoring reported field inconsistencies.</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center">
+                    <p className="text-[10px] font-black uppercase mb-1">Active Alerts</p>
+                    <p className="text-4xl font-black">{dashboardStats.alerts}</p>
+                  </div>
+               </div>
+
+               <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                   <div className="divide-y divide-slate-50">
+                     {dashboardStats.recentReports.length > 0 ? dashboardStats.recentReports.map((report: any) => (
+                       <div key={report.id} className="flex items-center space-x-6 p-6 hover:bg-red-50/30 transition-all rounded-2xl group border border-transparent hover:border-red-100">
+                          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl shadow-sm ${!report.resolved ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-slate-100 text-slate-400'}`}>
+                             {!report.resolved ? '⚠️' : '✅'}
+                          </div>
+                          <div className="flex-grow">
+                             <div className="flex items-center space-x-3 mb-1">
+                                 <span className={`text-[9px] font-black px-2 py-0.5 rounded-sm uppercase tracking-tighter ${!report.resolved ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                                    {!report.resolved ? 'URGENT' : 'RESOLVED'}
+                                 </span>
+                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">INC-{report.id.substring(0,6)}</span>
+                                 <span className="text-[10px] text-slate-300 font-bold">• {new Date(report.reportedAt).toLocaleDateString()}</span>
+                             </div>
+                             <h4 className="text-[13px] font-black text-slate-800 uppercase tracking-tight">{report.description}</h4>
+                             <p className="text-[11px] text-slate-400 font-medium">Technician involved: {report.technician?.name || 'Unknown'}</p>
+                          </div>
+                          {!report.resolved && (
+                             <button 
+                                onClick={async () => {
+                                   try {
+                                      await apiService.resolveReport(report.id);
+                                      fetchModuleData();
+                                   } catch (e) { setNotification({ type: 'error', message: 'Status update failed' }); }
+                                }}
+                                className="px-6 py-3 bg-slate-900 group-hover:bg-red-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shadow-md"
+                             >
+                                Resolve
+                             </button>
+                          )}
+                       </div>
+                     )) : (
+                        <div className="p-20 text-center opacity-30 italic uppercase text-[11px] font-black tracking-widest">No critical incidents reported in this region</div>
+                     )}
+                   </div>
+               </div>
+            </div>
+          )}
+
+          {activeModule === 'countries' && (
+            <div className="max-w-7xl mx-auto space-y-8">
+               <div className="bg-[#001F3D] p-10 rounded-[2.5rem] relative overflow-hidden text-white shadow-2xl">
+                  <div className="absolute right-0 bottom-0 text-white/5 text-9xl">🌎</div>
+                  <div className="relative z-10 space-y-4">
+                     <h2 className="text-4xl font-black uppercase tracking-tighter">Global Expansion</h2>
+                     <p className="text-sm font-bold opacity-70 uppercase tracking-widest max-w-xl">
+                        Governance center for activating new nations and international operations within the Fibex network.
+                     </p>
+                  </div>
+               </div>
+
+               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <div className="lg:col-span-2 space-y-6">
+                     <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+                        <table className="w-full text-left">
+                           <thead>
+                              <tr className="bg-slate-50 border-b border-slate-100">
+                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nation</th>
+                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">ISO Code</th>
+                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                              </tr>
+                           </thead>
+                           <tbody className="divide-y divide-slate-50">
+                              {countries.map(p => (
+                                 <tr key={p.id} className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-8 py-5">
+                                       <div className="flex items-center space-x-4">
+                                          <span className="text-2xl">{p.flag}</span>
+                                          <span className="text-xs font-black text-slate-700 uppercase">{p.name}</span>
+                                       </div>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                       <span className="text-[10px] font-mono font-black text-slate-400 bg-slate-100 px-3 py-1 rounded-full">{p.code}</span>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                       <span className={`text-[8px] font-black px-2 py-1 rounded-full ${p.active ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                                          {p.active ? 'ACTIVE' : 'PAUSED'}
+                                       </span>
+                                    </td>
+                                    <td className="px-8 py-5 text-right">
+                                       <div className="flex justify-end space-x-4">
+                                            <button 
+                                               onClick={async () => {
+                                                  try {
+                                                     setLoading(true);
+                                                     await apiService.updateCountry(p.id, { active: !p.active });
+                                                     fetchModuleData();
+                                                  } catch (err) {
+                                                     setNotification({ type: 'error', message: 'Status update failed' });
+                                                  } finally {
+                                                     setLoading(false);
+                                                  }
+                                               }}
+                                               className={`text-[9px] font-black px-3 py-1 rounded-sm uppercase tracking-widest transition-all ${p.active ? 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white' : 'bg-green-50 text-green-600 hover:bg-green-600 hover:text-white'}`}
+                                            >
+                                               {p.active ? 'Pause' : 'Activate'}
+                                            </button>
+                                            <button 
+                                               onClick={async () => {
+                                                  const newName = window.prompt('Enter new nation name:', p.name);
+                                                  if (newName && newName !== p.name) {
+                                                     try {
+                                                        setLoading(true);
+                                                        await apiService.updateCountry(p.id, { name: newName });
+                                                        fetchModuleData();
+                                                     } catch (err) {
+                                                        setNotification({ type: 'error', message: 'Update failed' });
+                                                     } finally {
+                                                        setLoading(false);
+                                                     }
+                                                  }
+                                               }}
+                                               className="text-[9px] font-black text-blue-600 hover:text-blue-800 uppercase tracking-widest"
+                                            >
+                                               Edit
+                                            </button>
+                                       </div>
+                                    </td>
+                                 </tr>
+                              ))}
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+
+                  <div className="space-y-6">
+                     <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                        <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter mb-6">Activate New Country</h3>
+                        <form className="space-y-4" onSubmit={async (e) => {
+                           e.preventDefault();
+                           const fd = new FormData(e.currentTarget);
+                           const newCountry = {
+                               name: fd.get('name') as string,
+                               code: fd.get('code') as string,
+                               flag: fd.get('flag') as string,
+                               active: true
+                           };
+                           try {
+                               setLoading(true);
+                               await apiService.createCountry(newCountry);
+                               setNotification({ type: 'success', message: 'New international nation activated' });
+                               fetchModuleData();
+                               (e.target as HTMLFormElement).reset();
+                           } catch (err) {
+                               setNotification({ type: 'error', message: 'Registration failed' });
+                           } finally {
+                               setLoading(false);
+                           }
+                        }}>
+                           <div className="space-y-1">
+                              <label className="text-[9px] font-black text-slate-400 uppercase ml-1">Country Name</label>
+                              <input name="name" required placeholder="Ex: USA, Colombia..." className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all outline-none" />
+                           </div>
+                           <div className="space-y-1">
+                              <label className="text-[9px] font-black text-slate-400 uppercase ml-1">ISO Code (2 Chars)</label>
+                              <input name="code" required maxLength={2} placeholder="Ex: US, CO..." className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all outline-none" />
+                           </div>
+                           <div className="space-y-1">
+                              <label className="text-[9px] font-black text-slate-400 uppercase ml-1">Flag (Emoji)</label>
+                              <input name="flag" required placeholder="Copy emoji here..." className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-blue-500 transition-all outline-none" />
+                           </div>
+                           <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] uppercase tracking-widest py-4 rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-95 mt-4">
+                               Confirm Activation
+                           </button>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+          )}
+
+          {activeModule === 'operations' && (
+            <div className="max-w-7xl mx-auto space-y-8 animate-in slide-in-from-right-10 duration-500">
+               <div className="bg-blue-600 p-10 rounded-3xl text-white shadow-xl relative overflow-hidden">
+                  <div className="absolute right-0 bottom-0 text-white/5 text-9xl">🚙</div>
+                  <div className="space-y-2">
+                     <h2 className="text-3xl font-black uppercase tracking-tighter">Operative Deployment</h2>
+                     <p className="text-xs font-bold opacity-70 uppercase tracking-widest">National logistic control of Squads in Field.</p>
+                  </div>
+                  <div className="flex space-x-4">
+                     <div className="bg-white/10 px-6 py-3 rounded-2xl border border-white/20 text-center">
+                        <p className="text-[9px] font-black uppercase">En Route</p>
+                        <p className="text-2xl font-black">{dashboardStats.squads}</p>
+                     </div>
+                  </div>
+               </div>
+               <div className="grid grid-cols-3 gap-6">
+                  {squads.length > 0 ? squads.map(squad => (
+                    <div key={squad.id} className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 group hover:border-blue-200 transition-all">
+                       <div className="flex justify-between items-start mb-4">
+                          <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">🚙</div>
+                          <span className="text-[10px] font-black text-green-500 uppercase tracking-widest">Operative</span>
+                       </div>
+                       <h3 className="text-lg font-black text-slate-800 uppercase tracking-tighter mb-1">{squad.name}</h3>
+                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-6">Sector: {squad.zone || 'National'}</p>
+                       <div className="flex -space-x-3 overflow-hidden">
+                          {squad.technicians?.map((t: any) => (
+                            <img key={t.id} className="inline-block h-8 w-8 rounded-full ring-4 ring-white" src={t.photoUrl || `https://i.pravatar.cc/300?u=${t.documentId}`} alt="Staff" />
+                          ))}
+                          <div className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-50 ring-4 ring-white text-[9px] font-black text-slate-400">+{(squad.technicians?.length || 0) > 3 ? (squad.technicians?.length || 0) - 3 : 0}</div>
+                       </div>
+                    </div>
+                  )) : (
+                     <div className="col-span-3 py-20 text-center opacity-30 italic uppercase text-[11px] font-black tracking-widest">No active squads assigned to this territory</div>
+                  )}
+               </div>
+            </div>
+          )}
+        </div>
+        
+        <footer className="h-12 flex-shrink-0 px-10 bg-white border-t border-slate-100 flex justify-between items-center text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] z-20">
+           <span>Fibex Telecom • Central Control Console v2.8</span>
+           <span>Global Timezone: {selectedCountry === 'PE' ? 'PET (UTC-5)' : 'AST (UTC-4)'}</span>
+        </footer>
+
+        {previewData && (
+           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
+              <div className="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] border border-slate-100">
+                 <div className="p-10 bg-slate-900 text-white flex justify-between items-center">
+                    <div className="space-y-1">
+                       <h3 className="text-2xl font-black uppercase tracking-tighter">Data Ingestion Preview</h3>
+                       <p className="text-[10px] font-bold opacity-50 uppercase tracking-widest italic">Destination Scope: {selectedCountry === 'ALL' ? 'NATIONAL (GLOBAL)' : `${countries.find(p => p.code === selectedCountry)?.name || selectedCountry}`}</p>
+                    </div>
+                    <div className="bg-blue-600 px-6 py-2 rounded-xl">
+                       <span className="text-xl font-black">{previewData.length}</span>
+                       <span className="text-[9px] font-black uppercase ml-2 opacity-70">Detected</span>
+                    </div>
+                 </div>
+                 <div className="flex-grow overflow-y-auto p-10 custom-scrollbar">
+                    <table className="w-full text-left">
+                       <thead>
+                          <tr className="border-b border-slate-100">
+                             <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Staff</th>
+                             <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">ID</th>
+                             <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Role</th>
+                             <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Region</th>
+                          </tr>
+                       </thead>
+                       <tbody className="divide-y divide-slate-50">
+                          {previewData.map((row, i) => (
+                             <tr key={i} className="group hover:bg-slate-50 transition-colors">
+                                <td className="py-4 text-xs font-black text-slate-800 uppercase">{row.name}</td>
+                                <td className="py-4 text-xs font-mono font-bold text-slate-400">{row.documentId}</td>
+                                <td className="py-4 text-[10px] font-black text-blue-600 uppercase italic">{row.role}</td>
+                                <td className="py-4 text-[10px] font-black text-slate-400 text-right uppercase tracking-widest">{row.country}</td>
+                             </tr>
+                          ))}
+                       </tbody>
+                    </table>
+                 </div>
+                 <div className="p-10 bg-slate-50 border-t border-slate-100 flex justify-end space-x-4">
+                    <button onClick={() => { setPreviewData(null); setPendingFile(null); }} className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-all">Cancel</button>
+                    <button onClick={async () => {
+                          if (!pendingFile) return;
+                          try {
+                             setLoading(true);
+                             await apiService.uploadExcel(pendingFile, selectedCountry);
+                             setNotification({ type: 'success', message: 'Bulk Ingestion Completed' });
+                             setPreviewData(null);
+                             setPendingFile(null);
+                             fetchModuleData();
+                          } catch (err: any) {
+                             setNotification({ type: 'error', message: `Critical Error: ${err.message}` });
+                          } finally {
+                             setLoading(false);
+                          }
+                       }} className="px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-200 transition-all active:scale-95">Confirm Upload</button>
+                 </div>
+              </div>
+           </div>
+        )}
+
+         {showDeptModal && (
+            <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[110] flex items-center justify-center p-6 animate-in zoom-in-95 duration-200">
+               <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 space-y-8 border border-white/20">
+                  <div className="text-center space-y-2">
+                     <span className="text-4xl">🏢</span>
+                     <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter italic">New Department</h3>
+                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Define official operational unit</p>
+                  </div>
+                  <div className="space-y-4">
+                     <div className="space-y-1">
+                        <label className="text-[9px] font-black text-slate-400 uppercase ml-1">Official Name</label>
+                        <input value={newDeptName} onChange={(e) => setNewDeptName(e.target.value)} placeholder="Ex: Core, O&M, Support..." className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-500 transition-all outline-none" autoFocus />
+                     </div>
+                  </div>
+                  <div className="flex flex-col space-y-3 pt-4">
+                     <button onClick={async () => {
+                           if (!newDeptName) return;
+                           try {
+                              setLoading(true);
+                              await apiService.createDepartment({ name: newDeptName });
+                              setShowDeptModal(false);
+                              setNewDeptName('');
+                              fetchModuleData();
+                           } catch (e) {
+                                 setNotification({ type: 'error', message: 'Registration failed' });
+                           } finally {
+                              setLoading(false);
+                           }
+                        }} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] uppercase tracking-widest py-5 rounded-2xl shadow-xl shadow-blue-200 transition-all active:scale-95">Confirm Creation</button>
+                     <button onClick={() => { setShowDeptModal(false); setNewDeptName(''); }} className="w-full text-[10px] font-black text-slate-400 uppercase tracking-widest py-2 hover:text-slate-600 transition-all">Cancel</button>
+                  </div>
+               </div>
+            </div>
+         )}
+
+         {notification && (
+            <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] animate-in slide-in-from-bottom-5 fade-in duration-300">
+               <div className={`flex items-center space-x-4 px-8 py-5 rounded-3xl shadow-2xl backdrop-blur-xl border ${notification.type === 'success' ? 'bg-green-500/90 border-green-400 text-white' : ''} ${notification.type === 'error' ? 'bg-red-500/90 border-red-400 text-white' : ''} ${notification.type === 'warning' ? 'bg-amber-500/90 border-amber-400 text-white' : ''}`}>
+                  <span className="text-xl">
+                     {notification.type === 'success' && '✅'}
+                     {notification.type === 'error' && '❌'}
+                     {notification.type === 'warning' && '⚠️'}
+                  </span>
+                  <div className="flex flex-col">
+                     <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 m-0 leading-none mb-1">System Notification</p>
+                     <p className="text-xs font-black uppercase tracking-tight m-0">{notification.message}</p>
+                  </div>
+                  <button onClick={() => setNotification(null)} className="ml-4 w-6 h-6 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 text-xs transition-all">✕</button>
+               </div>
+            </div>
+         )}
+      </main>
+    </div>
+  );
+};
+
+export default AdminPanel;

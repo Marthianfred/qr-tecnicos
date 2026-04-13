@@ -94,12 +94,12 @@ async function request(url: string, options: any = {}): Promise<any> {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
     window.location.reload(); // Force app to go back to login
-    throw new Error('Session expired');
+    throw new Error('Sesión expirada');
   }
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Request failed' }));
-    throw new Error(error.message || 'Request failed');
+    const error = await response.json().catch(() => ({ message: 'La petición al servidor ha fallado' }));
+    throw new Error(error.message || 'Error en la comunicación con el servidor');
   }
 
   return response.json();

@@ -32,7 +32,7 @@ COPY --from=build /app/dist ./dist
 RUN mkdir -p /app/uploads
 
 # Expose the application port
-EXPOSE 3000
+EXPOSE 3200
 
 # Set environment variables
 ENV NODE_ENV=production

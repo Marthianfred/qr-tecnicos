@@ -526,10 +526,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           {activeModule === 'qr-security' && (
             <div className="max-w-4xl mx-auto space-y-10 py-10">
                <div className="bg-white p-10 rounded-3xl shadow-sm border border-slate-100 space-y-8">
-                  <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter italic">Protocolo TrustLayer Security</h3>
+                  <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter italic">Protocolo de Validación Fibex</h3>
                   <div className="grid grid-cols-2 gap-8">
                      <div className="space-y-4">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Expiración de QR (TTL)</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tiempo de Vida del QR (Validez)</label>
                         <select className="w-full bg-slate-50 border border-slate-200 p-4 rounded-xl text-xs font-black uppercase">
                            <option>15 Minutos</option>
                            <option>30 Minutos</option>

@@ -161,33 +161,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-3">MÓDULO:</span>
                    <span className="text-[11px] font-black text-blue-700 uppercase tracking-widest">{menuItems.find(m => m.id === activeModule)?.label}</span>
                 </div>
-                
-                {/* Botón de Ingesta Masiva */}
-                <label className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg cursor-pointer transition-all shadow-sm active:scale-95">
-                   <span className="text-sm">📥</span>
-                   <span className="text-[10px] font-black uppercase tracking-wider">Cargar Personal (Excel)</span>
-                   <input 
-                     type="file" 
-                     className="hidden" 
-                     accept=".csv,.xlsx"
-                     onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
-                        
-                         try {
-                            setLoading(true);
-                            const result = await apiService.previewExcel(file, selectedCountry);
-                            setPreviewData(result.preview);
-                            setPendingFile(file);
-                            e.target.value = "";
-                         } catch (err: any) {
-                            alert(`❌ Error: ${err.message || "Error en el procesamiento del archivo"}`);
-                         } finally {
-                            setLoading(false);
-                         }
-                     }}
-                   />
-                </label>
              </div>
              
                          {user.paisScope ? (
@@ -343,6 +316,30 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                      <p className="text-xs text-slate-400">Control de identidad, cargos y fotos oficiales de alta resolución.</p>
                   </div>
                   <div className="flex space-x-3">
+                      <label className="flex items-center space-x-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 px-6 py-3 rounded-xl cursor-pointer transition-all shadow-sm active:scale-95">
+                         <span className="text-sm">📥</span>
+                         <span className="text-[10px] font-black uppercase tracking-wider">Cargar Excel</span>
+                         <input 
+                           type="file" 
+                           className="hidden" 
+                           accept=".csv,.xlsx"
+                           onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              setLoading(true);
+                              try {
+                                 const result = await apiService.previewExcel(file, selectedCountry);
+                                 setPreviewData(result.preview);
+                                 setPendingFile(file);
+                                 e.target.value = '';
+                              } catch (err: any) {
+                                 alert(`❌ Error: ${err.message || 'Error en la lectura'}`);
+                              } finally {
+                                 setLoading(false);
+                              }
+                           }}
+                         />
+                      </label>
                      <button className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all">Exportar Reporte</button>
                   </div>
                </div>

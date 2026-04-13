@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from '../../entities/product.entity';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
+import { AuthModule } from "../auth/auth.module";
 import { InventoryModule } from '../inventory/inventory.module';
 import { PricingModule } from '../pricing/pricing.module';
 
@@ -10,7 +11,7 @@ import { PricingModule } from '../pricing/pricing.module';
   imports: [
     TypeOrmModule.forFeature([Product]),
     InventoryModule,
-    PricingModule,
+    PricingModule, AuthModule,
   ],
   providers: [ProductsService],
   controllers: [ProductsController],

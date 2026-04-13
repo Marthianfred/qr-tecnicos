@@ -9,6 +9,8 @@ import { User, UserRole } from '../../entities/user.entity';
 import { Cuadrilla } from '../../entities/cuadrilla.entity';
 import { Tecnico, TecnicoStatus, TipoPersonal } from '../../entities/tecnico.entity';
 import { Certificacion, NivelCertificacion } from '../../entities/certificacion.entity';
+import { DepartamentosService } from '../departamentos/departamentos.service';
+import { Departamento } from '../../entities/departamento.entity';
 
 @Injectable()
 export class EtlService {
@@ -25,6 +27,7 @@ export class EtlService {
     private tecnicoRepository: Repository<Tecnico>,
     @InjectRepository(Certificacion)
     private certificacionRepository: Repository<Certificacion>,
+    private departamentosService: DepartamentosService,
   ) {}
 
   async processCsv(filePath: string, paisScope?: string, skipRows: number = 3, dryRun: boolean = false) {
@@ -164,6 +167,7 @@ export class EtlService {
       const statusExcel = parts[18]?.trim(); // Columna "PERSONAL" (ACTIVO/INACTIVO)
       
       const paisFinal = paisScope || (documento?.startsWith('V') ? 'VE' : (documento?.length === 11 ? 'RD' : 'PE'));
+      const departamentoNombre = parts[5]?.trim() || 'General';
       const statusFinal = statusExcel === 'INACTIVO' ? TecnicoStatus.INACTIVO : TecnicoStatus.ACTIVO;
 
       if (dryRun) {
@@ -173,7 +177,8 @@ export class EtlService {
           cargo,
           pais: paisFinal,
           zona: zonaExcel,
-          empresa: parts[0]?.trim() || 'Fibex'
+          empresa: parts[0]?.trim() || 'Fibex',
+          departamento: departamentoNombre
         });
         continue;
       }
@@ -188,6 +193,10 @@ export class EtlService {
       const integral = parts[12]?.trim();
       const premium = parts[14]?.trim();
 
+      // Resolver Departamento relacional
+      await this.departamentosService.ensureDefaultDepartments([departamentoNombre]);
+      const departamentoObj = await this.departamentosService.findByNombre(departamentoNombre);
+
       // En un flujo real, aquí buscaríamos la cuadrilla si es necesario
       let tecnico = await this.tecnicoRepository.findOneBy({ documento });
       if (!tecnico) {
@@ -199,9 +208,10 @@ export class EtlService {
           pais: paisFinal,
           zona: zonaExcel,
           status: statusFinal,
+          departamento: departamentoObj,
         });
         tecnico = await this.tecnicoRepository.save(tecnico);
-        this.logger.log(`Importado ${cargo}: ${nombre} (${tipoPers}) en Zona: ${tecnico.zona}`);
+        this.logger.log(`Importado ${cargo}: ${nombre} (${tipoPers}) en Departamento: ${departamentoNombre}`);
       }
 
         const certsToLoad = [

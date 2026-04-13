@@ -16,6 +16,7 @@ export interface Technician {
   certificaciones?: any[];
   fotoUrl?: string;
   cuadrillaId?: string;
+  departamento?: { id: string, nombre: string };
 }
 
 export interface Pais {
@@ -283,6 +284,31 @@ export const apiService = {
 
   async deletePais(id: string): Promise<any> {
     return request(`${API_BASE_URL}/paises/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Gestión de Departamentos (CRUD)
+  async getDepartamentos(): Promise<any[]> {
+    return request(`${API_BASE_URL}/departamentos`);
+  },
+
+  async createDepartamento(data: any): Promise<any> {
+    return request(`${API_BASE_URL}/departamentos`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async updateDepartamento(id: string, data: any): Promise<any> {
+    return request(`${API_BASE_URL}/departamentos/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async deleteDepartamento(id: string): Promise<any> {
+    return request(`${API_BASE_URL}/departamentos/${id}`, {
       method: 'DELETE',
     });
   },

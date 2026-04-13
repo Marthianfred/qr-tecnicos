@@ -13,9 +13,11 @@ import { RedisModule } from './common/redis/redis.module';
 import { SeedModule } from './modules/seed/seed.module';
 import { EtlModule } from './modules/etl/etl.module';
 import { PaisesModule } from './modules/paises/paises.module';
+import { DepartamentosModule } from './modules/departamentos/departamentos.module';
 import { KeycloakIAMService } from './services/iam.service';
 import { Tecnico } from './entities/tecnico.entity';
 import { Cuadrilla } from './entities/cuadrilla.entity';
+import { Departamento } from './entities/departamento.entity';
 import { Certificacion } from './entities/certificacion.entity';
 import { ReporteInconsistencia } from './entities/reporte-inconsistencia.entity';
 import { Producto } from './entities/producto.entity';
@@ -44,7 +46,7 @@ import { Pais } from './entities/pais.entity';
       username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'postgres',
       database: process.env.DB_NAME || 'fibex_qr',
-      entities: [Tecnico, Cuadrilla, Certificacion, ReporteInconsistencia, Producto, User, Empresa, Pais],
+      entities: [Tecnico, Cuadrilla, Departamento, Certificacion, ReporteInconsistencia, Producto, User, Empresa, Pais],
       synchronize: true, // Solo para desarrollo
       extra: {
         max: 20,
@@ -62,6 +64,7 @@ import { Pais } from './entities/pais.entity';
     InventoryModule,
     PricingModule,
     PaisesModule,
+    DepartamentosModule,
   ],
 })
 export class AppModule {}

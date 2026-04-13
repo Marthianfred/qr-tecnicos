@@ -9,11 +9,13 @@ import { Tecnico } from '../../entities/tecnico.entity';
 import { Certificacion } from '../../entities/certificacion.entity';
 
 import { AuthModule } from '../auth/auth.module';
+import { DepartamentosModule } from '../departamentos/departamentos.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Empresa, User, Cuadrilla, Tecnico, Certificacion]),
     AuthModule,
+    DepartamentosModule,
   ],
   controllers: [EtlController],
   providers: [EtlService],

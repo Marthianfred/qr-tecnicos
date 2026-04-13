@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { Certificacion } from './certificacion.entity';
 import { Cuadrilla } from './cuadrilla.entity';
+import { Departamento } from './departamento.entity';
 
 export enum TipoPersonal {
   CORPORATIVO = 'corporativo',
@@ -56,4 +57,11 @@ export class Tecnico {
   @ManyToOne(() => Cuadrilla, (cuadrilla) => cuadrilla.tecnicos, { nullable: true })
   @JoinColumn({ name: 'cuadrillaId' })
   cuadrilla!: Cuadrilla;
+
+  @Column({ nullable: true })
+  departamentoId!: string;
+
+  @ManyToOne(() => Departamento, (dep) => dep.tecnicos, { nullable: true })
+  @JoinColumn({ name: 'departamentoId' })
+  departamento!: Departamento;
 }

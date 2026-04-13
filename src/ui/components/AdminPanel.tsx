@@ -4,6 +4,7 @@ import { apiService, Technician, Cuadrilla } from '../services/api';
 type AdminModule = 
   | 'dashboard' 
   | 'companies' 
+  | 'departamentos'
   | 'personnel' 
   | 'certifications' 
   | 'operations' 
@@ -23,6 +24,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const [loading, setLoading] = useState(false);
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [squads, setSquads] = useState<Cuadrilla[]>([]);
+  const [departamentos, setDepartamentos] = useState<any[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
   const [countries, setCountries] = useState<any[]>([]);
   const [dashboardStats, setDashboardStats] = useState({ technicians: 0, activeQrs: 0, alerts: 0, recentReports: [] as any[], squads: 0 });
@@ -78,6 +80,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
           const filteredSquads = selectedCountry === 'TODOS' ? squadsData : squadsData.filter(s => s.nombre.includes(selectedCountry));
           setSquads(filteredSquads);
           break;
+        case 'departamentos':
+          const depts = await apiService.getDepartamentos();
+          setDepartamentos(depts);
+          break;
         case 'countries':
           const freshCountries = await apiService.getPaises();
           setCountries(freshCountries);
@@ -96,6 +102,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const menuItems = [
     { id: 'dashboard', label: 'Panel Operativo', icon: '📊', description: 'Resumen Tres Países' },
     { id: 'companies', label: 'Gestión Corporativa', icon: '🏢', description: 'Empresas y Aliados' },
+    { id: 'departamentos', label: 'Departamentos', icon: '🏢', description: 'Áreas Operativas' },
     { id: 'personnel', label: 'Gestión de Personal', icon: '👥', description: 'Recursos Humanos' },
     { id: 'certifications', label: 'Historial Académico', icon: '🎓', description: 'Niveles Técnicos' },
     { id: 'operations', label: 'Cuadrillas y Campo', icon: '🚙', description: 'Despliegue Logístico' },
@@ -370,7 +377,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                                     </div>
                                     <div>
                                        <p className="text-[12px] font-black text-slate-800 uppercase whitespace-nowrap">{tech.nombre}</p>
-                                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Especialista III • Fibex</p>
+                                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
+                                          {tech.cargo || 'Especialista'} • {tech.departamento?.nombre || 'General'}
+                                       </p>
                                     </div>
                                  </div>
                               </td>
@@ -490,6 +499,88 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         )}
                      </tbody>
                   </table>
+               </div>
+            </div>
+          )}
+          {activeModule === 'departamentos' && (
+            <div className="max-w-7xl mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+               <div className="flex justify-between items-center bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                  <div className="space-y-1">
+                     <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter italic">Estructura Organizativa</h2>
+                     <p className="text-xs text-slate-400 uppercase tracking-widest font-bold">Gestión de Departamentos y Áreas Operativas</p>
+                  </div>
+                  <button 
+                     onClick={async () => {
+                        const nombre = prompt('Nombre del nuevo departamento:');
+                        if (!nombre) return;
+                        try {
+                           await apiService.createDepartamento({ nombre });
+                           fetchModuleData();
+                        } catch (e) { alert('Error al crear departamento'); }
+                     }}
+                     className="px-8 py-4 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-200 hover:scale-105 transition-all"
+                  >
+                     + Crear Nueva Área
+                  </button>
+               </div>
+
+               <div className="grid grid-cols-1 gap-4">
+                  <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                     <table className="w-full text-left border-collapse">
+                        <thead>
+                           <tr className="bg-slate-50 border-b border-slate-100">
+                               <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Departamento</th>
+                               <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Personal Asignado</th>
+                               <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Estatus</th>
+                               <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Acciones</th>
+                           </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                           {departamentos.length > 0 ? departamentos.map(dept => (
+                              <tr key={dept.id} className="hover:bg-slate-50 transition-colors group">
+                                 <td className="px-8 py-6">
+                                    <div className="flex items-center space-x-4">
+                                       <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-xs uppercase">
+                                          {dept.nombre.substring(0,2)}
+                                       </div>
+                                       <div>
+                                          <p className="text-[13px] font-black text-slate-800 uppercase tracking-tight">{dept.nombre}</p>
+                                          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Fibex Operaciones</p>
+                                       </div>
+                                    </div>
+                                 </td>
+                                 <td className="px-8 py-6">
+                                    <span className="text-[11px] font-black text-slate-600 bg-slate-100 px-3 py-1 rounded-full">{dept.tecnicos?.length || 0} Especialistas</span>
+                                 </td>
+                                 <td className="px-8 py-6">
+                                    <span className="text-[9px] font-black text-green-600 uppercase tracking-widest">Activo</span>
+                                 </td>
+                                 <td className="px-8 py-6 text-right">
+                                    <div className="flex items-center justify-end space-x-3">
+                                       <button 
+                                          onClick={async () => {
+                                             if (confirm(`¿Eliminar área ${dept.nombre}?`)) {
+                                                try {
+                                                   await apiService.deleteDepartamento(dept.id);
+                                                   fetchModuleData();
+                                                } catch (e) { alert('No se puede eliminar (existen técnicos asociados)'); }
+                                             }
+                                          }}
+                                          className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-all border border-transparent hover:border-red-100"
+                                       >
+                                          🗑️
+                                       </button>
+                                    </div>
+                                 </td>
+                              </tr>
+                           )) : (
+                              <tr>
+                                 <td colSpan={4} className="px-8 py-20 text-center opacity-30 italic uppercase text-[11px] font-black tracking-widest">No hay áreas configuradas</td>
+                              </tr>
+                           )}
+                        </tbody>
+                     </table>
+                  </div>
                </div>
             </div>
           )}

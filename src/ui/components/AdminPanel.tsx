@@ -593,6 +593,86 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
            <span>Zona Horaria Global: {selectedCountry === 'PE' ? 'PET (UTC-5)' : 'AST (UTC-4)'}</span>
         </footer>
       </main>
+
+      {/* MODAL SISTEMA: CREACIÓN DE DEPARTAMENTO */}
+      {showDeptModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
+           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-md" onClick={() => setShowDeptModal(false)}></div>
+           <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden border border-white/20 animate-in zoom-in-95 duration-300">
+              <header className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                 <div>
+                    <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter italic">Nuevo Nodo Organizativo</h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Definición de Departamento Fibex</p>
+                 </div>
+                 <button onClick={() => setShowDeptModal(false)} className="text-2xl opacity-30 hover:opacity-100 transition-opacity">✕</button>
+              </header>
+              
+              <div className="p-10 space-y-8">
+                 <div className="space-y-3">
+                    <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest">Nombre del Departamento</label>
+                    <input 
+                       autoFocus
+                       value={newDeptName}
+                       onChange={(e) => setNewDeptName(e.target.value)}
+                       placeholder="Ej: OPERACIONES RED" 
+                       className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none"
+                    />
+                 </div>
+
+                 <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                    <div className="flex items-center space-x-3 text-blue-700">
+                       <span className="text-sm">ℹ️</span>
+                       <p className="text-[9px] font-black uppercase tracking-widest">Esta unidad organizativa será visible para el despacho de cuadrillas de {selectedCountry === 'ALL' ? 'todas las zonas' : selectedCountry}.</p>
+                    </div>
+                 </div>
+
+                 <div className="flex space-x-4 pt-4">
+                    <button 
+                       onClick={() => setShowDeptModal(false)}
+                       className="flex-grow py-4 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
+                    >
+                       Cancelar
+                    </button>
+                    <button 
+                       disabled={!newDeptName || loading}
+                       onClick={async () => {
+                          try {
+                             setLoading(true);
+                             await apiService.createDepartment({ name: newDeptName.toUpperCase() });
+                             setNotification({ type: 'success', message: 'Departamento creado exitosamente' });
+                             setShowDeptModal(false);
+                             setNewDeptName('');
+                             fetchModuleData();
+                          } catch (err: any) {
+                             setNotification({ type: 'error', message: err.message || 'Error al crear' });
+                          } finally {
+                             setLoading(false);
+                          }
+                       }}
+                       className="flex-grow py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-xl shadow-blue-200 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 disabled:opacity-30"
+                    >
+                       {loading ? 'Procesando...' : 'Guardar Nodo'}
+                    </button>
+                 </div>
+              </div>
+           </div>
+        </div>
+      )}
+
+      {/* NOTIFICACIONES DE SISTEMA */}
+      {notification && (
+        <div className={`fixed bottom-10 right-10 z-[110] px-8 py-4 rounded-2xl shadow-2xl border-l-[6px] animate-in slide-in-from-right-10 duration-500 ${
+           notification.type === 'success' ? 'bg-white border-green-500 text-slate-900' : 'bg-white border-red-500 text-slate-900'
+        }`}>
+           <div className="flex items-center space-x-4">
+              <span className="text-xl">{notification.type === 'success' ? '✅' : '❌'}</span>
+              <div>
+                 <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">{notification.type === 'success' ? 'Operación Exitosa' : 'Fallo de Sistema'}</p>
+                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">{notification.message}</p>
+              </div>
+           </div>
+        </div>
+      )}
     </div>
   );
 };

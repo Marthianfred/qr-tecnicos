@@ -13,12 +13,11 @@ RUN npm install
 COPY . .
 
 # Build the application
-# build:client handles frontend (Vite), build:server handles backend (tsc)
-# Note: src/ui is now excluded from tsc in tsconfig.json
 RUN npm run build
 
 # Stage 2: Production
-FROM node:20-slim
+# Using full node:20 instead of slim to ensure native modules like bcrypt find all system libs
+FROM node:20
 
 WORKDIR /app
 
@@ -26,10 +25,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --omit=dev --ignore-scripts
 
-# Copy built files from build stage
+# Copy built files
 COPY --from=build /app/dist ./dist
 
-# Create uploads directory
+# Create uploads directory (ensure it's not deleted by ETL)
 RUN mkdir -p /app/uploads
 
 # Expose the application port
@@ -38,5 +37,5 @@ EXPOSE 3000
 # Set environment variables
 ENV NODE_ENV=production
 
-# We find main.js specifically in the root of dist to avoid running any UI artifacts
-CMD ["sh", "-c", "MAIN_FILE=$(find dist -maxdepth 1 -name main.js | head -n 1) && node $MAIN_FILE"]
+# Direct entry point since we fixed tsconfig to prevent nesting
+CMD ["node", "dist/main.js"]

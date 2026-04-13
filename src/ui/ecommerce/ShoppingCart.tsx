@@ -1,188 +1,81 @@
-import React, { useState } from 'react';
-import { Product } from '../../data/mockData';
-import { apiService } from '../services/api';
+import React from 'react';
 
 interface ShoppingCartProps {
-  readonly items: { product: Product, quantity: number }[];
-  readonly onUpdateQuantity: (productId: string, delta: number) => void;
-  readonly onRemove: (productId: string) => void;
-  readonly onBack: () => void;
-  readonly onOrderComplete: () => void;
+  readonly items: any[];
+  readonly onRemove: (id: string) => void;
+  readonly onCheckout: () => void;
 }
 
-export const ShoppingCart: React.FC<ShoppingCartProps> = ({ 
-  items, 
-  onUpdateQuantity, 
-  onRemove, 
-  onBack,
-  onOrderComplete 
-}) => {
-  const [processing, setProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const subtotal = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-  const tax = subtotal * 0.16; 
-  const total = subtotal + tax;
-
-  const handleCheckout = async () => {
-    if (items.length === 0) return;
-    
-    setProcessing(true);
-    setError(null);
-    
-    try {
-      const order = {
-        items: items.map(i => ({ id: i.product.id, quantity: i.quantity })),
-        total,
-        timestamp: new Date().toISOString()
-      };
-      
-      await apiService.createOrder(order);
-      setProcessing(false);
-      onOrderComplete();
-    } catch (err) {
-      console.error('Checkout failed:', err);
-      setError('Ocurrió un error de transmisión. Por favor, vuelva a autenticar su solicitud.');
-      setProcessing(false);
-    }
-  };
+const ShoppingCart: React.FC<ShoppingCartProps> = ({ items, onRemove, onCheckout }) => {
+  const total = items.reduce((acc, item) => acc + item.price, 0);
 
   return (
-    <div className="bg-surface min-h-screen font-sans text-on_surface p-10">
-      <div className="max-w-5xl mx-auto space-y-12">
-        <button 
-          onClick={onBack}
-          className="flex items-center text-primary font-display font-extrabold text-[10px] uppercase tracking-[0.2em] hover:opacity-70 transition-all no-border group"
-        >
-          <svg xmlns="http:
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-          </svg>
-          Volver al Aprovisionamiento
-        </button>
+    <div className="bg-white rounded-[3rem] shadow-2xl p-10 border border-slate-100 flex flex-col h-full animate-in slide-in-from-right-10 duration-500">
+      <div className="flex items-center justify-between mb-10 pb-6 border-b border-slate-50">
+        <div>
+           <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter italic">Order Summary</h3>
+           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Acquisition Protocol v5.0</p>
+        </div>
+        <span className="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">{items.length} Units</span>
+      </div>
 
-        <div className="space-y-1">
-           <h1 className="text-4xl font-display font-extrabold text-on_surface uppercase tracking-tighter">Bóveda de Transacciones</h1>
-           <p className="text-[10px] font-bold opacity-30 uppercase tracking-[0.3em]">Artículos autorizados pendientes de aprobación final</p>
+      <div className="flex-grow overflow-y-auto space-y-6 custom-scrollbar pr-2 mb-10">
+        {items.length > 0 ? items.map((item, index) => (
+          <div key={index} className="flex items-center justify-between p-5 bg-slate-50 rounded-[2rem] border border-slate-100 group hover:bg-white hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center space-x-4">
+              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-xl shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-colors">📦</div>
+              <div>
+                <h4 className="text-[13px] font-black text-slate-800 uppercase tracking-tight">{item.name}</h4>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Global Sourcing • SKU-{item.id.substring(0,4)}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-6">
+               <span className="text-sm font-black text-slate-900 italic">${item.price.toFixed(2)}</span>
+               <button 
+                 onClick={() => onRemove(item.id)}
+                 className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-all border border-transparent hover:border-red-100"
+               >
+                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                 </svg>
+               </button>
+            </div>
+          </div>
+        )) : (
+          <div className="h-full flex flex-col items-center justify-center text-center opacity-30 space-y-4 py-20">
+             <div className="text-6xl grayscale opacity-50 mb-4 animate-bounce">🛒</div>
+             <p className="text-[11px] font-black uppercase tracking-[0.4em] italic leading-loose">Cart is currently empty.<br/>Please add assets from the marketplace.</p>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-auto space-y-6 pt-8 border-t border-slate-100">
+        <div className="space-y-3">
+           <div className="flex justify-between items-center text-slate-400 font-bold px-2">
+              <span className="text-[10px] uppercase tracking-widest">Net Value</span>
+              <span className="text-sm tracking-tight">${total.toFixed(2)}</span>
+           </div>
+           <div className="flex justify-between items-center text-slate-400 font-bold px-2">
+              <span className="text-[10px] uppercase tracking-widest">Processing Fee</span>
+              <span className="text-sm tracking-tight">$0.00</span>
+           </div>
+           <div className="flex justify-between items-center bg-slate-900 text-white p-6 rounded-[2rem] shadow-2xl">
+              <span className="text-[11px] font-black uppercase tracking-[0.3em] opacity-60 m-0">Consolidated Total</span>
+              <span className="text-3xl font-black italic m-0">${total.toFixed(2)}</span>
+           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {}
-          <div className="lg:col-span-2 space-y-6">
-            {items.length === 0 ? (
-              <div className="bg-surface_container_lowest p-20 rounded-lg text-center shadow-ambient no-border space-y-6">
-                <div className="bg-surface_container_high w-16 h-16 rounded-full flex items-center justify-center mx-auto opacity-20">
-                   <svg xmlns="http:
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                </div>
-                <p className="text-[10px] font-display font-extrabold opacity-30 uppercase tracking-[0.3em]">La bóveda está vacía actualmente</p>
-                <button 
-                  onClick={onBack}
-                  className="text-primary font-display font-extrabold text-[10px] uppercase tracking-widest underline decoration-2 underline-offset-4"
-                >
-                  Localizar Activos
-                </button>
-              </div>
-            ) : (
-              items.map((item) => (
-                <div key={item.product.id} className="bg-surface_container_lowest p-6 rounded-lg shadow-ambient no-border flex items-center gap-6 group hover:bg-surface_container_low transition-colors">
-                  <div className="w-24 h-24 overflow-hidden rounded-sm bg-surface_container_high">
-                     <img 
-                      src={item.product.image} 
-                      alt={item.product.name} 
-                      className="w-full h-full object-cover opacity-90"
-                    />
-                  </div>
-                  <div className="flex-grow space-y-1">
-                    <div className="flex justify-between items-start">
-                       <h3 className="font-display font-extrabold text-on_surface uppercase tracking-tight text-sm leading-tight">{item.product.name}</h3>
-                       <button 
-                        onClick={() => onRemove(item.product.id)}
-                        className="text-error opacity-20 hover:opacity-100 transition-opacity p-1"
-                      >
-                        <svg xmlns="http:
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
-                    <p className="text-[9px] font-bold opacity-30 uppercase tracking-widest">{item.product.category}</p>
-                    
-                    <div className="mt-4 flex items-center justify-between pt-2">
-                      <div className="flex items-center bg-surface_container_highest rounded-sm no-border overflow-hidden">
-                        <button 
-                          onClick={() => onUpdateQuantity(item.product.id, -1)}
-                          className="px-3 py-1 text-primary hover:bg-primary hover:text-white transition-colors"
-                        >-</button>
-                        <span className="px-4 py-1 font-display font-extrabold text-[10px] text-on_surface tracking-widest">{item.quantity.toString().padStart(2, '0')}</span>
-                        <button 
-                          onClick={() => onUpdateQuantity(item.product.id, 1)}
-                          className="px-3 py-1 text-primary hover:bg-primary hover:text-white transition-colors"
-                        >+</button>
-                      </div>
-                      <span className="font-display font-extrabold text-primary tracking-tighter">
-                        ${(item.product.price * item.quantity).toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          {}
-          <div className="bg-surface_container_low p-8 rounded-lg shadow-ambient no-border h-fit space-y-10">
-            <div className="space-y-1">
-               <h2 className="text-xs font-display font-extrabold text-on_surface uppercase tracking-[0.2em]">Estado de Cuenta Soberano</h2>
-               <div className="h-px bg-on_surface/5"></div>
-            </div>
-            
-            <div className="space-y-6">
-              <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest opacity-40">
-                <span>Sub-Autorización</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest opacity-40">
-                <span>Tarifa de Protocolo (16%)</span>
-                <span>${tax.toFixed(2)}</span>
-              </div>
-              <div className="pt-6 border-t border-on_surface/5 flex justify-between items-end">
-                <span className="text-[10px] font-display font-extrabold uppercase tracking-[0.3em]">Magnitud Bruta</span>
-                <span className="text-3xl font-display font-extrabold text-primary tracking-tighter">${total.toFixed(2)}</span>
-              </div>
-            </div>
-
-            {error && (
-              <div className="p-4 bg-error/10 text-error text-[10px] font-display font-extrabold uppercase tracking-widest rounded-lg no-border animate-pulse">
-                {error}
-              </div>
-            )}
-
-            <button
-              onClick={handleCheckout}
-              disabled={items.length === 0 || processing}
-              className={`w-full py-5 rounded-lg text-white font-display font-extrabold text-xs uppercase tracking-[0.2em] shadow-lg transition-all flex items-center justify-center space-x-3 no-border ${
-                items.length === 0 || processing 
-                  ? 'bg-surface_container_highest text-on_surface/20 cursor-not-allowed' 
-                  : 'trust-gradient hover:opacity-90 active:scale-95'
-              }`}
-            >
-              {processing ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Transmitiendo...</span>
-                </>
-              ) : (
-                <span>Autorizar y Aprobar</span>
-              )}
-            </button>
-            
-            <div className="flex flex-col items-center space-y-4 pt-4">
-               <img src="/favicon.svg" alt="Trust" className="h-6 w-6 opacity-20 grayscale" />
-               <p className="text-[8px] text-center text-on_surface opacity-20 font-bold uppercase tracking-[0.4em]">
-                  Canal Encriptado v9.0 • Pasarela Segura GDA
-               </p>
-            </div>
-          </div>
+        <button 
+          onClick={onCheckout}
+          disabled={items.length === 0}
+          className={`w-full py-6 rounded-[2rem] font-black text-[12px] uppercase tracking-[0.3em] transition-all shadow-xl active:scale-95 ${items.length > 0 ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}
+        >
+          {items.length > 0 ? 'Initialize Secure Checkout' : 'Marketplace Locked'}
+        </button>
+        
+        <div className="flex items-center justify-center space-x-2 opacity-50">
+           <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+           <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest italic">100% Encrypted via TrustLayer Logic</p>
         </div>
       </div>
     </div>

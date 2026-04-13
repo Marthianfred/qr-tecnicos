@@ -1,196 +1,76 @@
-import React, { useEffect, useState } from 'react';
-import { apiService } from '../services/api';
-import { Product, MOCK_PRODUCTS } from '../../data/mockData';
+import React, { useState } from 'react';
+import { MOCK_PRODUCTS } from '../../data/mockData';
 
 interface ProductCatalogProps {
-  readonly onAddToCart: (product: Product) => void;
-  readonly onViewCart: () => void;
+  readonly onAddToCart: (product: any) => void;
 }
 
-export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onViewCart }) => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart }) => {
+  const [filter, setFilter] = useState('ALL');
 
-  const loadProducts = () => {
-    setLoading(true);
-    setError(null);
-    apiService.getProducts()
-      .then((data) => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.warn('API fetch failed, using mock data:', err);
-        setProducts(MOCK_PRODUCTS);
-        setLoading(false);
-        setError('Problemas de conexión detectados. Usando manifiesto local.');
-      });
-  };
-
-  useEffect(() => {
-    loadProducts();
-  }, []);
-
-  const categories = ['All', ...new Set(products.map(p => p.category))];
-
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-surface">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+  const filteredProducts = filter === 'ALL' 
+    ? MOCK_PRODUCTS 
+    : MOCK_PRODUCTS.filter(p => p.category.toUpperCase() === filter);
 
   return (
-    <div className="bg-surface min-h-screen font-sans text-on_surface">
-      {}
-      <header className="bg-surface_container_lowest p-8 shadow-ambient sticky top-0 z-10 flex justify-between items-center no-border">
-        <div className="flex items-center space-x-4">
-          <img src="/logo.webp" alt="Fibex Logo" className="h-12 w-auto" />
-          <div className="hidden sm:block h-8 w-px bg-on_surface/10"></div>
-          <div className="hidden sm:block">
-            <h1 className="text-xl font-display font-extrabold tracking-tight uppercase">Catálogo de <span className="text-primary">Servicios</span></h1>
-            <p className="text-[9px] font-bold opacity-30 uppercase tracking-[0.3em]">Portal de Provisiones Autorizado</p>
-          </div>
+    <div className="bg-slate-50 min-h-screen p-10 font-sans">
+      <header className="mb-12 flex justify-between items-end">
+        <div>
+           <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter italic">Technical Marketplace</h1>
+           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2 italic shadow-sm bg-white px-4 py-1 rounded-full w-fit">Authorized Fibex Equipment & Plans</p>
         </div>
-        <button 
-          onClick={onViewCart}
-          className="trust-gradient text-white px-6 py-3 rounded-lg font-display font-extrabold flex items-center space-x-3 shadow-lg hover:opacity-90 transition-all uppercase text-xs tracking-widest"
-        >
-          <svg xmlns="http:
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-          <span>Bóveda</span>
-        </button>
+        
+        <div className="flex bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100">
+           {['ALL', 'INTERNET', 'EQUIPMENT'].map(cat => (
+             <button
+               key={cat}
+               onClick={() => setFilter(cat)}
+               className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${filter === cat ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+             >
+               {cat}
+             </button>
+           ))}
+        </div>
       </header>
 
-      {}
-      <div className="max-w-7xl mx-auto p-8 bg-surface_container_low border-none space-y-6">
-        {error && (
-          <div className="p-4 bg-error/10 text-error rounded-lg flex justify-between items-center no-border animate-pulse">
-            <div className="flex items-center space-x-3">
-              <svg xmlns="http:
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">{error}</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {filteredProducts.map(product => (
+          <div key={product.id} className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden group hover:shadow-2xl hover:translate-y-[-8px] transition-all duration-500">
+            <div className="h-56 bg-slate-100 relative overflow-hidden">
+               <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+               <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[8px] font-black text-slate-900 uppercase tracking-widest shadow-lg">
+                  {product.category}
+               </div>
             </div>
-            <button 
-              onClick={loadProducts}
-              className="text-[10px] font-display font-extrabold uppercase tracking-widest underline"
-            >
-              Re-Establecer Conexión
-            </button>
+            
+            <div className="p-8 space-y-4">
+              <div className="space-y-1">
+                 <h3 className="text-xl font-black text-slate-800 uppercase tracking-tighter italic">{product.name}</h3>
+                 <p className="text-xs text-slate-400 leading-relaxed font-bold">{product.description}</p>
+              </div>
+              
+              <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                <div className="flex flex-col">
+                   <span className="text-[9px] font-black text-slate-300 uppercase italic">Investment</span>
+                   <span className="text-2xl font-black text-slate-900">${product.price.toFixed(2)}</span>
+                </div>
+                
+                <button 
+                  onClick={() => onAddToCart(product)}
+                  className="bg-slate-900 hover:bg-blue-600 text-white w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-xl active:scale-90 group/btn"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 group-hover/btn:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
-        )}
-        <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-          <div className="relative flex-grow">
-            <input 
-              type="text" 
-              placeholder="Buscar activos y protocolos de utilidad..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-6 py-4 bg-surface_container_highest text-on_surface rounded-lg focus:ring-1 ring-primary/20 outline-none no-border font-display font-extrabold uppercase tracking-widest text-[10px]"
-            />
-            <svg xmlns="http:
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-          <div className="flex bg-surface_container_highest p-1 rounded-sm no-border overflow-x-auto whitespace-nowrap">
-            {categories.map(category => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-sm text-[10px] font-display font-extrabold uppercase tracking-widest transition-all ${
-                  selectedCategory === category 
-                    ? 'trust-gradient text-white shadow-md' 
-                    : 'text-on_surface opacity-40 hover:opacity-100'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
 
-      {}
-      <main className="max-w-7xl mx-auto p-8">
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-32 space-y-6">
-            <div className="bg-surface_container_highest/30 w-24 h-24 rounded-full flex items-center justify-center mx-auto opacity-20">
-               <svg xmlns="http:
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-               </svg>
-            </div>
-            <h3 className="text-[10px] font-display font-extrabold opacity-30 uppercase tracking-[0.4em]">No hay registros en el alcance actual</h3>
-            <button 
-              onClick={() => { setSearchTerm(''); setSelectedCategory('All'); }}
-              className="text-[10px] font-display font-extrabold text-primary uppercase tracking-widest underline decoration-2 underline-offset-4"
-            >
-              Restablecer Protocolos
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
-            {filteredProducts.map((product) => (
-              <div key={product.id} className="bg-surface_container_lowest rounded-lg overflow-hidden shadow-ambient hover:scale-[1.02] transition-all no-border group flex flex-col">
-                <div className="relative overflow-hidden h-56 bg-surface_container_high">
-                   <img 
-                    src={product.image} 
-                    alt={product.name} 
-                    className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
-                  />
-                  <div className="absolute top-4 left-4">
-                     <span className="bg-surface_container_lowest/80 glassmorphism px-3 py-1 rounded-sm text-[9px] font-display font-extrabold text-primary uppercase tracking-widest no-border">
-                        {product.category}
-                     </span>
-                  </div>
-                </div>
-                <div className="p-6 flex-grow flex flex-col space-y-4">
-                  <div className="flex justify-between items-end">
-                    <h3 className="text-lg font-display font-extrabold text-on_surface uppercase tracking-tight leading-tight">{product.name}</h3>
-                    <div className="text-right">
-                       <span className="block text-[8px] font-bold opacity-30 uppercase tracking-widest">Rate</span>
-                       <span className="text-lg font-display font-extrabold text-primary tracking-tighter">
-                        ${product.price.toFixed(2)}
-                       </span>
-                    </div>
-                  </div>
-                  <p className="text-xs font-medium text-on_surface opacity-50 flex-grow tracking-tight leading-relaxed">
-                    {product.description}
-                  </p>
-                  <button
-                    onClick={() => onAddToCart(product)}
-                    className="w-full bg-surface_container_highest text-primary py-4 rounded-lg font-display font-extrabold text-[10px] uppercase tracking-[0.2em] hover:bg-primary hover:text-white transition-all active:scale-95 no-border shadow-sm flex items-center justify-center space-x-3"
-                  >
-                    <svg xmlns="http:
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    <span>Adquirir Activo</span>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </main>
-
-      {}
-      <footer className="p-12 mt-20 text-center space-y-4 bg-surface_container_low">
-         <div className="h-px bg-on_surface/5 max-w-xs mx-auto"></div>
-         <p className="text-on_surface opacity-10 font-display font-extrabold text-[8px] uppercase tracking-[0.5em]">
-            Digital Commerce Infrastructure • Triple Play Deployment v1.4
-         </p>
+      <footer className="mt-20 pt-10 border-t border-slate-200 text-center opacity-30">
+         <p className="text-[10px] font-black text-slate-900 uppercase tracking-[0.5em]">Fibex Global Logistics v5.0 Master</p>
       </footer>
     </div>
   );

@@ -1,141 +1,53 @@
-import React, { useState } from 'react';
-import { apiService } from '../services/api';
-import { INCONSISTENCY_REASONS } from '../../data/mockData';
+import React from 'react';
 
-interface InconsistencyReportProps {
-  readonly onCancel: () => void;
-  readonly onSubmit: (data: { reason: string; details: string }) => void;
-}
+const InconsistencyReport: React.FC = () => {
+    return (
+        <div className="min-h-screen bg-red-50 font-sans p-10 flex flex-col items-center">
+            <div className="w-full max-w-xl bg-white rounded-[3.5rem] shadow-2xl shadow-red-200/50 p-12 border border-red-100">
+                <header className="flex justify-between items-start mb-12">
+                   <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center text-white text-3xl shadow-xl shadow-red-200">🚨</div>
+                   <div className="text-right">
+                      <h1 className="text-2xl font-black uppercase tracking-tighter italic text-red-600">Reporte de Alerta</h1>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Protocolo de Seguridad Fibex</p>
+                   </div>
+                </header>
 
-export const InconsistencyReport: React.FC<InconsistencyReportProps> = ({ onCancel, onSubmit }) => {
-  const [selectedReason, setSelectedReason] = useState('');
-  const [details, setDetails] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+                <div className="space-y-10">
+                   <div className="p-8 bg-red-50 rounded-[2rem] border border-red-100 border-dashed">
+                      <p className="text-sm font-bold text-red-800 leading-relaxed italic">
+                         "Se ha detectado una discrepancia entre el personal asignado y el personal presente en sitio. Por favor reporte los detalles a continuación."
+                      </p>
+                   </div>
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedReason) return;
+                   <div className="space-y-6">
+                      <div className="space-y-2">
+                         <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest">Razón de la Inconsistencia</label>
+                         <select className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-xs font-black uppercase outline-none focus:ring-2 focus:ring-red-500 transition-all">
+                            <option>Foto no coincide con el rostro</option>
+                            <option>Técnico no cuenta con identificación</option>
+                            <option>Comportamiento sospechoso</option>
+                            <option>Vehículo no oficial</option>
+                         </select>
+                      </div>
 
-    setSubmitting(true);
-    setError(null);
+                      <div className="space-y-2">
+                         <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest">Detalles Adicionales</label>
+                         <textarea 
+                            rows={4}
+                            placeholder="Describa brevemente lo ocurrido..."
+                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-5 text-xs font-black uppercase outline-none focus:ring-2 focus:ring-red-500 transition-all resize-none"
+                         ></textarea>
+                      </div>
+                   </div>
 
-    try {
-      const urlParams = new URLSearchParams(window.location.search);
-      const techIdFromUrl = urlParams.get('techId') || 'TECH-001';
-
-      await apiService.reportInconsistency(techIdFromUrl, {
-        reason: selectedReason,
-        details,
-      });
-
-      setSubmitting(false);
-      onSubmit({ reason: selectedReason, details });
-    } catch (err) {
-      console.error('Error submitting report:', err);
-      setError('Unable to submit report. Please try again or contact support.');
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="flex flex-col min-h-screen bg-surface font-sans text-on_surface">
-      <header className="p-6 flex items-center bg-surface_container_lowest shadow-ambient no-border relative z-10">
-        <button onClick={onCancel} className="p-2 glassmorphism rounded-full transition-all text-on_surface opacity-50 hover:opacity-100">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <h1 className="ml-4 text-xl font-display font-extrabold text-on_surface uppercase tracking-tight">Security Incident Report</h1>
-      </header>
-
-      <main className="flex-grow p-8 bg-surface_container_low">
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-12">
-          <div className="space-y-6">
-            <div className="space-y-1">
-               <h2 className="text-[10px] font-bold text-primary uppercase tracking-[0.3em]">Guardian Protocol v7</h2>
-               <p className="text-sm font-medium text-on_surface opacity-50 uppercase tracking-tight">Select the nature of the inconsistency for immediate investigation.</p>
+                   <button className="w-full py-6 bg-red-600 text-white rounded-[2rem] font-black text-[12px] uppercase tracking-[0.3em] shadow-xl hover:bg-red-700 transition-all active:scale-95">
+                      Enviar Reporte Crítico
+                   </button>
+                </div>
             </div>
-            
-            {error && (
-              <div className="bg-error/10 p-4 rounded-lg text-error text-[10px] font-display font-extrabold uppercase tracking-widest no-border">
-                {error}
-              </div>
-            )}
-
-            <div className="space-y-3">
-              {INCONSISTENCY_REASONS.map((reason) => (
-                <label
-                  key={reason.id}
-                  className={`flex items-center p-5 rounded-lg cursor-pointer transition-all no-border ${
-                    selectedReason === reason.id 
-                      ? 'bg-error text-white shadow-lg scale-[1.02]' 
-                      : 'bg-surface_container_lowest text-on_surface opacity-60 hover:opacity-100 shadow-ambient'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="reason"
-                    value={reason.id}
-                    className="hidden"
-                    onChange={(e) => setSelectedReason(e.target.value)}
-                    required
-                    disabled={submitting}
-                  />
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center mr-4 ${selectedReason === reason.id ? 'border-white' : 'border-on_surface/20'}`}>
-                    {selectedReason === reason.id && <div className="w-1.5 h-1.5 rounded-full bg-white"></div>}
-                  </div>
-                  <span className="font-display font-extrabold text-[10px] uppercase tracking-[0.15em]">
-                    {reason.label}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <label htmlFor="details" className="text-[10px] font-bold text-on_surface opacity-30 uppercase tracking-[0.2em] block">
-              Audit Details (Optional)
-            </label>
-            <textarea
-              id="details"
-              rows={4}
-              disabled={submitting}
-              className="w-full p-5 bg-surface_container_lowest text-on_surface rounded-lg shadow-ambient no-border focus:ring-1 ring-primary/20 transition-all resize-none disabled:opacity-30 sm:text-xs"
-              placeholder="Provide context for security auditing..."
-              value={details}
-              onChange={(e) => setDetails(e.target.value)}
-            />
-          </div>
-
-          <div className="pt-8">
-            <button
-              type="submit"
-              disabled={!selectedReason || submitting}
-              className={`w-full py-5 rounded-lg font-display font-extrabold text-white shadow-ambient transition-all flex items-center justify-center tracking-widest uppercase text-xs no-border ${
-                selectedReason && !submitting ? 'bg-error hover:opacity-90 active:scale-95' : 'bg-surface_container_high text-on_surface/20 cursor-not-allowed'
-              }`}
-            >
-              {submitting ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Processing Transmission...
-                </>
-              ) : (
-                'Transmit Emergency Alert'
-              )}
-            </button>
-            <p className="mt-6 text-center text-[9px] text-on_surface opacity-30 font-bold uppercase tracking-[0.25em]">
-              This transmission is encrypted and recorded by Fibex Central Command via TrustLayer.
-            </p>
-          </div>
-        </form>
-      </main>
-    </div>
-  );
+            <p className="mt-12 text-[8px] font-black text-red-300 uppercase tracking-[0.5em]">Este reporte será enviado de inmediato al Centro de Operaciones Fibex</p>
+        </div>
+    );
 };
 
 export default InconsistencyReport;

@@ -30,8 +30,8 @@ export const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ total, onCancel, onSuc
           </svg>
         </button>
         <div className="ml-6">
-           <h1 className="text-2xl font-black uppercase tracking-tighter italic">Secure Gateway</h1>
-           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Payment Verification Protocol v5.0</p>
+           <h1 className="text-2xl font-black uppercase tracking-tighter italic">Pasarela Segura</h1>
+           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Protocolo de Verificación de Pago v5.0</p>
         </div>
       </header>
 
@@ -39,29 +39,29 @@ export const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ total, onCancel, onSuc
         <div className="bg-slate-900 text-white p-10 rounded-[3rem] mb-12 shadow-2xl relative overflow-hidden group">
            <div className="absolute right-0 bottom-0 text-white/5 text-9xl transition-transform group-hover:scale-110">💳</div>
            <div className="relative z-10 space-y-2">
-              <p className="text-[11px] font-black uppercase tracking-[0.4em] opacity-40 italic">Consolidated Investment</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.4em] opacity-40 italic">Inversión Consolidada</p>
               <h2 className="text-5xl font-black italic tracking-tighter">${total.toFixed(2)}</h2>
            </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-10 animate-in slide-in-from-bottom-5 duration-500">
           <div className="space-y-6">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-8 italic">Billing Intelligence</h3>
+            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-8 italic">Inteligencia de Facturación</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Full Legal Name</label>
-                  <input required placeholder="Enter primary owner name" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
+                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Nombre Legal Completo</label>
+                  <input required placeholder="Nombre del propietario principal" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
                </div>
                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Official ID / TAX-ID</label>
-                  <input required placeholder="Document Identification" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
+                  <label className="text-[10px] font-black text-slate-400 uppercase ml-1">ID Oficial / RIF / TAX-ID</label>
+                  <input required placeholder="Documento de Identificación" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
                </div>
             </div>
 
             <div className="space-y-2">
-               <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Digital Identity (Email)</label>
-               <input type="email" required placeholder="name@corporate.com" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
+               <label className="text-[10px] font-black text-slate-400 uppercase ml-1">Identidad Digital (Email)</label>
+               <input type="email" required placeholder="nombre@corporativo.com" className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
             </div>
 
             <div className="pt-10">
@@ -76,10 +76,10 @@ export const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ total, onCancel, onSuc
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <span>Authenticating Transmission...</span>
+                    <span>Autenticando Transmisión...</span>
                   </div>
                 ) : (
-                  'Authorize & Finalize Order'
+                  'Autorizar y Finalizar Orden'
                 )}
               </button>
             </div>
@@ -90,12 +90,12 @@ export const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ total, onCancel, onSuc
            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-4 w-auto" />
            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-6 w-auto" />
            <div className="h-6 w-px bg-slate-300"></div>
-           <p className="text-[8px] font-black uppercase tracking-widest leading-none">TrustLayer Secure<br/>Protocol</p>
+           <p className="text-[8px] font-black uppercase tracking-widest leading-none">Protocolo Seguro<br/>TrustLayer</p>
         </div>
       </main>
 
       <footer className="p-10 text-center opacity-30 mt-auto border-t border-slate-50">
-         <p className="text-[9px] font-black text-slate-900 uppercase tracking-[0.4em]">Fibex Strategic Logistics • Secure Connection Active • v5.0.0</p>
+         <p className="text-[9px] font-black text-slate-900 uppercase tracking-[0.4em]">Logística Estratégica Fibex • Conexión Segura Activa • v5.0.0</p>
       </footer>
     </div>
   );

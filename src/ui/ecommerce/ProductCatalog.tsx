@@ -6,22 +6,22 @@ interface ProductCatalogProps {
 }
 
 const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart }) => {
-  const [filter, setFilter] = useState('ALL');
+  const [filter, setFilter] = useState('TODOS');
 
-  const filteredProducts = filter === 'ALL' 
+  const filteredProducts = filter === 'TODOS' 
     ? MOCK_PRODUCTS 
-    : MOCK_PRODUCTS.filter(p => p.category.toUpperCase() === filter);
+    : MOCK_PRODUCTS.filter(p => p.category.toUpperCase() === (filter === 'PLANES' ? 'INTERNET' : 'EQUIPMENT'));
 
   return (
     <div className="bg-slate-50 min-h-screen p-10 font-sans">
       <header className="mb-12 flex justify-between items-end">
         <div>
-           <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter italic">Technical Marketplace</h1>
-           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2 italic shadow-sm bg-white px-4 py-1 rounded-full w-fit">Authorized Fibex Equipment & Plans</p>
+           <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter italic">Mercado Técnico</h1>
+           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2 italic shadow-sm bg-white px-4 py-1 rounded-full w-fit">Equipos y Planes Fibex Autorizados</p>
         </div>
         
         <div className="flex bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100">
-           {['ALL', 'INTERNET', 'EQUIPMENT'].map(cat => (
+           {['TODOS', 'PLANES', 'EQUIPOS'].map(cat => (
              <button
                key={cat}
                onClick={() => setFilter(cat)}
@@ -39,7 +39,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart }) => {
             <div className="h-56 bg-slate-100 relative overflow-hidden">
                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[8px] font-black text-slate-900 uppercase tracking-widest shadow-lg">
-                  {product.category}
+                  {product.category === 'INTERNET' ? 'INTERNET' : 'EQUIPO'}
                </div>
             </div>
             
@@ -51,7 +51,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart }) => {
               
               <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                 <div className="flex flex-col">
-                   <span className="text-[9px] font-black text-slate-300 uppercase italic">Investment</span>
+                   <span className="text-[9px] font-black text-slate-300 uppercase italic">Inversión</span>
                    <span className="text-2xl font-black text-slate-900">${product.price.toFixed(2)}</span>
                 </div>
                 
@@ -70,7 +70,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart }) => {
       </div>
 
       <footer className="mt-20 pt-10 border-t border-slate-200 text-center opacity-30">
-         <p className="text-[10px] font-black text-slate-900 uppercase tracking-[0.5em]">Fibex Global Logistics v5.0 Master</p>
+         <p className="text-[10px] font-black text-slate-900 uppercase tracking-[0.5em]">Logística Global Fibex v5.0 Master</p>
       </footer>
     </div>
   );

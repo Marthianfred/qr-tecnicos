@@ -1,4 +1,4 @@
-import { Controller, Post, UseInterceptors, UploadedFile, BadRequestException, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, BadRequestException, UseGuards, Req, Query } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { EtlService } from './etl.service';
 import { diskStorage } from 'multer';
@@ -20,10 +20,26 @@ export class EtlController {
       },
     }),
   }))
-  async uploadFile(@UploadedFile() file: any, @Req() req: any) {
-    if (!file) throw new BadRequestException('Se requiere un archivo CSV para la importación');
-    
-    // El ETL service procesa el archivo recién subido con el scope del usuario
-    return this.etlService.processCsv(file.path, req.user?.paisScope);
+  async uploadFile(@UploadedFile() file: any, @Req() req: any, @Query('scope') scopeOverride?: string) {
+    if (!file) throw new BadRequestException('Se requiere un archivo para la importación');
+    const finalScope = scopeOverride && scopeOverride !== 'TODOS' ? scopeOverride : (req.user?.paisScope || 'GLOBAL');
+    return this.etlService.processCsv(file.path, finalScope, 3, false);
+  }
+
+  @Post('preview')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, cb) => {
+        const randomName = 'preview_' + Array(16).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
+        cb(null, `${randomName}${extname(file.originalname)}`);
+      },
+    }),
+  }))
+  async previewFile(@UploadedFile() file: any, @Req() req: any, @Query('scope') scopeOverride?: string) {
+    if (!file) throw new BadRequestException('Se requiere un archivo para la previsualización');
+    const finalScope = scopeOverride && scopeOverride !== 'TODOS' ? scopeOverride : (req.user?.paisScope || 'GLOBAL');
+    return this.etlService.processCsv(file.path, finalScope, 3, true);
   }
 }

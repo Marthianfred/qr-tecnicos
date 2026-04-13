@@ -26,6 +26,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
   const [companies, setCompanies] = useState<any[]>([]);
   const [countries, setCountries] = useState<any[]>([]);
   const [dashboardStats, setDashboardStats] = useState({ technicians: 0, activeQrs: 0, alerts: 0, recentReports: [] as any[], squads: 0 });
+  const [previewData, setPreviewData] = useState<any[] | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
 
   useEffect(() => {
     // Si el usuario tiene scope, forzamos el país
@@ -172,16 +174,17 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
                         
-                        try {
-                           setLoading(true);
-                           await apiService.uploadExcel(file);
-                           alert('✅ Ingesta Masiva Completada con Éxito');
-                           fetchModuleData();
-                        } catch (err: any) {
-                           alert(`❌ Error: ${err.message || 'Error en el procesamiento del archivo'}`);
-                        } finally {
-                           setLoading(false);
-                        }
+                         try {
+                            setLoading(true);
+                            const result = await apiService.previewExcel(file, selectedCountry);
+                            setPreviewData(result.preview);
+                            setPendingFile(file);
+                            e.target.value = "";
+                         } catch (err: any) {
+                            alert(`❌ Error: ${err.message || "Error en el procesamiento del archivo"}`);
+                         } finally {
+                            setLoading(false);
+                         }
                      }}
                    />
                 </label>
@@ -820,6 +823,79 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
            <span>Fibex Telecom • Consola de Control Central v2.8</span>
            <span>Huso Horario Global: {selectedCountry === 'PE' ? 'PET (UTC-5)' : 'AST (UTC-4)'}</span>
         </footer>
+
+        {/* Modal de Previsualización de Datos */}
+        {previewData && (
+           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
+              <div className="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] border border-slate-100">
+                 <div className="p-10 bg-slate-900 text-white flex justify-between items-center">
+                    <div className="space-y-1">
+                       <h3 className="text-2xl font-black uppercase tracking-tighter">Previsualización de Ingesta</h3>
+                       <p className="text-[10px] font-bold opacity-50 uppercase tracking-widest italic">Scope de Destino: {selectedCountry === 'TODOS' ? 'NACIONAL (GLOBAL)' : `SEDE ${selectedCountry}`}</p>
+                    </div>
+                    <div className="bg-blue-600 px-6 py-2 rounded-xl">
+                       <span className="text-xl font-black">{previewData.length}</span>
+                       <span className="text-[9px] font-black uppercase ml-2 opacity-70">Detectados</span>
+                    </div>
+                 </div>
+                 
+                 <div className="flex-grow overflow-y-auto p-10 custom-scrollbar">
+                    <table className="w-full text-left">
+                       <thead>
+                          <tr className="border-b border-slate-100">
+                             <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Técnico</th>
+                             <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Documento</th>
+                             <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Cargo</th>
+                             <th className="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Región</th>
+                          </tr>
+                       </thead>
+                       <tbody className="divide-y divide-slate-50">
+                          {previewData.slice(0, 50).map((row, i) => (
+                             <tr key={i} className="group">
+                                <td className="py-4 text-xs font-black text-slate-800 uppercase">{row.nombre}</td>
+                                <td className="py-4 text-xs font-mono font-bold text-slate-400">{row.documento}</td>
+                                <td className="py-4 text-[10px] font-black text-blue-600 uppercase italic">{row.cargo}</td>
+                                <td className="py-4 text-[10px] font-black text-slate-400 text-right uppercase tracking-widest">{row.pais}</td>
+                             </tr>
+                          ))}
+                       </tbody>
+                    </table>
+                    {previewData.length > 50 && (
+                       <p className="mt-6 text-center text-[9px] font-black text-slate-400 uppercase tracking-widest italic">... y {previewData.length - 50} técnicos adicionales ocultos en esta vista previa ...</p>
+                    )}
+                 </div>
+
+                 <div className="p-10 bg-slate-50 border-t border-slate-100 flex justify-end space-x-4">
+                    <button 
+                       onClick={() => { setPreviewData(null); setPendingFile(null); }}
+                       className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-all"
+                    >
+                       Cancelar
+                    </button>
+                    <button 
+                       onClick={async () => {
+                          if (!pendingFile) return;
+                          try {
+                             setLoading(true);
+                             await apiService.uploadExcel(pendingFile, selectedCountry);
+                             alert('✅ Ingesta Masiva Completada con Éxito');
+                             setPreviewData(null);
+                             setPendingFile(null);
+                             fetchModuleData();
+                          } catch (err: any) {
+                             alert(`❌ Error Crítico: ${err.message}`);
+                          } finally {
+                             setLoading(false);
+                          }
+                       }}
+                       className="px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-200 transition-all active:scale-95"
+                    >
+                       Confirmar y Cargar a Base de Datos
+                    </button>
+                 </div>
+              </div>
+           </div>
+        )}
       </main>
     </div>
   );

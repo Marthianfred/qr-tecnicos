@@ -167,10 +167,19 @@ export const apiService = {
   },
 
   // Bulk Upload (Excel/ETL)
-  async uploadExcel(file: File): Promise<any> {
+  async uploadExcel(file: File, scope: string = 'GLOBAL'): Promise<any> {
     const formData = new FormData();
     formData.append('file', file);
-    return request(`${API_BASE_URL}/etl/upload`, {
+    return request(`${API_BASE_URL}/etl/upload?scope=${scope}`, {
+      method: 'POST',
+      body: formData,
+    });
+  },
+
+  async previewExcel(file: File, scope: string = 'GLOBAL'): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return request(`${API_BASE_URL}/etl/preview?scope=${scope}`, {
       method: 'POST',
       body: formData,
     });

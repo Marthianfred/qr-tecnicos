@@ -93,19 +93,25 @@ export class EtlService {
       // Pass 2: Tecnicos and Certificaciones
       for (const line of dataLines) {
         const parts = line.split(',');
+        const empresaNombre = parts[0]?.trim() || '';
+        const nil = parts[1]?.trim() || '';
         const nombre = parts[2]?.trim();
         const rol = parts[3]?.trim();
         const documento = parts[4]?.trim();
-        const cargo = parts[5]?.trim() || 'Técnico de Campo';
-        const tipoPers = parts[6]?.trim()?.toLowerCase() === 'aliado' ? TipoPersonal.ALIADO : TipoPersonal.CORPORATIVO;
         
-        const inicial = parts[7]?.trim();
-        const basico = parts[8]?.trim();
-        const integral = parts[9]?.trim();
-        const premium = parts[10]?.trim();
-        const supervisorNombre = parts[11]?.trim();
+        // Mapeo Dinámico basado en la realidad del archivo
+        const cargo = rol === 'Supervisor' ? 'Coordinador de Operaciones' : 'Técnico de Campo';
+        const tipoPers = empresaNombre.toLowerCase().includes('fibex') 
+          ? TipoPersonal.CORPORATIVO 
+          : TipoPersonal.ALIADO;
+        
+        const inicial = parts[5]?.trim();
+        const basico = parts[6]?.trim();
+        const integral = parts[7]?.trim();
+        const premium = parts[8]?.trim();
+        const supervisorNombre = parts[9]?.trim();
 
-        if (rol === 'Tecnico') {
+        if (rol === 'Tecnico' || rol === 'Supervisor') { // En el PDF dice que los coordinadores también están en esta tabla
           const cuadrilla = cuadrillasMap.get(supervisorNombre);
 
           let tecnico = await this.tecnicoRepository.findOneBy({ documento });
@@ -120,10 +126,10 @@ export class EtlService {
               cuadrilla: cuadrilla,
             });
             tecnico = await this.tecnicoRepository.save(tecnico);
-            this.logger.log(`Created Tecnico: ${nombre} (${tipoPers})`);
+            this.logger.log(`Importado ${rol}: ${nombre} -> Empresa: ${empresaNombre} (${tipoPers})`);
           }
 
-          // 4. Pivoteo de Certificaciones
+          // 4. Cargue de Certificaciones si el estado es 'Certificado'
           const certsToLoad = [
             { nivel: NivelCertificacion.INICIAL, status: inicial },
             { nivel: NivelCertificacion.BASICO, status: basico },

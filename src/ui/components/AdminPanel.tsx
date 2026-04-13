@@ -533,15 +533,23 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                     Crear Departamento
                   </button>
                </div>
-               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  {departments.map(dept => (
-                    <div key={dept.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center hover:shadow-xl transition-all group">
-                       <span className="text-4xl block mb-4 group-hover:scale-110 transition-transform">🏢</span>
-                       <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2">{dept.name}</h3>
-                       <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nodo Fibex 00{dept.id}</p>
-                    </div>
-                  ))}
-               </div>
+               {departments.length > 0 ? (
+                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    {departments.map(dept => (
+                      <div key={dept.id} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center hover:shadow-xl transition-all group">
+                         <span className="text-4xl block mb-4 group-hover:scale-110 transition-transform">🏢</span>
+                         <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2">{dept.name}</h3>
+                         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nodo Fibex 00{dept.id}</p>
+                      </div>
+                    ))}
+                 </div>
+               ) : (
+                 <div className="w-full py-32 rounded-3xl border border-slate-100 border-dashed bg-white text-center flex flex-col items-center justify-center shadow-sm">
+                    <span className="text-6xl mb-6 opacity-20">🏗️</span>
+                    <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest mb-2">Sin Estructura Organizativa</h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">No se han registrado departamentos. Haz clic en superior para comenzar.</p>
+                 </div>
+               )}
             </div>
           )}
 

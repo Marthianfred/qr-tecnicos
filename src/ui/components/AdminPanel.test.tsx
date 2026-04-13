@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import AdminPanel from './AdminPanel';
 
-// Mock Services
+
 jest.mock('../services/api', () => ({
   apiService: {
     getTechnicians: jest.fn().mockResolvedValue([]),
@@ -33,8 +33,8 @@ describe('AdminPanel Component (Localized)', () => {
     
     await waitFor(() => {
       expect(screen.getAllByText(/Panel Operativo/i).length).toBeGreaterThan(0);
-      expect(screen.getAllByText('150').length).toBeGreaterThan(0); // Técnicos Totales
-      expect(screen.getAllByText('3').length).toBeGreaterThan(0);   // Alertas Críticas
+      expect(screen.getAllByText('150').length).toBeGreaterThan(0); 
+      expect(screen.getAllByText('3').length).toBeGreaterThan(0);   
     });
   });
 
@@ -61,7 +61,7 @@ describe('AdminPanel Component (Localized)', () => {
   test('country selector updates successfully', async () => {
     render(<AdminPanel />);
     
-    // Wait for countries to load
+    
     await waitFor(() => {
       expect(screen.getByText('🇻🇪')).toBeInTheDocument();
     });
@@ -69,7 +69,7 @@ describe('AdminPanel Component (Localized)', () => {
     const veButton = screen.getByText('🇻🇪');
     fireEvent.click(veButton);
     
-    // El componente debería reflejar el cambio (aunque en el mock sea visual)
+    
     expect(veButton.closest('button')).toHaveClass('text-blue-600');
   });
 

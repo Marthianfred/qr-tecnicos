@@ -7,9 +7,6 @@ interface ProductCatalogProps {
   readonly onViewCart: () => void;
 }
 
-/**
- * Componente de Catálogo de Products para Carlos (Cliente Final)
- */
 export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onViewCart }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +53,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
 
   return (
     <div className="bg-surface min-h-screen font-sans text-on_surface">
-      {/* Header del Catálogo */}
+      {}
       <header className="bg-surface_container_lowest p-8 shadow-ambient sticky top-0 z-10 flex justify-between items-center no-border">
         <div className="flex items-center space-x-4">
           <img src="/logo.webp" alt="Fibex Logo" className="h-12 w-auto" />
@@ -70,19 +67,19 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
           onClick={onViewCart}
           className="trust-gradient text-white px-6 py-3 rounded-lg font-display font-extrabold flex items-center space-x-3 shadow-lg hover:opacity-90 transition-all uppercase text-xs tracking-widest"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http:
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
           <span>Bóveda</span>
         </button>
       </header>
 
-      {/* Filtros y Búsqueda */}
+      {}
       <div className="max-w-7xl mx-auto p-8 bg-surface_container_low border-none space-y-6">
         {error && (
           <div className="p-4 bg-error/10 text-error rounded-lg flex justify-between items-center no-border animate-pulse">
             <div className="flex items-center space-x-3">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <svg xmlns="http:
                 <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
               <span className="text-[10px] font-display font-extrabold uppercase tracking-widest">{error}</span>
@@ -104,7 +101,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-6 py-4 bg-surface_container_highest text-on_surface rounded-lg focus:ring-1 ring-primary/20 outline-none no-border font-display font-extrabold uppercase tracking-widest text-[10px]"
             />
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-on_surface opacity-30 absolute left-4 top-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http:
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
@@ -126,12 +123,12 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
         </div>
       </div>
 
-      {/* Grid de Products */}
+      {}
       <main className="max-w-7xl mx-auto p-8">
         {filteredProducts.length === 0 ? (
           <div className="text-center py-32 space-y-6">
             <div className="bg-surface_container_highest/30 w-24 h-24 rounded-full flex items-center justify-center mx-auto opacity-20">
-               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <svg xmlns="http:
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                </svg>
             </div>
@@ -176,7 +173,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
                     onClick={() => onAddToCart(product)}
                     className="w-full bg-surface_container_highest text-primary py-4 rounded-lg font-display font-extrabold text-[10px] uppercase tracking-[0.2em] hover:bg-primary hover:text-white transition-all active:scale-95 no-border shadow-sm flex items-center justify-center space-x-3"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http:
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                     <span>Adquirir Activo</span>
@@ -188,7 +185,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onAddToCart, onV
         )}
       </main>
 
-      {/* Footer Informativo */}
+      {}
       <footer className="p-12 mt-20 text-center space-y-4 bg-surface_container_low">
          <div className="h-px bg-on_surface/5 max-w-xs mx-auto"></div>
          <p className="text-on_surface opacity-10 font-display font-extrabold text-[8px] uppercase tracking-[0.5em]">

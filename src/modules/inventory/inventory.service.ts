@@ -14,7 +14,7 @@ export class InventoryService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    // Inicializar Redis con el stock de la DB si es necesario
+    
     const productos = await this.productosRepository.find();
     for (const producto of productos) {
       const exists = await this.redis.exists(`stock:${producto.id}`);
@@ -35,10 +35,10 @@ export class InventoryService implements OnModuleInit {
       return false;
     }
     
-    // Decrementamos atómicamente
+    
     const newStock = await this.redis.decrby(`stock:${productId}`, quantity);
     
-    // Si bajó de 0, revertimos
+    
     if (newStock < 0) {
       await this.redis.incrby(`stock:${productId}`, quantity);
       return false;

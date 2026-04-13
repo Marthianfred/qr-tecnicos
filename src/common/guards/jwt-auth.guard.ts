@@ -29,7 +29,7 @@ export class JwtAuthGuard implements CanActivate {
       if (type === 'Bearer') return token;
     }
     
-    // Support for SSE/WebSockets via query param
+    
     return request.query?.token;
   }
 }

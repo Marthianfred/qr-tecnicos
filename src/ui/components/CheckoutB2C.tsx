@@ -7,10 +7,6 @@ interface CheckoutB2CProps {
   readonly onBack?: () => void;
 }
 
-/**
- * CheckoutB2C Component
- * Optimized for Carlos (End Client) - Frictionless one-step checkout.
- */
 const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -91,7 +87,7 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
       </header>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-        {/* Main Form */}
+        {}
         <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-12">
           <section className="space-y-6">
             <h2 className="text-xs font-display font-extrabold text-primary uppercase tracking-[0.2em] border-b border-primary/5 pb-2">01 Manifiesto de Identificación</h2>
@@ -199,7 +195,7 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin -ml-1 mr-4 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin -ml-1 mr-4 h-5 w-5 text-white" xmlns="http:
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -209,7 +205,7 @@ const CheckoutB2C: React.FC<CheckoutB2CProps> = ({ items, total, onBack }) => {
           </button>
         </form>
 
-        {/* Sidebar Summary */}
+        {}
         <div className="lg:col-span-1">
           <div className="bg-surface_container_lowest p-8 rounded-lg shadow-ambient no-border sticky top-12 space-y-10">
             <div className="space-y-1">

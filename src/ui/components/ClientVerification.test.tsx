@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import ClientVerification from './ClientVerification';
 import { apiService } from '../services/api';
 
-// Mock apiService
+
 jest.mock('../services/api', () => ({
   apiService: {
     validateQR: jest.fn(),
@@ -18,7 +18,7 @@ describe('ClientVerification Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Mock URLSearchParams to return a valid token by default
+    
     global.URLSearchParams = jest.fn().mockImplementation(() => ({
       get: jest.fn().mockReturnValue('valid-token'),
     })) as any;
@@ -43,7 +43,7 @@ describe('ClientVerification Component', () => {
       role: 'Técnico Especialista III',
       empresa: 'Fibex Services',
       nivel: 'Senior',
-      foto: 'https://example.com/foto.jpg'
+      foto: 'https:
     };
     (apiService.validateQR as jest.Mock).mockResolvedValue(mockTechData);
 
@@ -54,13 +54,13 @@ describe('ClientVerification Component', () => {
     expect(screen.getByText('Técnico Especialista III')).toBeInTheDocument();
     expect(screen.getByText('V-12345678')).toBeInTheDocument();
     
-    // Check for Spanish trust elements
+    
     expect(screen.getByText(/Jurisdicción/i)).toBeInTheDocument();
     expect(screen.getByText(/Reportar Incidente de Seguridad/i)).toBeInTheDocument();
   });
 
   test('renders error state when token is missing', async () => {
-    // Mock URLSearchParams to return null for token
+    
     global.URLSearchParams = jest.fn().mockImplementation(() => ({
       get: jest.fn().mockReturnValue(null),
     })) as any;

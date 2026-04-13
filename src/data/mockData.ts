@@ -1,19 +1,16 @@
-/**
- * Mock data for Fibex Qr Technicians (FIB-20)
- */
 
 export const MOCK_TECHNICIAN = {
   id: 'TECH-001',
   name: 'Juan Pérez',
   status: 'En Línea',
   certification: 'Integral',
-  photo: 'https://i.pravatar.cc/150?u=TECH-001',
+  photo: 'https:
   idDocument: '12.345.678',
 };
 
 export const MOCK_VISIT_QR = {
   code: 'FIBEX-QR-TECNICOS-JWT-TOKEN',
-  expirySeconds: 900, // 15 minutes
+  expirySeconds: 900, 
 };
 
 export const INCONSISTENCY_REASONS = [
@@ -52,7 +49,7 @@ export const MOCK_PRODUCTS: Product[] = [
     category: 'Internet',
     stock: 100,
     stockInicial: 100,
-    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&h=200&fit=crop',
+    image: 'https:
   },
   {
     id: 'PROD-002',
@@ -62,7 +59,7 @@ export const MOCK_PRODUCTS: Product[] = [
     category: 'Internet',
     stock: 50,
     stockInicial: 50,
-    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc51?w=300&h=200&fit=crop',
+    image: 'https:
   },
   {
     id: 'PROD-003',
@@ -72,7 +69,7 @@ export const MOCK_PRODUCTS: Product[] = [
     category: 'Hardware',
     stock: 20,
     stockInicial: 20,
-    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&h=200&fit=crop',
+    image: 'https:
   },
   {
     id: 'PROD-004',
@@ -82,7 +79,7 @@ export const MOCK_PRODUCTS: Product[] = [
     category: 'Hardware',
     stock: 15,
     stockInicial: 15,
-    image: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=300&h=200&fit=crop',
+    image: 'https:
   },
 ];
 

@@ -34,7 +34,7 @@ export class EtlService {
     this.logger.log(`${dryRun ? '[PREVIEW]' : '[INGEST]'} ETL process for file: ${filePath} with Scope: ${paisScope || 'GLOBAL'}`);
     const isXlsx = filePath.toLowerCase().endsWith('.xlsx');
     
-    // Determine category by filename
+    
     const fileName = path.basename(filePath).toLowerCase();
     let staffType = StaffType.PARTNER;
     
@@ -82,7 +82,7 @@ export class EtlService {
     const supervisorsMap = new Map<string, User>();
     const previewData = [];
 
-    // Pass 1: Identify Companies and Supervisors
+    
     for (const line of dataLines) {
       const parts = line.split(',');
       const companyName = parts[4]?.trim();
@@ -113,7 +113,7 @@ export class EtlService {
       }
     }
 
-    // Pass 2: Identify Technicians
+    
     for (const line of dataLines) {
       const parts = line.split(',');
       if (parts.length < 5) continue;
@@ -125,7 +125,7 @@ export class EtlService {
       const documentId = parts[7]?.trim();
       const role = parts[8]?.trim() || 'Field Technician';
       const departmentName = parts[9]?.trim() || 'General';
-      const statusExcel = parts[22]?.trim(); // W column
+      const statusExcel = parts[22]?.trim(); 
       const countryFinal = paisScope || (documentId?.startsWith('V') ? 'VE' : (documentId?.length === 11 ? 'RD' : 'PE'));
       const statusFinal = statusExcel === 'INACTIVO' ? TechnicianStatus.INACTIVE : TechnicianStatus.ACTIVE;
 
@@ -151,11 +151,11 @@ export class EtlService {
       const integral = parts[12]?.trim();
       const premium = parts[14]?.trim();
 
-      // Resolve Department
+      
       await this.departmentsService.ensureDefaultDepartments([departmentName]);
       const departmentObj = await this.departmentsService.findByName(departmentName);
 
-      // Resolve Company
+      
       let companyObj = await this.companyRepository.findOneBy({ taxId });
       if (!companyObj) {
         companyObj = this.companyRepository.create({

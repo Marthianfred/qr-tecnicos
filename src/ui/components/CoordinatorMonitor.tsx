@@ -6,9 +6,6 @@ interface CoordinatorMonitorProps {
   readonly children?: React.ReactNode;
 }
 
-/**
- * Pantalla 4.1: Monitor de Squads (Interfaz del Coordinador)
- */
 export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout }) => {
   const [filterCountry, setFilterCountry] = useState('Total');
   const [activeTab, setActiveTab] = useState<'tecnicos' | 'cuadrillas'>('tecnicos');
@@ -37,7 +34,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
   useEffect(() => {
     fetchData();
 
-    // Suscripción Real-Time vía SSE
+    
     const token = localStorage.getItem('token');
     const eventSource = new EventSource(`/api/tecnicos/events${token ? `?token=${token}` : ''}`);
     
@@ -115,9 +112,9 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
 
   return (
     <div className="flex h-screen overflow-hidden bg-surface font-sans text-on_surface uppercase tracking-tight">
-      {/* Sidebar + Main Content Layout */}
+      {}
       <div className="flex flex-grow h-full overflow-hidden">
-        {/* Sidebar */}
+        {}
         <aside className="w-72 bg-surface_container_lowest shadow-2xl z-20 hidden md:block border-r border-white/5 h-full flex flex-col">
           <div className="p-10 flex flex-col items-center flex-shrink-0">
             <div className="relative group mb-6">
@@ -173,9 +170,9 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
           </div>
         </aside>
 
-        {/* Content Area */}
+        {}
         <main className="flex-grow flex flex-col h-full overflow-hidden bg-surface_container_low">
-          {/* Top Bar (Fixed) */}
+          {}
           <header className="bg-surface_container_lowest h-20 shadow-ambient flex items-center justify-between px-10 no-border relative z-20 flex-shrink-0">
             <h2 className="text-2xl font-display font-extrabold text-on_surface tracking-tighter uppercase">
               {activeTab === 'tecnicos' ? 'Supervisión Operativa' : 'Gestión Estratégica de Squads'}
@@ -187,7 +184,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                     {reports.length}
                   </span>
                 )}
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http:
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
               </div>
@@ -207,7 +204,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
           </header>
 
           <div className="flex-grow overflow-y-auto p-10 space-y-12 custom-scrollbar">
-            {/* Alerts Section */}
+            {}
             {reports.length > 0 && (
               <div className="space-y-6">
                 <div className="flex items-center space-x-4">
@@ -219,7 +216,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
                   <div key={report.id} className="bg-surface_container_lowest p-6 rounded-lg shadow-ambient no-border flex flex-col md:flex-row justify-between items-center gap-6 animate-bounce-short">
                     <div className="flex items-center space-x-5">
                       <div className="p-3 bg-error/10 rounded-full text-error glow-pulse">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http:
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                       </div>
@@ -247,7 +244,7 @@ export const CoordinatorMonitor: React.FC<CoordinatorMonitorProps> = ({ onLogout
               </div>
             )}
 
-            {/* Content Section */}
+            {}
             {activeTab === 'tecnicos' ? (
               <div className="space-y-6">
                 <div className="flex justify-between items-end px-2">

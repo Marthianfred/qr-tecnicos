@@ -5,14 +5,11 @@ interface QRDisplayProps {
   readonly onBack: () => void;
 }
 
-/**
- * Pantalla 2.2: Visualización de QR Dinámico
- */
 export const QRDisplay: React.FC<QRDisplayProps> = ({ onBack }) => {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [timeLeft, setTimeLeft] = useState(900); // 15 minutes default
+  const [timeLeft, setTimeLeft] = useState(900); 
 
   useEffect(() => {
     apiService.generateQR('TECH-001')
@@ -52,10 +49,10 @@ export const QRDisplay: React.FC<QRDisplayProps> = ({ onBack }) => {
 
   return (
     <div className="flex flex-col min-h-screen bg-surface font-sans text-on_surface">
-      {/* Header */}
+      {}
       <header className="p-6 flex items-center justify-between bg-surface_container_lowest shadow-ambient no-border">
         <button onClick={onBack} className="p-2 glassmorphism rounded-full transition-all text-primary hover:scale-110">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http:
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
@@ -63,7 +60,7 @@ export const QRDisplay: React.FC<QRDisplayProps> = ({ onBack }) => {
         <div className="w-10" />
       </header>
 
-      {/* Main Content */}
+      {}
       <main className="flex-grow flex flex-col items-center justify-center p-8 space-y-12 bg-surface_container_low">
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-display font-extrabold tracking-tight">VERIFICACIÓN CIUDADANA</h2>
@@ -79,10 +76,10 @@ export const QRDisplay: React.FC<QRDisplayProps> = ({ onBack }) => {
           </div>
         ) : (
           <>
-            {/* QR Container with Watermark */}
+            {}
             <div className="relative p-10 bg-surface_container_lowest rounded-lg shadow-ambient no-border group">
               <div className="w-64 h-64 trust-gradient rounded-lg flex items-center justify-center text-white relative overflow-hidden shadow-lg group-hover:scale-[1.02] transition-transform">
-                {/* Simulation of a QR code */}
+                {}
                 <div className="grid grid-cols-8 gap-1 p-6 opacity-90 w-full h-full">
                   {[...Array(64)].map((_, i) => {
                     const charCode = token ? token.charCodeAt(i % token.length) : i;
@@ -91,14 +88,14 @@ export const QRDisplay: React.FC<QRDisplayProps> = ({ onBack }) => {
                     );
                   })}
                 </div>
-                {/* Security Overlay */}
+                {}
                 <div className="absolute inset-0 glassmorphism opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                    <img src="/favicon.svg" alt="Seal" className="w-20 h-20 opacity-40" />
                 </div>
               </div>
             </div>
 
-            {/* Countdown */}
+            {}
             <div className="text-center space-y-2">
               <p className="text-[10px] font-bold text-on_surface opacity-40 uppercase tracking-widest italic">Vida Útil del Token</p>
               <div className={`text-4xl font-display font-extrabold tracking-tighter ${timeLeft < 60 ? 'text-error glow-pulse' : 'text-primary'}`}>

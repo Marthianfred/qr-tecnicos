@@ -83,8 +83,8 @@ describe('InventoryService', () => {
       { id: '1', stock: 10 },
       { id: '2', stock: 20 },
     ]);
-    redis.exists.mockResolvedValue(0); // 0 means false in ioredis exists if called with one key, but wait, usually it returns number of existing keys. 
-    // In our code: const exists = await this.redis.exists(`stock:${producto.id}`);
+    redis.exists.mockResolvedValue(0); 
+    
 
     await service.onModuleInit();
     

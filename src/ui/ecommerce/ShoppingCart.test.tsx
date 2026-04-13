@@ -13,7 +13,7 @@ const mockItems = [
       category: 'Internet',
       stock: 100,
       stockInicial: 100,
-      image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&h=200&fit=crop',
+      image: 'https:
     },
     quantity: 2
   }
@@ -55,7 +55,7 @@ describe('ShoppingCart', () => {
       />
     );
     expect(screen.getByText('Plan Fibra 200 Mbps')).toBeInTheDocument();
-    expect(screen.getByText('02')).toBeInTheDocument(); // matches {item.quantity.toString().padStart(2, '0')}
+    expect(screen.getByText('02')).toBeInTheDocument(); 
   });
 
   it('calculates total correctly', () => {
@@ -68,7 +68,7 @@ describe('ShoppingCart', () => {
         onOrderComplete={mockOnOrderComplete}
       />
     );
-    // 35 * 2 = 70. 70 * 1.16 = 81.20
+    
     expect(screen.getByText('$81.20')).toBeInTheDocument();
   });
 

@@ -80,13 +80,11 @@ export class SeedService implements OnModuleInit {
       { name: 'Juan Perez', documentId: '12345678', role: 'Field Technician III', country: 'VE', zone: 'Caracas - Capitolio', status: TechnicianStatus.ACTIVE },
       { name: 'Maria Garcia', documentId: '87654321', role: 'Squad Coordinator', country: 'VE', zone: 'Caracas - Chacao', status: TechnicianStatus.ACTIVE },
     ];
-
     for (const tData of techniciansData) {
       let technician = await this.technicianRepository.findOneBy({ documentId: tData.documentId });
       if (!technician) {
         technician = this.technicianRepository.create(tData);
         technician = await this.technicianRepository.save(technician);
-
         const cert = this.certificationRepository.create({
           level: CertificationLevel.PREMIUM,
           issuedAt: new Date(),
@@ -97,13 +95,11 @@ export class SeedService implements OnModuleInit {
       }
     }
   }
-
   private async seedProducts() {
     const productsData = [
-      { name: 'Router Dual Band', sku: 'ROUT-001', price: 45.0, stock: 100 },
-      { name: 'ONT Fibex Plus', sku: 'ONT-002', price: 60.0, stock: 50 },
+      { name: 'Router Dual Band', sku: 'ROUT-001', price: 45.0, stock: 100, initialStock: 100, category: 'Connectivity' },
+      { name: 'ONT Fibex Plus', sku: 'ONT-002', price: 60.0, stock: 50, initialStock: 50, category: 'Connectivity' },
     ];
-
     for (const p of productsData) {
       const exists = await this.productRepository.findOneBy({ sku: p.sku });
       if (!exists) {

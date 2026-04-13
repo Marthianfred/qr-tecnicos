@@ -52,7 +52,7 @@ describe('CheckoutB2C Component', () => {
     
     fireEvent.click(screen.getByText(/Iniciar Transferencia Soberana/i));
     
-    // El mensaje de error coincide con el componente
+    
     expect(screen.getByText(/Faltan campos de protocolo requeridos para la autorización/i)).toBeInTheDocument();
   });
 });

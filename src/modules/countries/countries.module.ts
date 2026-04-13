@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Country } from '../../entities/country.entity';
-import { CountriesService } from './paises.service';
-import { CountriesController } from './paises.controller';
+import { CountriesService } from './countries.service';
+import { CountriesController } from './countries.controller';
 
 import { AuthModule } from '../auth/auth.module';
 

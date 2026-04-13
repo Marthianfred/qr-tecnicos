@@ -37,9 +37,6 @@ export class KeycloakIAMService implements OnModuleInit {
     }
   }
 
-  /**
-   * Validates an OIDC token from Keycloak using JWKS.
-   */
   async validateToken(token: string): Promise<IAMUser> {
     if (!this.jwksUrl) {
       throw new Error('KEYCLOAK_JWKS_URL is not configured. OIDC validation is mandatory.');

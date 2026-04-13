@@ -10,9 +10,6 @@ interface ShoppingCartProps {
   readonly onOrderComplete: () => void;
 }
 
-/**
- * Componente de Carrito de Compras para Carlos (Cliente Final)
- */
 export const ShoppingCart: React.FC<ShoppingCartProps> = ({ 
   items, 
   onUpdateQuantity, 
@@ -24,7 +21,7 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const subtotal = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-  const tax = subtotal * 0.16; // IVA 16%
+  const tax = subtotal * 0.16; 
   const total = subtotal + tax;
 
   const handleCheckout = async () => {
@@ -57,7 +54,7 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
           onClick={onBack}
           className="flex items-center text-primary font-display font-extrabold text-[10px] uppercase tracking-[0.2em] hover:opacity-70 transition-all no-border group"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http:
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
           </svg>
           Volver al Aprovisionamiento
@@ -69,12 +66,12 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Lista de Items */}
+          {}
           <div className="lg:col-span-2 space-y-6">
             {items.length === 0 ? (
               <div className="bg-surface_container_lowest p-20 rounded-lg text-center shadow-ambient no-border space-y-6">
                 <div className="bg-surface_container_high w-16 h-16 rounded-full flex items-center justify-center mx-auto opacity-20">
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <svg xmlns="http:
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                 </div>
@@ -103,7 +100,7 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
                         onClick={() => onRemove(item.product.id)}
                         className="text-error opacity-20 hover:opacity-100 transition-opacity p-1"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http:
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                       </button>
@@ -132,7 +129,7 @@ export const ShoppingCart: React.FC<ShoppingCartProps> = ({
             )}
           </div>
 
-          {/* Resumen de Pedido */}
+          {}
           <div className="bg-surface_container_low p-8 rounded-lg shadow-ambient no-border h-fit space-y-10">
             <div className="space-y-1">
                <h2 className="text-xs font-display font-extrabold text-on_surface uppercase tracking-[0.2em]">Estado de Cuenta Soberano</h2>

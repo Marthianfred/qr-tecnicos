@@ -21,9 +21,9 @@ export class PricingService {
     const currentStock = await this.inventoryService.checkAvailability(productId);
     const basePrice = Number(product.price);
 
-    // Dynamic pricing logic:
-    // If stock is low (< 20% of initial), price increases 15%
-    // If stock is very low (< 5% of initial), price increases 30%
+    
+    
+    
     const lowStockThreshold = product.initialStock * 0.2;
     const veryLowStockThreshold = product.initialStock * 0.05;
     

@@ -24,7 +24,7 @@ export class Technician {
   @Column({ unique: true })
   documentId!: string; 
 
-  @Column({ default: 'Técnico General' })
+  @Column({ default: 'General Technician' })
   role!: string; 
 
   @Column({
@@ -36,7 +36,7 @@ export class Technician {
   @Column()
   country!: string; 
 
-  @Column({ default: 'Sede Central' })
+  @Column({ default: 'Headquarters' })
   zone!: string; 
 
   @Column({ nullable: true })

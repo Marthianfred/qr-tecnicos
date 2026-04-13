@@ -28,15 +28,12 @@ interface User {
   role: string;
 }
 
-/**
- * Main Application Wrapper for Fibex Qr Technicians & Ciclo de Negocio
- */
 export const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [currentView, setCurrentView] = useState<View>('login');
   const [cartItems, setCartItems] = useState<{ product: Product, quantity: number }[]>([]);
 
-  // Hydrate session from localStorage on mount
+  
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     const token = localStorage.getItem('token');
@@ -52,7 +49,7 @@ export const App: React.FC = () => {
     }
   }, []);
 
-  // Redirect based on role after login or hydration
+  
   useEffect(() => {
     if (user) {
       if (user.role === 'admin') setCurrentView('admin-panel');

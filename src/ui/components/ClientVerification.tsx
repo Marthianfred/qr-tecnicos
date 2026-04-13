@@ -57,7 +57,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
   if (error || !techData) return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-red-50 p-8 text-center">
       <div className="bg-red-100 p-6 rounded-full text-red-600 mb-6 animate-pulse">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http:
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
       </div>
@@ -72,7 +72,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center pb-12 font-sans overflow-x-hidden">
-      {/* Institutional Top Bar */}
+      {}
       <header className="w-full bg-slate-900 h-16 flex items-center justify-between px-6 shadow-xl sticky top-0 z-50">
         <div className="flex items-center space-x-2">
            <img src="/fibex-icon.png" alt="Fibex" className="h-8 w-8 object-contain" />
@@ -85,33 +85,33 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
         </div>
       </header>
 
-      {/* Official Status Badge */}
+      {}
       <div className="w-full bg-green-500 py-3 flex items-center justify-center space-x-3 shadow-inner">
          <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">VALIDACIÓN EXITOSA • PERSONA AUTORIZADA</span>
       </div>
 
-      {/* Main Identity Card */}
+      {}
       <main className="w-full max-w-sm px-6 mt-8 relative">
-        {/* Anti-screenshot Timer */}
+        {}
         <div className="absolute -top-4 right-8 bg-slate-800 text-white px-3 py-1 rounded-md text-[8px] font-mono z-20 shadow-lg border border-slate-700">
            Sincronización: {time}
         </div>
 
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 relative">
-          {/* Identity Header */}
+          {}
           <div className="h-32 bg-slate-900 relative flex items-end justify-center">
-             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-             {/* Profile Circle Overlap */}
+             <div className="absolute inset-0 opacity-10 bg-[url('https:
+             {}
              <div className="w-40 h-40 rounded-3xl border-[8px] border-white shadow-2xl bg-white overflow-hidden transform translate-y-12 z-10 transition-transform hover:scale-105 duration-500">
                 <img 
-                  src={techData.foto || `https://i.pravatar.cc/300?u=${techData.sub}`} 
+                  src={techData.foto || `https:
                   alt={techData.name} 
                   className="w-full h-full object-cover grayscale-[0.2]" 
                 />
              </div>
           </div>
 
-          {/* Technician Info */}
+          {}
           <div className="pt-20 pb-8 px-8 text-center">
              <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-1 uppercase">{techData.name}</h2>
              <div className="flex items-center justify-center space-x-2 mb-6">
@@ -120,7 +120,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
                 <span className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">{techData.empresa || 'Fibex Services'}</span>
              </div>
 
-             {/* Certificate Medals */}
+             {}
              <div className="grid grid-cols-4 gap-2 mb-8 bg-slate-50 p-4 rounded-2xl border border-slate-100 shadow-inner">
                 {['INICIAL', 'BASICO', 'INTEGRAL', 'PREMIUM'].map((lvl) => {
                   const isActive = techData.nivel?.toUpperCase() === lvl;
@@ -135,7 +135,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
                 })}
              </div>
 
-             {/* Official Records Table */}
+             {}
              <div className="space-y-3">
                 <div className="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Documento</span>
@@ -156,13 +156,13 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
           </div>
         </div>
 
-        {/* Support & Audit Footer */}
+        {}
         <div className="mt-8 space-y-4">
            <button 
              onClick={onReport}
              className="w-full bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-600 py-4 rounded-xl flex items-center justify-center space-x-2 transition-all border border-slate-200 active:scale-95"
            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <svg xmlns="http:
                 <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
               <span className="text-[10px] font-black uppercase tracking-widest">Reportar Incidente de Seguridad</span>
@@ -174,7 +174,7 @@ export const ClientVerification: React.FC<ClientVerificationProps> = ({ onReport
         </div>
       </main>
 
-      {/* Footer Branding */}
+      {}
       <footer className="mt-auto px-10 text-center">
          <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Protegiendo la infraestructura crítica de Fibex Telecom</p>
       </footer>

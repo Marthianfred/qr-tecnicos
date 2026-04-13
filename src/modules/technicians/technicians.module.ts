@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Technician } from '../../entities/technician.entity';
 import { Certification } from '../../entities/certification.entity';
 import { InconsistencyReport } from '../../entities/inconsistency-report.entity';
-import { TechniciansService } from './tecnicos.service';
-import { TechniciansController } from './tecnicos.controller';
+import { TechniciansService } from './technicians.service';
+import { TechniciansController } from './technicians.controller';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({

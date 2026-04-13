@@ -5,16 +5,13 @@ interface TechnicianDashboardProps {
   readonly onGenerateQR: () => void;
 }
 
-/**
- * Pantalla 2.1: Dashboard de Técnico
- */
 export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGenerateQR }) => {
   const [technician, setTechnician] = useState<Technician | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Para el MVP, usamos un ID fijo 'TECH-001'
+    
     apiService.getTechnician('TECH-001')
       .then((data) => {
         setTechnician(data);
@@ -48,7 +45,7 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
 
   return (
     <div className="flex flex-col min-h-screen bg-surface font-sans">
-      {/* Header */}
+      {}
       <header className="bg-surface_container_lowest p-6 flex justify-between items-center shadow-ambient no-border">
         <div className="flex items-center space-x-3">
           <img src="/favicon.svg" alt="Logo" className="w-10 h-10" />
@@ -63,7 +60,7 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
         </div>
       </header>
 
-      {/* Main Content */}
+      {}
       <main className="flex-grow flex flex-col items-center justify-center p-6 space-y-12 bg-surface_container_low">
         <div className="text-center space-y-2">
           <h2 className="text-3xl font-display font-extrabold text-on_surface tracking-tighter">PORTAL DE AUTENTICACIÓN</h2>
@@ -78,7 +75,7 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
           }`}
         >
           <div className="bg-white bg-opacity-10 p-6 rounded-full glassmorphism">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http:
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
             </svg>
           </div>
@@ -86,7 +83,7 @@ export const TechnicianDashboard: React.FC<TechnicianDashboardProps> = ({ onGene
         </button>
       </main>
 
-      {/* Footer */}
+      {}
       <footer className="bg-surface_container_lowest p-8 no-border">
         <div className="max-w-md mx-auto">
           <p className="text-[8px] font-black text-slate-900 uppercase tracking-[0.4em]">Protocolo Fibex Seguridad v5.0</p>

@@ -16,9 +16,6 @@ export class TrustLayerService {
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
   ) {}
 
-  /**
-   * Integrally validates the Triple Play model + Anti-Replay
-   */
   async validateFullTrust(technician: Technician, token?: string): Promise<Certification> {
     const highestCert = await this.validateTriplePlay(technician);
 
@@ -29,12 +26,6 @@ export class TrustLayerService {
     return highestCert;
   }
 
-  /**
-   * Validates the 3 factors of the Triple Play model
-   * 1. Identity: Technician exists.
-   * 2. Operating Status: Technician is ACTIVE.
-   * 3. Certification: Technician has valid certifications.
-   */
   async validateTriplePlay(technician: Technician): Promise<Certification> {
     if (!technician) {
       throw new UnauthorizedException('TrustLayer: Identity Failure - Technician not found');
@@ -58,9 +49,6 @@ export class TrustLayerService {
     });
   }
 
-  /**
-   * Filters valid certifications
-   */
   getValidCertifications(technician: Technician): Certification[] {
     if (!technician.certifications) return [];
     

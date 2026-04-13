@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import ProductCatalog from './ProductCatalog';
 import { MOCK_PRODUCTS } from '../../data/mockData';
 
-// Mock apiService to return mock products
+
 const mockProducts = [
   {
     id: 'PROD-001',
@@ -13,7 +13,7 @@ const mockProducts = [
     price: 35.00,
     category: 'Internet',
     stock: 100,
-    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&h=200&fit=crop',
+    image: 'https:
   }
 ];
 
@@ -27,7 +27,7 @@ jest.mock('../services/api', () => ({
         price: 35.00,
         category: 'Internet',
         stock: 100,
-        image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&h=200&fit=crop',
+        image: 'https:
       }
     ]),
   },

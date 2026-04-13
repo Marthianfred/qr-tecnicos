@@ -7,9 +7,6 @@ interface InconsistencyReportProps {
   readonly onSubmit: (data: { reason: string; details: string }) => void;
 }
 
-/**
- * Pantalla 3.2: Reporte de Inconsistencia (Flujo del Cliente)
- */
 export const InconsistencyReport: React.FC<InconsistencyReportProps> = ({ onCancel, onSubmit }) => {
   const [selectedReason, setSelectedReason] = useState('');
   const [details, setDetails] = useState('');
@@ -43,17 +40,17 @@ export const InconsistencyReport: React.FC<InconsistencyReportProps> = ({ onCanc
 
   return (
     <div className="flex flex-col min-h-screen bg-surface font-sans text-on_surface">
-      {/* Header */}
+      {}
       <header className="p-6 flex items-center bg-surface_container_lowest shadow-ambient no-border relative z-10">
         <button onClick={onCancel} className="p-2 glassmorphism rounded-full transition-all text-on_surface opacity-50 hover:opacity-100">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http:
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
         <h1 className="ml-4 text-xl font-display font-extrabold text-on_surface uppercase tracking-tight">Reporte de Incidente de Seguridad</h1>
       </header>
 
-      {/* Form */}
+      {}
       <main className="flex-grow p-8 bg-surface_container_low">
         <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-12">
           <div className="space-y-6">
@@ -123,7 +120,7 @@ export const InconsistencyReport: React.FC<InconsistencyReportProps> = ({ onCanc
             >
               {submitting ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http:
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>

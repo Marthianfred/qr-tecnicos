@@ -23,8 +23,8 @@ describe('KeycloakIAMService', () => {
   let service: KeycloakIAMService;
 
   beforeEach(async () => {
-    process.env.KEYCLOAK_JWKS_URL = 'http://localhost/jwks';
-    process.env.KEYCLOAK_ISSUER = 'http://localhost/issuer';
+    process.env.KEYCLOAK_JWKS_URL = 'http:
+    process.env.KEYCLOAK_ISSUER = 'http:
     process.env.KEYCLOAK_AUDIENCE = 'test-audience';
 
     const module: TestingModule = await Test.createTestingModule({

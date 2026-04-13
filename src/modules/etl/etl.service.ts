@@ -116,13 +116,12 @@ export class EtlService {
     // Pass 1: Identificar Empresas y Supervisores
     for (const line of dataLines) {
       const parts = line.split(',');
-      const empresaNombre = parts[0]?.trim();
-      const nil = parts[1]?.trim(); // Si parts[1] es el nombre, ¡NIL debe estar en otra parte! 
-      // Re-evaluando: Si parts[1] es el nombre, ¿dónde está el NIL?
-      // Usaremos parts[1] para nombre y nil lo omitiremos si no es vital, o buscaremos su posición real.
-      const nombre = parts[1]?.trim();
-      const rol = parts[3]?.trim();
-      const documento = parts[4]?.trim();
+      const zonaExcel = parts[0]?.trim();
+      const empresaNombre = zonaExcel;
+      const nil = zonaExcel; // Placeholder si no hay NIL explícito
+      const nombre = parts[2]?.trim();
+      const rol = parts[4]?.trim(); 
+      const documento = parts[3]?.trim();
 
       if (rol === 'Supervisor') {
         let empresa = null;
@@ -157,14 +156,15 @@ export class EtlService {
       const parts = line.split(',');
       if (parts.length < 5) continue;
 
-      const empresaNombre = parts[0]?.trim() || '';
-      const nombre = parts[1]?.trim();
-      const estado = parts[2]?.trim();
-      const rol = parts[3]?.trim();
-      const documento = parts[4]?.trim();
-      const cargo = rol === 'Supervisor' ? 'Coordinador de Operaciones' : 'Técnico de Campo';
-      const zona = estado || 'General';
-      const paisFinal = paisScope || (documento.startsWith('V') ? 'VE' : (documento.length === 11 ? 'RD' : 'PE'));
+      const zonaExcel = parts[0]?.trim() || 'General';
+      const nombre = parts[2]?.trim();
+      const documento = parts[3]?.trim();
+      const cargo = parts[4]?.trim() || 'Técnico de Campo';
+      const supervisorNombre = parts[6]?.trim();
+      const statusExcel = parts[18]?.trim(); // Columna "PERSONAL" (ACTIVO/INACTIVO)
+      
+      const paisFinal = paisScope || (documento?.startsWith('V') ? 'VE' : (documento?.length === 11 ? 'RD' : 'PE'));
+      const statusFinal = statusExcel === 'INACTIVO' ? TecnicoStatus.INACTIVO : TecnicoStatus.ACTIVO;
 
       if (dryRun) {
         previewData.push({
@@ -172,39 +172,37 @@ export class EtlService {
           documento,
           cargo,
           pais: paisFinal,
-          zona,
-          empresa: empresaNombre
+          zona: zonaExcel,
+          empresa: parts[0]?.trim() || 'Fibex'
         });
         continue;
       }
       
       // Priorizar el tipoDefault (calculado por nombre de archivo) pero validar con el nombre de empresa
-      const tipoPers = empresaNombre.toLowerCase().includes('fibex') 
+      const tipoPers = parts[0]?.trim().toLowerCase().includes('fibex') 
         ? TipoPersonal.CORPORATIVO 
         : tipoDefault;
       
-      const inicial = parts[5]?.trim();
-      const basico = parts[6]?.trim();
-      const integral = parts[7]?.trim();
-      const premium = parts[8]?.trim();
-      const supervisorNombre = parts[9]?.trim();
+      const inicial = parts[8]?.trim();
+      const basico = parts[10]?.trim();
+      const integral = parts[12]?.trim();
+      const premium = parts[14]?.trim();
 
-      if (rol === 'Tecnico' || rol === 'Supervisor') {
-        // En un flujo real, aquí buscaríamos la cuadrilla si es necesario
-        let tecnico = await this.tecnicoRepository.findOneBy({ documento });
-        if (!tecnico) {
-          tecnico = this.tecnicoRepository.create({
-            nombre: nombre,
-            documento: documento,
-            cargo: cargo,
-            tipoPersonal: tipoPers,
-            pais: paisFinal,
-            zona: zona,
-            status: TecnicoStatus.ACTIVO,
-          });
-          tecnico = await this.tecnicoRepository.save(tecnico);
-          this.logger.log(`Importado ${rol}: ${nombre} (${tipoPers}) en Zona: ${tecnico.zona}`);
-        }
+      // En un flujo real, aquí buscaríamos la cuadrilla si es necesario
+      let tecnico = await this.tecnicoRepository.findOneBy({ documento });
+      if (!tecnico) {
+        tecnico = this.tecnicoRepository.create({
+          nombre: nombre,
+          documento: documento,
+          cargo: cargo,
+          tipoPersonal: tipoPers,
+          pais: paisFinal,
+          zona: zonaExcel,
+          status: statusFinal,
+        });
+        tecnico = await this.tecnicoRepository.save(tecnico);
+        this.logger.log(`Importado ${cargo}: ${nombre} (${tipoPers}) en Zona: ${tecnico.zona}`);
+      }
 
         const certsToLoad = [
           { nivel: NivelCertificacion.INICIAL, status: inicial },
@@ -228,14 +226,13 @@ export class EtlService {
               await this.certificacionRepository.save(cert);
             }
           }
-        }
+        } // End certs loop
+      } // End dataLines loop
+  
+      if (dryRun) {
+        return { success: true, preview: previewData, total: previewData.length };
       }
+  
+      return { success: true, processed: dataLines.length };
     }
-
-    if (dryRun) {
-      return { success: true, preview: previewData, total: previewData.length };
-    }
-
-    return { success: true, processed: dataLines.length };
-  }
 }

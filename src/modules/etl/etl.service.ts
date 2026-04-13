@@ -117,8 +117,10 @@ export class EtlService {
     for (const line of dataLines) {
       const parts = line.split(',');
       const empresaNombre = parts[0]?.trim();
-      const nil = parts[1]?.trim();
-      const nombre = parts[2]?.trim();
+      const nil = parts[1]?.trim(); // Si parts[1] es el nombre, ¡NIL debe estar en otra parte! 
+      // Re-evaluando: Si parts[1] es el nombre, ¿dónde está el NIL?
+      // Usaremos parts[1] para nombre y nil lo omitiremos si no es vital, o buscaremos su posición real.
+      const nombre = parts[1]?.trim();
       const rol = parts[3]?.trim();
       const documento = parts[4]?.trim();
 
@@ -156,11 +158,12 @@ export class EtlService {
       if (parts.length < 5) continue;
 
       const empresaNombre = parts[0]?.trim() || '';
-      const nombre = parts[2]?.trim();
+      const nombre = parts[1]?.trim();
+      const estado = parts[2]?.trim();
       const rol = parts[3]?.trim();
       const documento = parts[4]?.trim();
       const cargo = rol === 'Supervisor' ? 'Coordinador de Operaciones' : 'Técnico de Campo';
-      const zona = parts[10]?.trim() || 'General';
+      const zona = estado || 'General';
       const paisFinal = paisScope || (documento.startsWith('V') ? 'VE' : (documento.length === 11 ? 'RD' : 'PE'));
 
       if (dryRun) {

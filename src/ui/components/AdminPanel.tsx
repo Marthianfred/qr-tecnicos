@@ -156,7 +156,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                               method: 'POST',
                               body: formData,
                               headers: {
-                                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                                 'Authorization': `Bearer ${localStorage.getItem('token')}`
                               }
                            });
                            
@@ -420,9 +420,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLogout }) => {
                         )}
                      </tbody>
                   </table>
-                  <div className="p-8 bg-slate-50 border-t border-slate-100 text-center">
-                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Cargando registros adicionales de la base de datos nacional...</p>
-                  </div>
+                  {loading && (
+                    <div className="p-8 bg-slate-50 border-t border-slate-100 text-center">
+                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] animate-pulse">Cargando registros adicionales de la base de datos nacional...</p>
+                    </div>
+                  )}
                </div>
             </div>
           )}
